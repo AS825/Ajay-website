@@ -3,10 +3,10 @@
   "private": true,
   "main": "lib/index.js",
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=lib/index.js --external:firebase-admin --external:firebase-functions --sourcemap",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --format=cjs --outfile=lib/index.js --external:firebase-admin --external:firebase-functions --sourcemap",
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --import tsx --test test/youtube.test.ts"
   },

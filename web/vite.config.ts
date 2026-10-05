@@ -6,5 +6,5 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   // host: true → reachable from a phone in the same Wi-Fi for mobile testing.
   server: { host: true, port: 5173 },
-  build: { target: 'es2020', sourcemap: true },
+  build: { target: 'es2022', sourcemap: true },
 })

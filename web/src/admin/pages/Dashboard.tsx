@@ -10,6 +10,7 @@ import { Card, Empty, PageHeader } from '../ui/Kit'
 import { buttonClass } from '../../components/ui/Button'
 import { useNow } from '../../lib/hooks'
 import { useCreateEvent } from '../useCreateEvent'
+import { ImportDefaults } from '../ui/ImportDefaults'
 
 function Stat({ label, value, to }: { label: string; value: number | string; to?: string }) {
   const body = (
@@ -68,6 +69,7 @@ export default function Dashboard() {
           </button>
         }
       />
+      <ImportDefaults />
       <div className="mb-6 grid grid-cols-3 gap-3">
         <Stat
           label={t('admin.dashboard.upcoming')}

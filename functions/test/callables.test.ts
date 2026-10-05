@@ -8,6 +8,13 @@ import { initializeApp as initAdmin } from 'firebase-admin/app'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import { initializeApp } from 'firebase/app'
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions'
+import {
+  connectAuthEmulator,
+  getAuth as getClientAuth,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth'
+import { getAuth } from 'firebase-admin/auth'
 
 const projectId = 'demo-ajay'
 initAdmin({ projectId })
@@ -15,6 +22,8 @@ const db = getFirestore()
 const client = initializeApp({ projectId, apiKey: 'demo' }, 'test-client')
 const fns = getFunctions(client, 'europe-west1')
 connectFunctionsEmulator(fns, '127.0.0.1', 5001)
+const clientAuth = getClientAuth(client)
+connectAuthEmulator(clientAuth, 'http://127.0.0.1:9099', { disableWarnings: true })
 
 const DAY = 86_400_000
 let n = 0
@@ -210,5 +219,35 @@ describe('submitBooking', () => {
       0,
     )
     assert.equal(await reasonOf(book(booking({ eventType: 'rave' }))), 'invalid')
+  })
+})
+
+describe('claimAdmin', () => {
+  const claim = httpsCallable<unknown, { ok: boolean }>(fns, 'claimAdmin')
+  async function user(email: string, emailVerified: boolean) {
+    const auth = getAuth()
+    const existing = await auth.getUserByEmail(email).catch(() => null)
+    if (existing) await auth.deleteUser(existing.uid)
+    return auth.createUser({ email, password: 'secret123', emailVerified })
+  }
+
+  test('allow-listed, verified e-mail gets the admin claim', async () => {
+    const u = await user('claim-test@example.com', true)
+    await signInWithEmailAndPassword(clientAuth, 'claim-test@example.com', 'secret123')
+    assert.equal((await claim({})).data.ok, true)
+    assert.equal((await getAuth().getUser(u.uid)).customClaims?.admin, true)
+    await signOut(clientAuth)
+  })
+
+  test('unverified or unlisted e-mails are refused', async () => {
+    await user('claim-test@example.com', false)
+    await signInWithEmailAndPassword(clientAuth, 'claim-test@example.com', 'secret123')
+    assert.equal(await reasonOf(claim({})), 'notAllowed')
+    await signOut(clientAuth)
+    await user('random@example.com', true)
+    await signInWithEmailAndPassword(clientAuth, 'random@example.com', 'secret123')
+    assert.equal(await reasonOf(claim({})), 'notAllowed')
+    await signOut(clientAuth)
+    assert.equal(await reasonOf(claim({})), 'code:functions/unauthenticated')
   })
 })

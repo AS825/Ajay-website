@@ -191,8 +191,10 @@
       "failed": "Sign-in failed. Please try again.",
       "signOut": "Sign out",
       "noAccessTitle": "No access",
-      "noAccessText": "{{email}} is signed in but has no admin rights. Ask for access (scripts/setAdmin.ts), then sign out and in again.",
-      "devHint": "Local test login:"
+      "noAccessText": "You're signed in as {{email}}. If this e-mail is on the admin list, activate your access here.",
+      "devHint": "Local test login:",
+      "activate": "Activate admin access",
+      "notAllowed": "This account isn't on the admin list. Ask the developer to add your e-mail to ADMIN_EMAILS and deploy the functions again."
     },
     "common": {
       "all": "All",
@@ -434,6 +436,12 @@
       "disconnect": "Disconnect Instagram",
       "confirmDisconnect": "Remove the Instagram token? Posts already on the site stay until the next sync.",
       "disconnected": "Instagram disconnected."
+    },
+    "import": {
+      "title": "Set up the website",
+      "text": "The database is still empty. Import the starting content: all links from the Linktree, texts, design and section order. Everything can be edited afterwards; nothing existing is overwritten.",
+      "button": "Import starting content",
+      "done": "Starting content imported."
     }
   },
   "notFound": {

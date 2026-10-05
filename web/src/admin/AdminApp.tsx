@@ -1,14 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { signOut } from 'firebase/auth'
-import { auth } from './firebase'
 import { useAdminAuth } from './hooks'
 import { AdminLayout } from './AdminLayout'
 import { LoginPage } from './LoginPage'
+import { NoAccess } from './NoAccess'
 import { Spinner } from './ui/Kit'
 import { Toaster } from './ui/Toast'
-import { buttonClass } from '../components/ui/Button'
 
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const EventsList = lazy(() => import('./pages/EventsList'))
@@ -25,7 +22,6 @@ function Centered({ children }: { children: React.ReactNode }) {
 
 /** /admin/* – protected by Firebase Auth + custom claim `admin` (SPEC §10). */
 export default function AdminApp() {
-  const { t } = useTranslation()
   const { user, isAdmin, loading } = useAdminAuth()
 
   useEffect(() => {
@@ -51,19 +47,7 @@ export default function AdminApp() {
   } else if (!user) {
     content = <LoginPage />
   } else if (!isAdmin) {
-    content = (
-      <Centered>
-        <div className="max-w-sm space-y-4">
-          <h1 className="text-2xl font-bold">{t('admin.auth.noAccessTitle')}</h1>
-          <p className="text-sm text-muted">
-            {t('admin.auth.noAccessText', { email: user.email })}
-          </p>
-          <button type="button" onClick={() => signOut(auth)} className={buttonClass('glass')}>
-            {t('admin.auth.signOut')}
-          </button>
-        </div>
-      </Centered>
-    )
+    content = <NoAccess user={user} />
   } else {
     content = (
       <AdminLayout user={user}>

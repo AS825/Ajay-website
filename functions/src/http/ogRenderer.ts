@@ -36,7 +36,7 @@ const shellOrigin = (req: Parameters<typeof requestOrigin>[0]) =>
 
 /** Canonical / og:url origin: SITE_ORIGIN (e.g. https://ajay.at) in production. */
 const canonicalOrigin = (req: Parameters<typeof requestOrigin>[0]) =>
-  isEmulator ? 'http://localhost:5000' : (process.env.SITE_ORIGIN ?? requestOrigin(req))
+  isEmulator ? 'http://localhost:5000' : process.env.SITE_ORIGIN?.trim() || requestOrigin(req)
 
 async function loadShell(origin: string): Promise<string> {
   if (shellCache && Date.now() - shellCache.at < SHELL_TTL_MS) return shellCache.html

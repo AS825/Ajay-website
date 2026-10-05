@@ -1,6 +1,7 @@
 # AJAY ADAM – Official Website
 
 DJ & Producer website for AJAY ADAM (Vienna). The spec is in [`SPEC.md`](SPEC.md); current scope is in §18 there.
+**Going live:** step-by-step guide (German) in [`DEPLOY.md`](DEPLOY.md) – `npm run deploy` after the one-time setup.
 
 ## Stack
 

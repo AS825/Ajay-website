@@ -191,8 +191,10 @@
       "failed": "Anmeldung fehlgeschlagen. Bitte nochmal versuchen.",
       "signOut": "Abmelden",
       "noAccessTitle": "Kein Zugriff",
-      "noAccessText": "{{email}} ist angemeldet, hat aber keine Admin-Rechte. Zugriff vergeben lassen (scripts/setAdmin.ts), dann ab- und wieder anmelden.",
-      "devHint": "Lokaler Test-Login:"
+      "noAccessText": "Du bist als {{email}} angemeldet. Wenn diese E-Mail auf der Admin-Liste steht, kannst du deinen Zugang hier aktivieren.",
+      "devHint": "Lokaler Test-Login:",
+      "activate": "Admin-Zugang aktivieren",
+      "notAllowed": "Dieses Konto steht nicht auf der Admin-Liste. Bitte die E-Mail in ADMIN_EMAILS eintragen lassen und die Functions neu deployen."
     },
     "common": {
       "all": "Alle",
@@ -434,6 +436,12 @@
       "disconnect": "Instagram trennen",
       "confirmDisconnect": "Instagram-Schlüssel entfernen? Bereits angezeigte Posts bleiben bis zur nächsten Aktualisierung.",
       "disconnected": "Instagram getrennt."
+    },
+    "import": {
+      "title": "Website einrichten",
+      "text": "Die Datenbank ist noch leer. Importiere die Startinhalte: alle Links aus dem Linktree, Texte, Design und Reihenfolge der Sektionen. Alles ist danach bearbeitbar; Bestehendes wird nicht überschrieben.",
+      "button": "Startinhalte importieren",
+      "done": "Startinhalte importiert."
     }
   },
   "notFound": {

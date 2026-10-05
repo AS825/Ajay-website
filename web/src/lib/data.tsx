@@ -20,6 +20,7 @@ import {
 } from '@ajay/shared'
 import { db } from './firebase'
 import { applyTheme } from './theme'
+import { PREVIEW_READY, PREVIEW_STATE, isPreview, type PreviewState } from './preview'
 import type { EventView } from './events'
 
 export type LinkView = LinkDoc & { id: string }
@@ -59,6 +60,19 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   const [links, setLinks] = useState<LinkView[] | null>(null)
   const [events, setEvents] = useState<EventView[] | null>(null)
   const [version, setVersion] = useState(0)
+  const [preview, setPreview] = useState<PreviewState | null>(null)
+
+  // Design editor live preview: the admin posts unsaved theme/sections into this iframe.
+  useEffect(() => {
+    if (!isPreview()) return
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin === window.location.origin && e.data?.type === PREVIEW_STATE)
+        setPreview(e.data as PreviewState)
+    }
+    window.addEventListener('message', onMessage)
+    window.parent.postMessage({ type: PREVIEW_READY }, window.location.origin)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -95,19 +109,24 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
     }
   }, [version])
 
-  useEffect(() => applyTheme(theme), [theme])
+  const effectiveTheme = preview?.theme ?? theme
+  const effectiveSite = useMemo(
+    () => (preview ? { ...site, sections: preview.sections } : site),
+    [preview, site],
+  )
+  useEffect(() => applyTheme(effectiveTheme), [effectiveTheme])
 
   const value = useMemo<SiteData>(
     () => ({
-      site,
-      theme,
+      site: effectiveSite,
+      theme: effectiveTheme,
       links: links ?? [],
       events: events ?? [],
       ready: links !== null && events !== null,
       linksBy: (category) => (links ?? []).filter((l) => l.category === category),
       reload: () => setVersion((v) => v + 1),
     }),
-    [site, theme, links, events],
+    [effectiveSite, effectiveTheme, links, events],
   )
 
   return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>

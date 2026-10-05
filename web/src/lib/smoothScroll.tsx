@@ -13,7 +13,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null)
 
   useEffect(() => {
-    if (reduced) return
+    // No smooth scrolling in the admin (own scroll areas) or in the preview iframe.
+    if (reduced || window.location.pathname.startsWith('/admin') || window.parent !== window) return
     const instance = new Lenis({ duration: 1.1, smoothWheel: true, syncTouch: false })
     let raf = requestAnimationFrame(function loop(time) {
       instance.raf(time)

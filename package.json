@@ -20,10 +20,14 @@
     "build:functions": "npm run build -w functions",
     "serve": "npm run build && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions,hosting --ui \"npm run seed && node scripts/wait-forever.mjs\"",
     "test": "npm test -w shared",
-    "test:functions": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,functions \"node --import tsx --test functions/test/callables.test.ts\""
+    "test:functions": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,functions \"node --import tsx --test functions/test/callables.test.ts\"",
+    "test:rules": "firebase emulators:exec --project demo-ajay-rules --only firestore,storage \"node --import tsx --test tests/rules/rules.test.ts\"",
+    "set-admin": "npm run set-admin -w scripts --",
+    "check:i18n": "node scripts/check-i18n.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@types/node": "^26.6.4",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -32,6 +36,7 @@
     "globals": "^17.13.0",
     "prettier": "^3.9.9",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.0",
+    "tsx": "^4.20.0"
   }
 }

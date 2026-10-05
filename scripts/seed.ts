@@ -7,10 +7,19 @@
  */
 import { initializeApp } from 'firebase-admin/app'
 import { Timestamp, getFirestore } from 'firebase-admin/firestore'
-import { seedLinks, seedSite, seedTheme, type EventDoc } from '@ajay/shared'
+import { getAuth } from 'firebase-admin/auth'
+import {
+  dateToViennaLocal,
+  seedLinks,
+  seedSite,
+  seedTheme,
+  viennaLocalToDate,
+  type EventDoc,
+} from '@ajay/shared'
 
 const projectId = process.env.GCLOUD_PROJECT ?? 'demo-ajay'
 process.env.FIRESTORE_EMULATOR_HOST ??= '127.0.0.1:8080'
+process.env.FIREBASE_AUTH_EMULATOR_HOST ??= '127.0.0.1:9099'
 
 if (!projectId.startsWith('demo-')) {
   console.error(`Refusing to seed non-demo project "${projectId}".`)
@@ -22,11 +31,10 @@ initializeApp({ projectId })
 const db = getFirestore()
 
 const DAY = 24 * 60 * 60 * 1000
-/** Date at 22:00 Vienna time (approx., UTC+1/+2), `days` from today. */
-function at(days: number, hourUtc = 20): Timestamp {
-  const d = new Date(Date.now() + days * DAY)
-  d.setUTCHours(hourUtc, 0, 0, 0)
-  return Timestamp.fromDate(d)
+/** `hh:00` Vienna wall-clock time, `days` from today (correct across DST changes). */
+function at(days: number, hour = 22): Timestamp {
+  const day = dateToViennaLocal(new Date(Date.now() + days * DAY)).slice(0, 10)
+  return Timestamp.fromDate(viennaLocalToDate(`${day}T${String(hour).padStart(2, '0')}:00`))
 }
 
 function placeholderEvent(
@@ -57,13 +65,13 @@ function placeholderEvent(
 
 const seedEvents: Record<string, EventDoc<Timestamp>> = {
   'todo-event-1': placeholderEvent(1, 10, {
-    guestlist: { enabled: true, capacity: 100, deadline: at(10, 16), maxPlusOnes: 2, count: 12 },
+    guestlist: { enabled: true, capacity: 100, deadline: at(10, 18), maxPlusOnes: 2, count: 12 },
   }),
   'todo-event-2': placeholderEvent(2, 24, {
     ticketing: { enabled: false, externalUrl: 'https://example.com/TODO-tickets' },
   }),
   'todo-event-3': placeholderEvent(3, 45, {
-    guestlist: { enabled: true, capacity: 50, deadline: at(45, 16), maxPlusOnes: 1, count: 50 },
+    guestlist: { enabled: true, capacity: 50, deadline: at(45, 18), maxPlusOnes: 1, count: 50 },
   }),
   'todo-event-past': placeholderEvent(4, -20, { slug: 'todo-placeholder-past-event' }),
   'todo-event-draft': placeholderEvent(5, 60, { status: 'draft' }),
@@ -87,6 +95,26 @@ async function main() {
   for (const [path, data] of docs) if (await writeIfMissing(path, data)) written++
   console.log(
     `Seed done: ${written} written, ${docs.length - written} kept (project ${projectId}).`,
+  )
+  await seedAdminUser()
+}
+
+/** Local admin login for the emulator (never created in a real project). */
+const DEV_ADMIN = { email: 'admin@ajay.local', password: 'ajay-admin' }
+
+async function seedAdminUser() {
+  const auth = getAuth()
+  const existing = await auth.getUserByEmail(DEV_ADMIN.email).catch(() => null)
+  const user =
+    existing ??
+    (await auth.createUser({
+      email: DEV_ADMIN.email,
+      password: DEV_ADMIN.password,
+      displayName: 'Ajay (dev)',
+    }))
+  await auth.setCustomUserClaims(user.uid, { admin: true })
+  console.log(
+    `Dev admin: ${DEV_ADMIN.email} / ${DEV_ADMIN.password}  →  http://localhost:5173/admin`,
   )
 }
 

@@ -16,6 +16,7 @@ web/      the site (Vite app)
   src/features    home sections, events, booking
   src/components  ui primitives + layout (header, menu, footer)
   src/lib         firebase, data provider, theme, formatting
+  src/admin       admin app (own chunk): pages, ui kit, auth/storage/firestore hooks
   src/i18n        en.json / de.json
 functions/ Cloud Functions (2nd gen, europe-west1), bundled with esbuild
   src/http/ogRenderer.ts        per-event Open Graph / Twitter / JSON-LD for /events/:slug
@@ -23,7 +24,8 @@ functions/ Cloud Functions (2nd gen, europe-west1), bundled with esbuild
   src/callable/submitBooking.ts booking request + notification and receipt mails
   src/mail/templates.ts         e-mail templates (EN/DE)
   test/                         integration tests against the emulators
-scripts/  seed.ts, dev-mailer.ts (emulator only)
+scripts/  seed.ts, dev-mailer.ts (emulator only), setAdmin.ts, check-i18n.mjs
+tests/rules/ Firestore + Storage security rules tests
 firestore.rules, storage.rules, firebase.json
 ```
 
@@ -118,3 +120,27 @@ stored as a secret) and default FROM `AJAY ADAM <no-reply@ajay.at>`.
 - Rate limits per IP hash and e-mail hash in `rateLimits/` (guestlist: 10 per IP / 10 min,
   5 per e-mail / day; booking: 5 per IP / hour, 3 per e-mail / day). In production, add a Firestore
   TTL policy on `rateLimits.expiresAt` so old entries delete themselves.
+
+## Admin (`/admin`)
+
+Login with e-mail/password or Google; access requires the custom claim `admin: true`.
+
+- **Locally:** `npm run dev` creates a test admin in the Auth emulator –
+  `admin@ajay.local` / `ajay-admin` → http://localhost:5173/admin
+- **Production:** Ajay signs in once (e.g. with Google), then grant the claim:
+
+  ```bash
+  GOOGLE_APPLICATION_CREDENTIALS=service-account.json npm run set-admin -- --project <project-id> ajay@example.com
+  ```
+
+  He signs out and in again; `--revoke` removes the right.
+
+Modules: dashboard, events (editor, flyer upload with automatic 4:5 crop/WebP, guestlist settings,
+draft/published), guestlist per event (search, tap to check in, promote from waitlist, delete, CSV),
+booking inbox (status, notes, reply by mail), design (accent, logo, hero, background, marquee,
+section order/visibility, live preview in a phone frame, then _Publish_), links & drops (drag & drop,
+visibility, covers) and texts (general settings, bio, photos, press kit PDF, tiles, legal pages as
+rich text). Everything works on a phone.
+
+Uploads go to Storage under `media/images|videos|docs/…` with type and size limits enforced by
+`storage.rules` (images 10 MB, videos 30 MB, PDF 20 MB). Images are compressed in the browser first.

@@ -5,7 +5,8 @@
   "scripts": {
     "seed": "tsx seed.ts",
     "typecheck": "tsc -p tsconfig.json",
-    "mailer": "tsx dev-mailer.ts"
+    "mailer": "tsx dev-mailer.ts",
+    "set-admin": "tsx setAdmin.ts"
   },
   "dependencies": {
     "@ajay/shared": "*",

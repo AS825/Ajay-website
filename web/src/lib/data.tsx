@@ -57,18 +57,69 @@ function toEventView(id: string, d: EventDoc<Timestamp>): EventView {
   }
 }
 
+interface Snapshot {
+  site: SiteSettings | null
+  theme: ThemeSettings | null
+  links: LinkView[]
+  events: EventView[]
+  videos: FeedVideo[]
+  posts: FeedPost[]
+}
+
+const CACHE_KEY = 'ajay:site-data:v1'
+
 /**
- * Public site data from Firestore (loaded once, refreshed on tab focus). Settings fall back to the seed
+ * Last successfully loaded content, kept in localStorage: the page renders it
+ * immediately on the next visit and keeps showing it if the network fails
+ * (club Wi-Fi, tunnels) instead of "no upcoming events".
+ */
+function readCache(): Snapshot | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const data = JSON.parse(raw) as Snapshot
+    const date = (v: unknown) => new Date(v as string)
+    data.events = data.events.map((e) => ({
+      ...e,
+      startsAt: date(e.startsAt),
+      endsAt: date(e.endsAt),
+      createdAt: date(e.createdAt),
+      guestlist: {
+        ...e.guestlist,
+        deadline: e.guestlist.deadline ? date(e.guestlist.deadline) : null,
+      },
+    }))
+    return data
+  } catch {
+    return null
+  }
+}
+
+function writeCache(data: Snapshot) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data))
+  } catch {
+    /* storage full or blocked – caching is optional */
+  }
+}
+
+const RETRY_DELAYS_MS = [1500, 4000, 10000]
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+/**
+ * Public site data from Firestore: shown from the local cache first, then loaded (with retries),
+ * refreshed on tab focus and when the connection comes back. Settings fall back to the seed
  * defaults so the hero can paint before Firestore answers (LCP).
  */
 export function SiteDataProvider({ children }: { children: ReactNode }) {
-  const [site, setSite] = useState<SiteSettings>(seedSite)
-  const [theme, setTheme] = useState<ThemeSettings>(seedTheme)
-  const [links, setLinks] = useState<LinkView[] | null>(null)
-  const [events, setEvents] = useState<EventView[] | null>(null)
+  const [cached] = useState(() => (isPreview() ? null : readCache()))
+  const [site, setSite] = useState<SiteSettings>(cached?.site ?? seedSite)
+  const [theme, setTheme] = useState<ThemeSettings>(cached?.theme ?? seedTheme)
+  const [links, setLinks] = useState<LinkView[] | null>(cached?.links ?? null)
+  const [events, setEvents] = useState<EventView[] | null>(cached?.events ?? null)
   const [version, setVersion] = useState(0)
-  const [videos, setVideos] = useState<FeedVideo[]>([])
-  const [posts, setPosts] = useState<FeedPost[]>([])
+  const [videos, setVideos] = useState<FeedVideo[]>(cached?.videos ?? [])
+  const [posts, setPosts] = useState<FeedPost[]>(cached?.posts ?? [])
   const [preview, setPreview] = useState<PreviewState | null>(null)
 
   // Design editor live preview: the admin posts unsaved theme/sections into this iframe.
@@ -97,32 +148,66 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
         getDoc(doc(db, 'feeds/instagram')),
       ])
       if (cancelled) return
-      if (siteSnap.exists()) {
-        const data = siteSnap.data() as SiteSettings
-        // Sections added in newer versions (e.g. instagram) show up without a manual migration.
-        setSite({ ...seedSite, ...data, sections: normalizeSections(data.sections) })
+      const nextSite = siteSnap.exists()
+        ? (() => {
+            const data = siteSnap.data() as SiteSettings
+            // Sections added in newer versions (e.g. instagram) show up without a manual migration.
+            return { ...seedSite, ...data, sections: normalizeSections(data.sections) }
+          })()
+        : null
+      const nextTheme = themeSnap.exists()
+        ? { ...seedTheme, ...(themeSnap.data() as ThemeSettings) }
+        : null
+      const snapshot: Snapshot = {
+        site: nextSite,
+        theme: nextTheme,
+        links: linkSnap.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) })),
+        events: eventSnap.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>)),
+        videos: (ytSnap.data() as FeedDoc<FeedVideo> | undefined)?.items ?? [],
+        posts: (igSnap.data() as FeedDoc<FeedPost> | undefined)?.items ?? [],
       }
-      if (themeSnap.exists()) setTheme({ ...seedTheme, ...(themeSnap.data() as ThemeSettings) })
-      setLinks(linkSnap.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) })))
-      setEvents(eventSnap.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>)))
-      setVideos((ytSnap.data() as FeedDoc<FeedVideo> | undefined)?.items ?? [])
-      setPosts((igSnap.data() as FeedDoc<FeedPost> | undefined)?.items ?? [])
+      if (nextSite) setSite(nextSite)
+      if (nextTheme) setTheme(nextTheme)
+      setLinks(snapshot.links)
+      setEvents(snapshot.events)
+      setVideos(snapshot.videos)
+      setPosts(snapshot.posts)
+      if (!isPreview()) writeCache(snapshot)
     }
-    const refresh = () => {
-      load().catch((err) => {
-        console.error('[data] load failed:', err)
-        // Show the page with empty lists rather than skeletons forever.
-        setLinks((l) => l ?? [])
-        setEvents((e) => e ?? [])
-      })
+    let running = false
+    const refresh = async () => {
+      if (running) return
+      running = true
+      try {
+        for (let attempt = 0; ; attempt++) {
+          try {
+            await load()
+            return
+          } catch (err) {
+            console.warn(`[data] load failed (attempt ${attempt + 1}):`, err)
+            if (cancelled || attempt >= RETRY_DELAYS_MS.length) break
+            await sleep(RETRY_DELAYS_MS[attempt]!)
+          }
+        }
+        // Give up for now: keep whatever is shown (cached or loaded); only end the skeleton.
+        if (!cancelled) {
+          setLinks((l) => l ?? [])
+          setEvents((e) => e ?? [])
+        }
+      } finally {
+        running = false
+      }
     }
-    refresh()
-    // Pick up admin changes when the visitor returns to the tab.
-    const onVisible = () => document.visibilityState === 'visible' && refresh()
+    void refresh()
+    // Pick up admin changes when the visitor returns to the tab, and recover after going offline.
+    const onVisible = () => document.visibilityState === 'visible' && void refresh()
+    const onOnline = () => void refresh()
     document.addEventListener('visibilitychange', onVisible)
+    window.addEventListener('online', onOnline)
     return () => {
       cancelled = true
       document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('online', onOnline)
     }
   }, [version])
 

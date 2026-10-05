@@ -8,6 +8,7 @@ import { easeOutExpo } from '../../lib/motion'
 import { useScrollTo } from '../../lib/smoothScroll'
 import { NextEventPill } from '../../features/events/NextEventPill'
 import { Header } from './Header'
+import { ErrorBoundary } from '../ErrorBoundary'
 import { Footer } from './Footer'
 
 /**
@@ -99,9 +100,11 @@ export function Layout() {
           exit={{ opacity: 0, transition: { duration: 0.2 } }}
         >
           <main id="main">
-            <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
-              {outlet}
-            </Suspense>
+            <ErrorBoundary key={pathname}>
+              <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
+                {outlet}
+              </Suspense>
+            </ErrorBoundary>
           </main>
           <Footer />
         </m.div>

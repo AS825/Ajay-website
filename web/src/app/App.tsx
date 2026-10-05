@@ -5,6 +5,7 @@ import { SiteDataProvider } from '../lib/data'
 import { SmoothScrollProvider } from '../lib/smoothScroll'
 import { Layout } from '../components/layout/Layout'
 import { HomePage } from '../routes/HomePage'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 
 // Sub-pages are split into their own chunks; the home page ships in the main bundle (LCP).
 const EventsPage = lazy(() =>
@@ -45,9 +46,11 @@ const router = createBrowserRouter([
   {
     path: 'admin/*',
     element: (
-      <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
-        <AdminApp />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
+          <AdminApp />
+        </Suspense>
+      </ErrorBoundary>
     ),
   },
 ])

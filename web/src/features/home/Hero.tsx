@@ -54,6 +54,13 @@ export function Hero() {
   const reduced = !!useReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const h = theme.hero
+  const subline = localize(h.subline, lang).trim()
+  const headline = h.headline.trim()
+  // Strip quotes typed by hand so they never appear twice.
+  const quote = localize(h.quote, lang)
+    .trim()
+    .replace(/^["„“”']+|["„“”']+$/g, '')
+    .trim()
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const mediaY = useTransform(scrollYProgress, [0, 1], ['0%', '22%'])
@@ -72,7 +79,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      aria-label={h.headline}
+      aria-label={headline || undefined}
       className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden"
     >
       <m.div
@@ -121,22 +128,29 @@ export function Hero() {
           ...(reduced ? {} : { y: contentY, opacity: contentOpacity }),
         }}
       >
-        <m.p className="eyebrow mb-4 text-white/80" {...fadeUp(0.1)}>
-          {localize(h.subline, lang)}
-        </m.p>
-        <RevealText
-          as="h1"
-          text={h.headline}
-          className="display-xl mb-6 block uppercase"
-          onMount
-          delay={0.2}
-        />
-        <m.blockquote
-          className="mb-10 max-w-xl text-2xl leading-tight font-semibold tracking-tight text-white/90 md:text-4xl"
-          {...fadeUp(0.55)}
-        >
-          „{localize(h.quote, lang)}“
-        </m.blockquote>
+        {/* Each text line only renders when it has content (empty fields in Admin → Design hide it). */}
+        {subline && (
+          <m.p className="eyebrow mb-4 text-white/80" {...fadeUp(0.1)}>
+            {subline}
+          </m.p>
+        )}
+        {headline && (
+          <RevealText
+            as="h1"
+            text={headline}
+            className={`display-xl block uppercase ${quote ? 'mb-6' : 'mb-10'}`}
+            onMount
+            delay={0.2}
+          />
+        )}
+        {quote && (
+          <m.blockquote
+            className="mb-10 max-w-xl text-2xl leading-tight font-semibold tracking-tight text-white/90 md:text-4xl"
+            {...fadeUp(0.55)}
+          >
+            „{quote}“
+          </m.blockquote>
+        )}
         <m.div className="flex flex-col gap-3 sm:flex-row" {...fadeUp(0.7)}>
           <ButtonLink href="/#events" variant="primary">
             {t('hero.ctaEvents')}

@@ -554,5 +554,10 @@
     "eventDetails": "Event details",
     "notFoundTitle": "Pass not found.",
     "notFoundText": "The link is incomplete or no longer valid. Please use the link from your confirmation e-mail."
+  },
+  "errorBoundary": {
+    "title": "Something didn't load.",
+    "text": "Probably the website was just updated. Reloading fixes it.",
+    "reload": "Reload"
   }
 }

@@ -554,5 +554,10 @@
     "eventDetails": "Zum Event",
     "notFoundTitle": "Pass nicht gefunden.",
     "notFoundText": "Der Link ist unvollständig oder nicht mehr gültig. Bitte nutze den Link aus deiner Bestätigungs-Mail."
+  },
+  "errorBoundary": {
+    "title": "Da hat etwas nicht geladen.",
+    "text": "Vermutlich wurde die Website gerade aktualisiert. Neu laden behebt das.",
+    "reload": "Neu laden"
   }
 }

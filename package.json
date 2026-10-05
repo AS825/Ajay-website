@@ -5,17 +5,21 @@
   "workspaces": [
     "shared",
     "web",
-    "scripts"
+    "scripts",
+    "functions"
   ],
   "scripts": {
-    "dev": "firebase emulators:exec --project demo-ajay --only firestore,auth,storage --ui \"npm run seed && npm run dev -w web\"",
-    "emulators": "firebase emulators:start --project demo-ajay --only firestore,auth,storage",
+    "dev": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions --ui \"npm run seed && npm run dev -w web\"",
+    "emulators": "npm run build:functions && firebase emulators:start --project demo-ajay --only firestore,auth,storage,functions",
     "seed": "npm run seed -w scripts",
-    "build": "npm run build -w web",
-    "typecheck": "npm run typecheck -w shared && npm run typecheck -w web && npm run typecheck -w scripts",
+    "build": "npm run build -w web && npm run build -w functions",
+    "typecheck": "npm run typecheck -w shared && npm run typecheck -w web && npm run typecheck -w scripts && npm run typecheck -w functions",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:functions": "npm run build -w functions",
+    "serve": "npm run build && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions,hosting --ui \"npm run seed && node scripts/wait-forever.mjs\"",
+    "test": "npm test -w shared"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

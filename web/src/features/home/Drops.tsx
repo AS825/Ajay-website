@@ -49,7 +49,7 @@ export function Drops() {
                     href={d.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={buttonClass('outline', 'w-full px-3')}
+                    className={buttonClass('outline', 'w-full', 'compact')}
                   >
                     {t('drops.getIt')} <ArrowUpRight className="size-4" aria-hidden="true" />
                     <span className="sr-only">: {d.title}</span>

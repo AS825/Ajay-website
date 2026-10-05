@@ -2,25 +2,16 @@ import { EVENT_TIME_ZONE, type Lang } from '@ajay/shared'
 
 const locale = (lang: Lang) => (lang === 'de' ? 'de-AT' : 'en-GB')
 
+/** All event dates are shown in Europe/Vienna, regardless of the visitor's timezone. */
 export function formatEventDate(date: Date, lang: Lang) {
-  const tz = { timeZone: EVENT_TIME_ZONE }
+  const fmt = (o: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat(locale(lang), { timeZone: EVENT_TIME_ZONE, ...o }).format(date)
   return {
-    day: new Intl.DateTimeFormat(locale(lang), { ...tz, day: '2-digit' }).format(date),
-    month: new Intl.DateTimeFormat(locale(lang), { ...tz, month: 'short' })
-      .format(date)
-      .replace('.', ''),
-    weekday: new Intl.DateTimeFormat(locale(lang), { ...tz, weekday: 'short' })
-      .format(date)
-      .replace('.', ''),
-    time: new Intl.DateTimeFormat(locale(lang), {
-      ...tz,
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date),
-    full: new Intl.DateTimeFormat(locale(lang), {
-      ...tz,
-      dateStyle: 'full',
-      timeStyle: 'short',
-    }).format(date),
+    day: fmt({ day: '2-digit' }),
+    month: fmt({ month: 'short' }).replace('.', ''),
+    weekday: fmt({ weekday: 'short' }).replace('.', ''),
+    time: fmt({ hour: '2-digit', minute: '2-digit' }),
+    date: fmt({ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+    full: fmt({ dateStyle: 'full', timeStyle: 'short' }),
   }
 }

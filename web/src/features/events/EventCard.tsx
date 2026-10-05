@@ -35,7 +35,11 @@ export function EventCard({ event, className = '' }: { event: EventView; classNa
           <div className="absolute top-4 left-4">
             <Badge
               tone={
-                badge === 'guestlistOpen' ? 'accent' : badge === 'tickets' ? 'neutral' : 'muted'
+                badge === 'guestlistOpen' || badge === 'live'
+                  ? 'accent'
+                  : badge === 'tickets'
+                    ? 'neutral'
+                    : 'muted'
               }
             >
               {t(`events.badge.${badge}`)}

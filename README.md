@@ -9,7 +9,7 @@ Vite + React 18 + TypeScript · Tailwind CSS v4 · Motion + Lenis · React Route
 ## Structure
 
 ```
-shared/   zod schemas, types, seed content (used by web + scripts, later functions)
+shared/   zod schemas, types, seed content, event status, .ics + meta tag helpers (+ unit tests)
 web/      the site (Vite app)
   src/app         router + providers
   src/routes      pages
@@ -17,6 +17,8 @@ web/      the site (Vite app)
   src/components  ui primitives + layout (header, menu, footer)
   src/lib         firebase, data provider, theme, formatting
   src/i18n        en.json / de.json
+functions/ Cloud Functions (2nd gen, europe-west1), bundled with esbuild
+  src/http/ogRenderer.ts   per-event Open Graph / Twitter / JSON-LD for /events/:slug
 scripts/  seed.ts (emulator only)
 firestore.rules, storage.rules, firebase.json
 ```
@@ -36,7 +38,7 @@ npm install
 npm run dev
 ```
 
-`npm run dev` starts the Firestore/Auth/Storage emulators, seeds the content from SPEC §5
+`npm run dev` builds the functions, starts the Firestore/Auth/Storage/Functions emulators, seeds the content from SPEC §5
 and starts Vite.
 
 - Website: http://localhost:5173
@@ -69,3 +71,17 @@ seed documents while the emulators are running.
 Everything Ajay still has to provide is marked `TODO` (bio, Spotify artist URL, WANTED.7 link,
 photos, logo, flyers, legal texts). Placeholder events are named `TODO – Placeholder Event n`
 and can be deleted in the admin (Phase 5).
+
+## Link previews (Open Graph)
+
+`/events/:slug` is rewritten by Firebase Hosting to the `ogRenderer` function, which returns
+`index.html` with the event's title, description, flyer image and schema.org `MusicEvent`
+JSON-LD. Messengers and social apps don't run JavaScript, so this is what makes shared event links
+show the flyer. To check locally: `npm run serve`, then
+
+```bash
+curl -s http://localhost:5000/events/todo-placeholder-event-1 | grep -E "og:|<title>"
+```
+
+In production, set `SITE_ORIGIN=https://ajay.at` for the functions so canonical URLs always use the
+main domain.

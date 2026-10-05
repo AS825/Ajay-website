@@ -342,6 +342,11 @@ export default function EventEditor() {
                 onChange={(v) => set('glEnabled', v)}
                 label={t('admin.events.guestlistEnabled')}
               />
+              {!form.glEnabled && !form.externalUrl.trim() && (
+                <p className="rounded-[14px] border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-100">
+                  {t('admin.events.noSignupHint')}
+                </p>
+              )}
               {form.glEnabled && (
                 <>
                   <div className="grid grid-cols-2 gap-3">

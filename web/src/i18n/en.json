@@ -273,7 +273,8 @@
         "guestlist": "Guestlist: capacity at least 1, plus-ones 0–10.",
         "url": "Please enter links starting with https://",
         "venue": "Published events need a venue name."
-      }
+      },
+      "noSignupHint": "Without a guestlist or ticket link, the event page has no sign-up button."
     },
     "guestlist": {
       "confirmed": "Confirmed",

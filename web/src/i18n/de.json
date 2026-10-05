@@ -273,7 +273,8 @@
         "guestlist": "Gästeliste: Kapazität mindestens 1, Begleitpersonen 0–10.",
         "url": "Bitte Links mit https:// eingeben.",
         "venue": "Veröffentlichte Events brauchen eine Location."
-      }
+      },
+      "noSignupHint": "Ohne Gästeliste oder Ticketlink gibt es auf der Event-Seite keinen Anmelde-Button."
     },
     "guestlist": {
       "confirmed": "Bestätigt",

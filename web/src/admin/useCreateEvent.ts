@@ -30,7 +30,7 @@ export function useCreateEvent() {
         lineup: ['AJAY'],
         minAge: 18,
         status: 'draft',
-        guestlist: { enabled: false, capacity: 100, deadline: null, maxPlusOnes: 1, count: 0 },
+        guestlist: { enabled: true, capacity: 100, deadline: null, maxPlusOnes: 1, count: 0 },
         ticketing: { enabled: false, externalUrl: '' },
         createdAt: serverTimestamp(),
       })

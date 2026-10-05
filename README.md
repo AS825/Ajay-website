@@ -4,7 +4,7 @@ DJ & Producer website for AJAY ADAM (Vienna). The spec is in [`SPEC.md`](SPEC.md
 
 ## Stack
 
-Vite + React 18 + TypeScript · Tailwind CSS v4 · React Router · Firebase (Firestore, Auth, Storage; Functions follow in Phase 4) · react-hook-form + zod · i18next (EN default, DE).
+Vite + React 18 + TypeScript · Tailwind CSS v4 · Motion + Lenis · React Router · Firebase (Firestore, Auth, Storage; Functions follow in Phase 4) · react-hook-form + zod · i18next (EN default, DE).
 
 ## Structure
 
@@ -45,6 +45,10 @@ and starts Vite.
 **Testing on your phone:** connect the phone to the same Wi-Fi and open
 `http://<your-computer-ip>:5173`. Vite prints the network URL on startup; the app connects to
 the emulator on the same host automatically.
+
+The public site reads Firestore with the lightweight Firestore Lite SDK (no realtime listener, for
+load performance). Data changes made in the Emulator UI show up after a reload or when you switch
+back to the tab.
 
 Emulator data is in-memory and re-seeded on every start. `npm run seed -- --force` resets the
 seed documents while the emulators are running.

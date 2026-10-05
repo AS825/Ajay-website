@@ -15,7 +15,7 @@ export function PressPage() {
   const { site } = useSiteData()
   return (
     <PageShell>
-      <Section eyebrow={t('press.eyebrow')} title={t('press.title')}>
+      <Section headingLevel="h1" eyebrow={t('press.eyebrow')} title={t('press.title')}>
         <Container className="grid gap-12 md:grid-cols-2">
           <div className="space-y-10">
             <div>

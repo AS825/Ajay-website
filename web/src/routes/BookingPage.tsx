@@ -4,7 +4,7 @@ import { PageShell } from './PageShell'
 export function BookingPage() {
   return (
     <PageShell>
-      <BookingSection id="booking-page" />
+      <BookingSection id="booking-page" headingLevel="h1" />
     </PageShell>
   )
 }

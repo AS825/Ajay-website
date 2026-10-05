@@ -12,8 +12,16 @@
     "closeMenu": "Close menu",
     "skipToContent": "Skip to content"
   },
-  "lang": { "label": "Language", "en": "EN", "de": "DE" },
-  "hero": { "ctaEvents": "Upcoming Events", "ctaBooking": "Book Ajay", "scroll": "Scroll" },
+  "lang": {
+    "label": "Language",
+    "en": "EN",
+    "de": "DE"
+  },
+  "hero": {
+    "ctaEvents": "Upcoming Events",
+    "ctaBooking": "Book Ajay",
+    "scroll": "Scroll"
+  },
   "events": {
     "eyebrow": "Live",
     "title": "Upcoming Events",
@@ -28,9 +36,14 @@
       "soldOut": "Sold out",
       "past": "Past"
     },
-    "comingSoon": "The full event page is built in phase 3."
+    "comingSoon": "The full event page is built in phase 3.",
+    "joinGuestlist": "Join Guestlist",
+    "guestlistSoon": "The guestlist form is built in phase 4. Drag this sheet down or tap outside to close it."
   },
-  "tiles": { "eyebrow": "Explore", "title": "Everything AJAY" },
+  "tiles": {
+    "eyebrow": "Explore",
+    "title": "Everything AJAY"
+  },
   "music": {
     "eyebrow": "Listen",
     "title": "Music",
@@ -46,7 +59,11 @@
     "consent": "Plays via YouTube (youtube-nocookie.com). Data is only sent to YouTube after you tap.",
     "watchLive": "Watch live on Twitch"
   },
-  "drops": { "eyebrow": "For DJs", "title": "Drops", "getIt": "Get it" },
+  "drops": {
+    "eyebrow": "For DJs",
+    "title": "Drops",
+    "getIt": "Get it"
+  },
   "about": {
     "eyebrow": "About",
     "title": "No genre, just vibes",
@@ -93,7 +110,10 @@
     "submit": "Send request",
     "notYet": "Sending is activated in phase 4. Your input was validated successfully."
   },
-  "support": { "text": "Enjoying the sets and edits?", "button": "Support me" },
+  "support": {
+    "text": "Enjoying the sets and edits?",
+    "button": "Support me"
+  },
   "footer": {
     "imprint": "Imprint",
     "privacy": "Privacy",
@@ -110,14 +130,26 @@
     "photos": "Press photos",
     "onRequest": "High-resolution photos and videos on request:"
   },
-  "legal": { "imprint": "Imprint", "privacy": "Privacy Policy", "terms": "Terms & Conditions" },
-  "admin": { "title": "Admin", "comingSoon": "The admin area is built in phase 5." },
+  "legal": {
+    "imprint": "Imprint",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions"
+  },
+  "admin": {
+    "title": "Admin",
+    "comingSoon": "The admin area is built in phase 5."
+  },
   "notFound": {
     "title": "Lost the beat.",
     "text": "This page doesn't exist.",
     "back": "Back home"
   },
-  "common": { "loading": "Loading…", "back": "Back", "external": "opens in a new tab" },
+  "common": {
+    "loading": "Loading…",
+    "back": "Back",
+    "external": "opens in a new tab",
+    "close": "Close"
+  },
   "errors": {
     "required": "Required",
     "email": "Please enter a valid email",
@@ -125,5 +157,13 @@
     "date": "Please choose a date",
     "number": "Please enter a number",
     "privacy": "Please accept the privacy policy"
+  },
+  "pill": {
+    "next": "Next event",
+    "live": "Live now",
+    "startsIn": "Starts in",
+    "d": "d",
+    "h": "h",
+    "m": "m"
   }
 }

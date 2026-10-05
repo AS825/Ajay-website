@@ -14,7 +14,7 @@ export function EventsPage() {
 
   return (
     <PageShell>
-      <Section eyebrow={t('events.eyebrow')} title={t('events.title')}>
+      <Section headingLevel="h1" eyebrow={t('events.eyebrow')} title={t('events.title')}>
         <Container>
           {ready && upcoming.length === 0 && <p className="text-muted">{t('events.empty')}</p>}
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

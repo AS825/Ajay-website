@@ -18,7 +18,7 @@ export function LegalPage({ page }: { page: keyof typeof TITLES }) {
   const { site } = useSiteData()
   return (
     <PageShell>
-      <Section title={t(TITLES[page])}>
+      <Section headingLevel="h1" title={t(TITLES[page])}>
         <Container className="max-w-3xl">
           <div className="leading-relaxed whitespace-pre-line text-white/80">
             {localize(site.legal[page], lang)}

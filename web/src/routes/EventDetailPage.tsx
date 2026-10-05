@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft } from 'lucide-react'
@@ -7,6 +8,9 @@ import { formatEventDate } from '../lib/format'
 import { useLang } from '../i18n'
 import { Container } from '../components/ui/Section'
 import { MediaPlaceholder } from '../components/ui/MediaPlaceholder'
+import { BottomSheet } from '../components/ui/BottomSheet'
+import { buttonClass } from '../components/ui/Button'
+import { eventBadge } from '../lib/events'
 import { PageShell } from './PageShell'
 import { NotFoundPage } from './NotFoundPage'
 
@@ -17,6 +21,7 @@ export function EventDetailPage() {
   const { lang } = useLang()
   const { events, ready } = useSiteData()
   const event = events.find((e) => e.slug === slug)
+  const [sheet, setSheet] = useState(false)
 
   if (!ready)
     return (
@@ -55,12 +60,25 @@ export function EventDetailPage() {
               {event.venue.name} · {event.venue.address}
             </p>
             <p className="text-lg text-white/85">{localize(event.description, lang)}</p>
+            {eventBadge(event) === 'guestlistOpen' && (
+              <button
+                type="button"
+                onClick={() => setSheet(true)}
+                className={buttonClass('primary', 'mt-8 w-full sm:w-auto')}
+              >
+                {t('events.joinGuestlist')}
+              </button>
+            )}
             <p className="mt-10 rounded-[16px] border border-hairline p-4 text-sm text-muted">
               {t('events.comingSoon')}
             </p>
           </div>
         </div>
       </Container>
+      <BottomSheet open={sheet} onClose={() => setSheet(false)} title={t('events.joinGuestlist')}>
+        <p className="mb-2 font-semibold">{event.title}</p>
+        <p className="text-sm text-muted">{t('events.guestlistSoon')}</p>
+      </BottomSheet>
     </PageShell>
   )
 }

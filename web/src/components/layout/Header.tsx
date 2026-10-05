@@ -1,28 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { m, useMotionValueEvent, useScroll } from 'motion/react'
+import { spring } from '../../lib/motion'
 import { Logo } from './Logo'
 import { Menu } from './Menu'
 
-/** Minimal header: logo left, burger right. Turns into glass after scrolling. */
+/**
+ * Minimal header: logo left, burger right. Turns into glass after scrolling,
+ * slides away while scrolling down and returns when scrolling up.
+ */
 export function Header() {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const { scrollY } = useScroll()
+  const close = useCallback(() => setOpen(false), [])
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setScrolled(y > 24)
+    if (Math.abs(y - prev) > 4) setHidden(y > prev && y > 400)
+  })
 
   return (
     <>
-      <header
+      <m.header
         className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
           scrolled ? 'glass border-x-0 border-t-0' : 'border-b border-transparent'
         }`}
         style={{ paddingTop: 'var(--safe-top)' }}
+        animate={{ y: hidden && !open ? '-110%' : '0%' }}
+        transition={spring}
       >
         <div className="px-safe mx-auto flex h-16 max-w-6xl items-center justify-between">
           <Logo />
@@ -40,8 +49,8 @@ export function Header() {
             </span>
           </button>
         </div>
-      </header>
-      <Menu open={open} onClose={() => setOpen(false)} />
+      </m.header>
+      <Menu open={open} onClose={close} />
     </>
   )
 }

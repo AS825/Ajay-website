@@ -112,6 +112,30 @@
   opacity: 0.35;
 }
 
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  17% {
+    transform: translate(-5%, -8%);
+  }
+  33% {
+    transform: translate(-12%, 4%);
+  }
+  50% {
+    transform: translate(7%, -12%);
+  }
+  67% {
+    transform: translate(-3%, 10%);
+  }
+  83% {
+    transform: translate(10%, 3%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translate3d(0, 0, 0);

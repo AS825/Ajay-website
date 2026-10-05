@@ -2,12 +2,13 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import {
   collection,
   doc,
-  onSnapshot,
+  getDoc,
+  getDocs,
   orderBy,
   query,
   where,
   type Timestamp,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 import {
   seedSite,
   seedTheme,
@@ -47,7 +48,7 @@ function toEventView(id: string, d: EventDoc<Timestamp>): EventView {
 }
 
 /**
- * Live public site data from Firestore. Settings fall back to the seed
+ * Public site data from Firestore (loaded once, refreshed on tab focus). Settings fall back to the seed
  * defaults so the hero can paint before Firestore answers (LCP).
  */
 export function SiteDataProvider({ children }: { children: ReactNode }) {
@@ -57,30 +58,38 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<EventView[] | null>(null)
 
   useEffect(() => {
-    const onError = (what: string) => (err: Error) => console.error(`[data] ${what}:`, err)
-    const unsubs = [
-      onSnapshot(
-        doc(db, 'settings/site'),
-        (s) => s.exists() && setSite({ ...seedSite, ...(s.data() as SiteSettings) }),
-        onError('settings/site'),
-      ),
-      onSnapshot(
-        doc(db, 'settings/theme'),
-        (s) => s.exists() && setTheme({ ...seedTheme, ...(s.data() as ThemeSettings) }),
-        onError('settings/theme'),
-      ),
-      onSnapshot(
-        query(collection(db, 'links'), where('visible', '==', true), orderBy('order')),
-        (s) => setLinks(s.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) }))),
-        onError('links'),
-      ),
-      onSnapshot(
-        query(collection(db, 'events'), where('status', '==', 'published'), orderBy('startsAt')),
-        (s) => setEvents(s.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>))),
-        onError('events'),
-      ),
-    ]
-    return () => unsubs.forEach((u) => u())
+    let cancelled = false
+    const load = async () => {
+      const [siteSnap, themeSnap, linkSnap, eventSnap] = await Promise.all([
+        getDoc(doc(db, 'settings/site')),
+        getDoc(doc(db, 'settings/theme')),
+        getDocs(query(collection(db, 'links'), where('visible', '==', true), orderBy('order'))),
+        getDocs(
+          query(collection(db, 'events'), where('status', '==', 'published'), orderBy('startsAt')),
+        ),
+      ])
+      if (cancelled) return
+      if (siteSnap.exists()) setSite({ ...seedSite, ...(siteSnap.data() as SiteSettings) })
+      if (themeSnap.exists()) setTheme({ ...seedTheme, ...(themeSnap.data() as ThemeSettings) })
+      setLinks(linkSnap.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) })))
+      setEvents(eventSnap.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>)))
+    }
+    const refresh = () => {
+      load().catch((err) => {
+        console.error('[data] load failed:', err)
+        // Show the page with empty lists rather than skeletons forever.
+        setLinks((l) => l ?? [])
+        setEvents((e) => e ?? [])
+      })
+    }
+    refresh()
+    // Pick up admin changes when the visitor returns to the tab.
+    const onVisible = () => document.visibilityState === 'visible' && refresh()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [])
 
   useEffect(() => applyTheme(theme), [theme])

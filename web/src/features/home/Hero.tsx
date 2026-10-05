@@ -1,72 +1,158 @@
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { m, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { ArrowDown } from 'lucide-react'
 import { localize } from '@ajay/shared'
 import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
+import { easeOutExpo } from '../../lib/motion'
 import { ButtonLink } from '../../components/ui/Button'
+import { RevealText } from '../../components/motion/Reveal'
 
-/** Full-screen hero (SPEC §4.1). Ken Burns, moving gradient and animated grain follow in Phase 2. */
+/** Slowly drifting accent glow (SPEC §3 "langsam wandernder Farbverlauf"). */
+function AccentDrift({ animate }: { animate: boolean }) {
+  const blob = 'absolute rounded-full blur-3xl will-change-transform'
+  const loop = {
+    duration: 18,
+    repeat: Infinity,
+    repeatType: 'mirror' as const,
+    ease: 'easeInOut' as const,
+  }
+  return (
+    <div className="absolute inset-0 overflow-hidden mix-blend-screen" aria-hidden="true">
+      <m.div
+        className={`${blob} -top-[10%] right-[-25%] size-[90vmax] opacity-60`}
+        style={{
+          background:
+            'radial-gradient(closest-side, color-mix(in srgb, var(--accent) 80%, transparent), transparent)',
+        }}
+        animate={
+          animate
+            ? { x: ['0%', '-22%', '-8%'], y: ['0%', '14%', '28%'], scale: [1, 1.15, 0.95] }
+            : undefined
+        }
+        transition={loop}
+      />
+      <m.div
+        className={`${blob} bottom-[-30%] left-[-30%] size-[70vmax] opacity-40`}
+        style={{
+          background:
+            'radial-gradient(closest-side, color-mix(in srgb, var(--accent) 60%, #ff7a00), transparent)',
+        }}
+        animate={animate ? { x: ['0%', '30%', '10%'], y: ['0%', '-18%', '-6%'] } : undefined}
+        transition={{ ...loop, duration: 23 }}
+      />
+    </div>
+  )
+}
+
+/** Full-screen hero (SPEC §4.1): Ken Burns / video, drifting accent, animated grain, parallax. */
 export function Hero() {
   const { t } = useTranslation()
   const { lang } = useLang()
   const { theme } = useSiteData()
+  const reduced = !!useReducedMotion()
+  const ref = useRef<HTMLElement>(null)
   const h = theme.hero
+
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const mediaY = useTransform(scrollYProgress, [0, 1], ['0%', '22%'])
+  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-18%'])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0])
+
+  const fadeUp = (delay: number) =>
+    reduced
+      ? {}
+      : {
+          initial: { opacity: 0, y: 24 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 1, ease: easeOutExpo, delay },
+        }
 
   return (
     <section
+      ref={ref}
       aria-label={h.headline}
       className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden"
     >
-      <div className="absolute inset-0 -z-10" aria-hidden="true">
+      <m.div
+        className="absolute inset-0 -z-10"
+        style={reduced ? undefined : { y: mediaY }}
+        aria-hidden="true"
+      >
         {h.mediaType === 'video' && h.videoUrl ? (
           <video
             className="size-full object-cover"
             src={h.videoUrl}
             poster={h.posterUrl || undefined}
-            autoPlay
+            autoPlay={!reduced}
             muted
             loop
             playsInline
             preload="metadata"
           />
         ) : h.mediaType === 'image' && h.imageUrl ? (
-          <img className="size-full object-cover" src={h.imageUrl} alt="" fetchPriority="high" />
-        ) : (
-          // TODO(Ajay): hero photo/video. Until then an accent glow on black.
-          <div
-            className="size-full"
-            style={{
-              background:
-                'radial-gradient(70% 55% at 75% 25%, color-mix(in srgb, var(--accent) 70%, transparent), transparent 70%), radial-gradient(60% 50% at 10% 80%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%), #000',
-            }}
+          <m.img
+            className="size-full object-cover"
+            src={h.imageUrl}
+            alt=""
+            fetchPriority="high"
+            initial={{ scale: 1.15 }}
+            animate={reduced ? { scale: 1 } : { scale: [1.15, 1.02], x: ['0%', '-2%'] }}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 22, ease: 'linear', repeat: Infinity, repeatType: 'mirror' }
+            }
           />
+        ) : (
+          // TODO(Ajay): hero photo/video. Until then the accent drift on black carries the hero.
+          <div className="size-full bg-black" />
         )}
-        <div className="grain absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black" />
-      </div>
+        <AccentDrift animate={!reduced} />
+        <div className="absolute -inset-[50%] grain animate-[grain_1.2s_steps(6)_infinite] motion-reduce:animate-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black" />
+      </m.div>
 
-      <div
+      <m.div
         className="px-safe mx-auto w-full max-w-6xl pb-10 md:pb-20"
-        style={{ paddingTop: 'calc(var(--header-h) + var(--safe-top) + 2rem)' }}
+        style={{
+          paddingTop: 'calc(var(--header-h) + var(--safe-top) + 2rem)',
+          ...(reduced ? {} : { y: contentY, opacity: contentOpacity }),
+        }}
       >
-        <p className="eyebrow mb-4 text-white/80">{localize(h.subline, lang)}</p>
-        <h1 className="display-xl mb-6 uppercase">{h.headline}</h1>
-        <blockquote className="mb-10 max-w-xl text-2xl leading-tight font-semibold tracking-tight text-white/90 md:text-4xl">
+        <m.p className="eyebrow mb-4 text-white/80" {...fadeUp(0.1)}>
+          {localize(h.subline, lang)}
+        </m.p>
+        <RevealText
+          as="h1"
+          text={h.headline}
+          className="display-xl mb-6 block uppercase"
+          onMount
+          delay={0.2}
+        />
+        <m.blockquote
+          className="mb-10 max-w-xl text-2xl leading-tight font-semibold tracking-tight text-white/90 md:text-4xl"
+          {...fadeUp(0.55)}
+        >
           „{localize(h.quote, lang)}“
-        </blockquote>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        </m.blockquote>
+        <m.div className="flex flex-col gap-3 sm:flex-row" {...fadeUp(0.7)}>
           <ButtonLink href="/#events" variant="primary">
             {t('hero.ctaEvents')}
           </ButtonLink>
           <ButtonLink href="/booking" variant="glass">
             {t('hero.ctaBooking')}
           </ButtonLink>
-        </div>
-        <ArrowDown
-          className="mx-auto mt-10 hidden size-5 text-white/50 md:block"
-          aria-label={t('hero.scroll')}
-        />
-      </div>
+        </m.div>
+        <m.div
+          className="mt-10 hidden justify-center md:flex"
+          animate={reduced ? undefined : { y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ArrowDown className="size-5 text-white/50" aria-label={t('hero.scroll')} />
+        </m.div>
+      </m.div>
     </section>
   )
 }

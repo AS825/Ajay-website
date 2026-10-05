@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { ClipReveal } from '../../components/motion/Reveal'
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useSiteData } from '../../lib/data'
@@ -49,9 +50,14 @@ export function UpcomingEvents() {
             scrollPaddingInline: 'max(1rem, var(--safe-left), calc((100vw - 72rem) / 2 + 1rem))',
           }}
         >
-          {upcoming.map((e) => (
+          {upcoming.map((e, i) => (
             <li key={e.id} className="w-[78%] shrink-0 snap-start sm:w-[340px]">
-              <EventCard event={e} />
+              <ClipReveal
+                delay={Math.min(i, 3) * 0.1}
+                className="overflow-hidden rounded-[var(--radius-card)]"
+              >
+                <EventCard event={e} />
+              </ClipReveal>
             </li>
           ))}
         </ul>

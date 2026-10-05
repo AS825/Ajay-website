@@ -12,8 +12,16 @@
     "closeMenu": "Menü schließen",
     "skipToContent": "Zum Inhalt springen"
   },
-  "lang": { "label": "Sprache", "en": "EN", "de": "DE" },
-  "hero": { "ctaEvents": "Upcoming Events", "ctaBooking": "Ajay buchen", "scroll": "Scrollen" },
+  "lang": {
+    "label": "Sprache",
+    "en": "EN",
+    "de": "DE"
+  },
+  "hero": {
+    "ctaEvents": "Upcoming Events",
+    "ctaBooking": "Ajay buchen",
+    "scroll": "Scrollen"
+  },
   "events": {
     "eyebrow": "Live",
     "title": "Upcoming Events",
@@ -28,9 +36,14 @@
       "soldOut": "Ausverkauft",
       "past": "Vorbei"
     },
-    "comingSoon": "Die vollständige Event-Seite kommt in Phase 3."
+    "comingSoon": "Die vollständige Event-Seite kommt in Phase 3.",
+    "joinGuestlist": "Auf die Gästeliste",
+    "guestlistSoon": "Das Gästelisten-Formular kommt in Phase 4. Zum Schließen das Sheet nach unten ziehen oder daneben tippen."
   },
-  "tiles": { "eyebrow": "Entdecken", "title": "Alles von AJAY" },
+  "tiles": {
+    "eyebrow": "Entdecken",
+    "title": "Alles von AJAY"
+  },
   "music": {
     "eyebrow": "Hören",
     "title": "Musik",
@@ -46,7 +59,11 @@
     "consent": "Wird über YouTube (youtube-nocookie.com) abgespielt. Daten gehen erst nach dem Tippen an YouTube.",
     "watchLive": "Live auf Twitch ansehen"
   },
-  "drops": { "eyebrow": "Für DJs", "title": "Drops", "getIt": "Holen" },
+  "drops": {
+    "eyebrow": "Für DJs",
+    "title": "Drops",
+    "getIt": "Holen"
+  },
   "about": {
     "eyebrow": "Über",
     "title": "No genre, just vibes",
@@ -93,7 +110,10 @@
     "submit": "Anfrage senden",
     "notYet": "Das Senden wird in Phase 4 aktiviert. Deine Eingaben wurden erfolgreich geprüft."
   },
-  "support": { "text": "Dir gefallen die Sets und Edits?", "button": "Support me" },
+  "support": {
+    "text": "Dir gefallen die Sets und Edits?",
+    "button": "Support me"
+  },
   "footer": {
     "imprint": "Impressum",
     "privacy": "Datenschutz",
@@ -110,14 +130,26 @@
     "photos": "Pressefotos",
     "onRequest": "Hochauflösende Fotos und Videos auf Anfrage:"
   },
-  "legal": { "imprint": "Impressum", "privacy": "Datenschutzerklärung", "terms": "AGB" },
-  "admin": { "title": "Admin", "comingSoon": "Der Admin-Bereich kommt in Phase 5." },
+  "legal": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutzerklärung",
+    "terms": "AGB"
+  },
+  "admin": {
+    "title": "Admin",
+    "comingSoon": "Der Admin-Bereich kommt in Phase 5."
+  },
   "notFound": {
     "title": "Beat verloren.",
     "text": "Diese Seite gibt es nicht.",
     "back": "Zur Startseite"
   },
-  "common": { "loading": "Lädt…", "back": "Zurück", "external": "öffnet in neuem Tab" },
+  "common": {
+    "loading": "Lädt…",
+    "back": "Zurück",
+    "external": "öffnet in neuem Tab",
+    "close": "Schließen"
+  },
   "errors": {
     "required": "Pflichtfeld",
     "email": "Bitte eine gültige E-Mail eingeben",
@@ -125,5 +157,13 @@
     "date": "Bitte ein Datum wählen",
     "number": "Bitte eine Zahl eingeben",
     "privacy": "Bitte die Datenschutzerklärung akzeptieren"
+  },
+  "pill": {
+    "next": "Nächstes Event",
+    "live": "Jetzt live",
+    "startsIn": "Beginnt in",
+    "d": "T",
+    "h": "h",
+    "m": "m"
   }
 }

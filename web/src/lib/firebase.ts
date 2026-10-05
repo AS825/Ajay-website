@@ -1,13 +1,8 @@
 import { initializeApp } from 'firebase/app'
-import {
-  connectFirestoreEmulator,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager,
-} from 'firebase/firestore'
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore/lite'
 
 const env = import.meta.env
-const useEmulators = env.VITE_USE_EMULATORS === 'true'
+export const useEmulators = env.VITE_USE_EMULATORS === 'true'
 
 export const app = initializeApp({
   apiKey: env.VITE_FIREBASE_API_KEY,
@@ -17,14 +12,12 @@ export const app = initializeApp({
   appId: env.VITE_FIREBASE_APP_ID,
 })
 
-// Offline cache makes repeat visits instant in production. Not used against
-// the emulator so a re-seed is always visible immediately.
-export const db = initializeFirestore(
-  app,
-  useEmulators
-    ? {}
-    : { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) },
-)
+/**
+ * The public site only reads, so it uses Firestore Lite (REST, no realtime):
+ * ~1/5 of the full SDK, which matters for LCP on 4G. The admin (Phase 5)
+ * loads the full SDK lazily for live editing.
+ */
+export const db = getFirestore(app)
 
 if (useEmulators) {
   // Use the page's host so a phone on the same Wi-Fi reaches the emulator too.

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Reveal } from '../../components/motion/Reveal'
 import { youtubeId, youtubePlaylistId } from '@ajay/shared'
 import { useSiteData } from '../../lib/data'
 import { Container, Section } from '../../components/ui/Section'
@@ -31,24 +32,26 @@ export function Sets() {
             if (!src) return null
             return (
               <li key={v.id} className={i === 0 ? 'md:col-span-2' : ''}>
-                <ConsentEmbed
-                  src={src}
-                  title={v.title}
-                  note={t('sets.consent')}
-                  playLabel={t('sets.play')}
-                  cover={
-                    v.coverUrl ? (
-                      <img
-                        src={v.coverUrl}
-                        alt=""
-                        loading="lazy"
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      <MediaPlaceholder className="size-full" />
-                    )
-                  }
-                />
+                <Reveal delay={(i % 2) * 0.08}>
+                  <ConsentEmbed
+                    src={src}
+                    title={v.title}
+                    note={t('sets.consent')}
+                    playLabel={t('sets.play')}
+                    cover={
+                      v.coverUrl ? (
+                        <img
+                          src={v.coverUrl}
+                          alt=""
+                          loading="lazy"
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <MediaPlaceholder className="size-full" />
+                      )
+                    }
+                  />
+                </Reveal>
               </li>
             )
           })}

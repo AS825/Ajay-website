@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Reveal, RevealText } from '../motion/Reveal'
 
 export function Section({
   id,
@@ -7,6 +8,7 @@ export function Section({
   action,
   children,
   className = '',
+  headingLevel = 'h2',
 }: {
   id?: string
   eyebrow?: string
@@ -14,6 +16,8 @@ export function Section({
   action?: ReactNode
   children: ReactNode
   className?: string
+  /** Sub-pages use their section title as the page's h1. */
+  headingLevel?: 'h1' | 'h2'
 }) {
   const headingId = id ? `${id}-title` : undefined
   return (
@@ -25,12 +29,19 @@ export function Section({
       {title && (
         <header className="px-safe mx-auto mb-8 flex max-w-6xl items-end justify-between gap-4 md:mb-12">
           <div>
-            {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
-            <h2 id={headingId} className="display-lg">
-              {title}
-            </h2>
+            {eyebrow && (
+              <Reveal>
+                <p className="eyebrow mb-3">{eyebrow}</p>
+              </Reveal>
+            )}
+            <RevealText
+              as={headingLevel}
+              id={headingId}
+              text={title}
+              className="display-lg block"
+            />
           </div>
-          {action}
+          {action && <Reveal delay={0.2}>{action}</Reveal>}
         </header>
       )}
       {children}

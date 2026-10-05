@@ -6,7 +6,7 @@ export function AdminPage() {
   const { t } = useTranslation()
   return (
     <PageShell>
-      <Section title={t('admin.title')}>
+      <Section headingLevel="h1" title={t('admin.title')}>
         <Container>
           <p className="text-muted">{t('admin.comingSoon')}</p>
         </Container>

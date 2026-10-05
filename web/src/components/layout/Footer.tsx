@@ -8,7 +8,7 @@ export function Footer() {
   const { t } = useTranslation()
   const { site, linksBy } = useSiteData()
   return (
-    <footer className="border-t border-hairline pb-[calc(2rem+var(--safe-bottom))] pt-12">
+    <footer className="border-t border-hairline pb-[calc(6rem+var(--safe-bottom))] pt-12">
       <div className="px-safe mx-auto max-w-6xl">
         <p className="display-lg mb-8">
           {site.artistName}

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Reveal } from '../../components/motion/Reveal'
 import { isTodo } from '@ajay/shared'
 import { useSiteData } from '../../lib/data'
 import { Container, Section } from '../../components/ui/Section'
@@ -23,7 +24,7 @@ export function Music() {
   return (
     <Section id="music" eyebrow={t('music.eyebrow')} title={t('music.title')}>
       <Container className="grid gap-10 md:grid-cols-2 md:gap-14">
-        <div>
+        <Reveal>
           {embed ? (
             <ConsentEmbed
               src={embed}
@@ -40,12 +41,14 @@ export function Music() {
               </p>
             </div>
           )}
-        </div>
+        </Reveal>
         <div>
           <ul>
-            {[...linksBy('streaming'), ...audio].map((l) => (
+            {[...linksBy('streaming'), ...audio].map((l, i) => (
               <li key={l.id}>
-                <LinkRow link={l} />
+                <Reveal delay={Math.min(i, 6) * 0.04}>
+                  <LinkRow link={l} />
+                </Reveal>
               </li>
             ))}
           </ul>

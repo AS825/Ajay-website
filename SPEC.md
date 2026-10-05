@@ -218,3 +218,20 @@ Module:
 - Booking-Empfänger: booking@ajay.at
 - Akzentfarbe/Logo: TODO von Ajay
 - Ticket-Bezahlung: PayPal (inkl. Kartenzahlung über PayPal)
+
+---
+
+## 18. Scope-Entscheidungen (vereinbart am 2026-10-05)
+Diese Entscheidungen haben Vorrang vor den Abschnitten oben.
+
+**Zurückgestellt (späteres Feature, nicht Teil der aktuellen Umsetzung):**
+- Tickets via PayPal komplett: Abschnitt 8, Phase 6, Route `/tickets/:ticketId`, Admin-Module „Tickets & Bestellungen“ und „Check-in-Scanner“, Collections `orders`, `tickets`, `events/{id}/ticketTypes`, Pakete `qrcode`/`html5-qrcode`, PayPal SDK. Events behalten nur „Join Guestlist“ und „External Tickets“ (Link). Das Datenmodell bleibt so, dass Tickets später ohne Umbau ergänzt werden können.
+- Phase 7 komplett (Rechtliches/SEO/PWA/Performance-Feinschliff, Tests, Deploy-Anleitung + Custom Domain). Hinweis: Footer-Links und einfache Platzhalter-Seiten für Impressum/Datenschutz/AGB bleiben bestehen, weil ein Impressum in Österreich Pflicht ist.
+
+**Aktuelle Phasen:** 1 Setup + statische Startseite · 2 Animationen & Feinschliff · 3 Events · 4 Gästeliste + Booking + E-Mails · 5 Admin.
+
+**Bestätigte Annahmen:**
+- Domain ajay.at, Englisch Default + Deutsch umschaltbar, Booking an booking@ajay.at.
+- Admin-pflegbare Texte sind zweisprachig: EN Pflicht, DE optional (Fallback auf EN).
+- Lokal: Firebase-Demo-Projekt `demo-ajay` im Emulator, Mails über Mailpit.
+- Fotos/Logo/Video: neutrale, klar als TODO markierte Platzhalter, bis Ajay Material liefert.

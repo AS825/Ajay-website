@@ -1,0 +1,16 @@
+{
+  "name": "@ajay/scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "tsx seed.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@ajay/shared": "*",
+    "firebase-admin": "^13.5.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.0"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "home": "Start",
+    "events": "Events",
+    "music": "Musik",
+    "sets": "Sets",
+    "drops": "Drops",
+    "about": "Über",
+    "press": "Press Kit",
+    "booking": "Booking",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "skipToContent": "Zum Inhalt springen"
+  },
+  "lang": { "label": "Sprache", "en": "EN", "de": "DE" },
+  "hero": { "ctaEvents": "Upcoming Events", "ctaBooking": "Ajay buchen", "scroll": "Scrollen" },
+  "events": {
+    "eyebrow": "Live",
+    "title": "Upcoming Events",
+    "all": "Alle Events",
+    "empty": "Gerade keine Termine. Folge auf Instagram für das nächste Datum.",
+    "past": "Vergangene Events",
+    "minAge": "ab {{age}}",
+    "badge": {
+      "guestlistOpen": "Gästeliste offen",
+      "guestlistFull": "Gästeliste voll",
+      "tickets": "Tickets",
+      "soldOut": "Ausverkauft",
+      "past": "Vorbei"
+    },
+    "comingSoon": "Die vollständige Event-Seite kommt in Phase 3."
+  },
+  "tiles": { "eyebrow": "Entdecken", "title": "Alles von AJAY" },
+  "music": {
+    "eyebrow": "Hören",
+    "title": "Musik",
+    "spotifyTodo": "Der Spotify-Artist-Player erscheint hier, sobald die Spotify-URL eingetragen ist.",
+    "consent": "Wird über Spotify abgespielt. Daten gehen erst nach dem Tippen an Spotify.",
+    "soundcloud": "SoundCloud",
+    "playlists": "Playlists"
+  },
+  "sets": {
+    "eyebrow": "Ansehen",
+    "title": "Sets & Videos",
+    "play": "Video abspielen",
+    "consent": "Wird über YouTube (youtube-nocookie.com) abgespielt. Daten gehen erst nach dem Tippen an YouTube.",
+    "watchLive": "Live auf Twitch ansehen"
+  },
+  "drops": { "eyebrow": "Für DJs", "title": "Drops", "getIt": "Holen" },
+  "about": {
+    "eyebrow": "Über",
+    "title": "No genre, just vibes",
+    "genres": "Genres",
+    "photosTodo": "TODO: Fotos"
+  },
+  "booking": {
+    "eyebrow": "Booking",
+    "title": "Ajay buchen",
+    "intro": "Club, Festival, privat oder Firmenevent – erzähl mir von deinem Event.",
+    "orMail": "Oder direkt an",
+    "fields": {
+      "name": "Name",
+      "company": "Firma / Veranstalter",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "eventType": "Art des Events",
+      "date": "Datum",
+      "location": "Stadt / Location",
+      "setLength": "Set-Länge",
+      "expectedGuests": "Erwartete Gäste",
+      "budget": "Budget",
+      "message": "Nachricht",
+      "privacy": "Ich habe die <1>Datenschutzerklärung</1> gelesen und bin einverstanden, dass meine Daten zur Bearbeitung der Anfrage verarbeitet werden.",
+      "website": "Dieses Feld leer lassen"
+    },
+    "optional": "optional",
+    "select": "Bitte wählen",
+    "eventTypes": {
+      "club": "Club",
+      "festival": "Festival",
+      "private": "Privat",
+      "corporate": "Firmenevent",
+      "wedding": "Hochzeit",
+      "other": "Sonstiges"
+    },
+    "budgets": {
+      "lt500": "Unter 500 €",
+      "500to1000": "500 – 1.000 €",
+      "1000to2000": "1.000 – 2.000 €",
+      "gt2000": "Über 2.000 €",
+      "tbd": "Nach Absprache"
+    },
+    "submit": "Anfrage senden",
+    "notYet": "Das Senden wird in Phase 4 aktiviert. Deine Eingaben wurden erfolgreich geprüft."
+  },
+  "support": { "text": "Dir gefallen die Sets und Edits?", "button": "Support me" },
+  "footer": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "rights": "Alle Rechte vorbehalten."
+  },
+  "press": {
+    "eyebrow": "Presse",
+    "title": "Press Kit 2026",
+    "short": "Kurz-Bio",
+    "long": "Lange Bio",
+    "download": "Press Kit herunterladen (PDF)",
+    "pdfTodo": "TODO: Das Press-Kit-PDF wird im Admin hochgeladen.",
+    "photos": "Pressefotos",
+    "onRequest": "Hochauflösende Fotos und Videos auf Anfrage:"
+  },
+  "legal": { "imprint": "Impressum", "privacy": "Datenschutzerklärung", "terms": "AGB" },
+  "admin": { "title": "Admin", "comingSoon": "Der Admin-Bereich kommt in Phase 5." },
+  "notFound": {
+    "title": "Beat verloren.",
+    "text": "Diese Seite gibt es nicht.",
+    "back": "Zur Startseite"
+  },
+  "common": { "loading": "Lädt…", "back": "Zurück", "external": "öffnet in neuem Tab" },
+  "errors": {
+    "required": "Pflichtfeld",
+    "email": "Bitte eine gültige E-Mail eingeben",
+    "phone": "Bitte eine gültige Telefonnummer eingeben",
+    "date": "Bitte ein Datum wählen",
+    "number": "Bitte eine Zahl eingeben",
+    "privacy": "Bitte die Datenschutzerklärung akzeptieren"
+  }
+}

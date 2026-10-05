@@ -9,7 +9,17 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
-import { ArrowLeft, ArrowUpCircle, Check, Download, Search, Trash2 } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowUpCircle,
+  Check,
+  Download,
+  Mail,
+  Printer,
+  ScanLine,
+  Search,
+  Trash2,
+} from 'lucide-react'
 import { slugify, toCsv } from '@ajay/shared'
 import { adminDb } from '../firebase'
 import { useCollectionData, useDocData, type WithId } from '../hooks'
@@ -17,6 +27,7 @@ import { fmtDateTime } from '../format'
 import type { AdminEvent, GuestEntry } from '../types'
 import { useLang } from '../../i18n'
 import { downloadFile } from '../../lib/share'
+import { callFunction } from '../../lib/callable'
 import { controlClass, Empty, PageHeader, Spinner } from '../ui/Kit'
 import { toast } from '../ui/Toast'
 import { buttonClass } from '../../components/ui/Button'
@@ -37,6 +48,7 @@ export default function GuestlistAdmin() {
   )
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
+  const [sending, setSending] = useState(false)
 
   const stats = useMemo(() => {
     const list = entries ?? []
@@ -81,20 +93,33 @@ export default function GuestlistAdmin() {
   }
 
   // Count changes run in a transaction with the event so guestlist.count stays exact.
-  const promote = async (e: WithId<GuestEntry>) => {
-    const party = 1 + e.plusOnes
-    const over = event.guestlist.count + party > event.guestlist.capacity
-    if (over && !window.confirm(t('admin.guestlist.confirmOverCapacity'))) return
+  // Server-side: updates the count and mails the confirmation with the QR pass.
+  const promote = async (e: WithId<GuestEntry>, force = false): Promise<void> => {
     try {
-      await runTransaction(adminDb, async (tx) => {
-        const snap = await tx.get(entryRef(e.id))
-        if (snap.data()?.status !== 'waitlist') return
-        tx.update(entryRef(e.id), { status: 'confirmed' })
-        tx.update(doc(adminDb, 'events', id), { 'guestlist.count': increment(party) })
-      })
+      await callFunction('promoteGuest', { eventId: id, entryId: e.id, force })
       toast(t('admin.guestlist.promoted', { name: e.firstName }))
+    } catch (err) {
+      const reason = (err as { details?: { reason?: string } }).details?.reason
+      if (reason === 'overCapacity' && !force) {
+        if (window.confirm(t('admin.guestlist.confirmOverCapacity'))) return promote(e, true)
+        return
+      }
+      toast(t('admin.common.error'), 'error')
+    }
+  }
+
+  const sendList = async () => {
+    setSending(true)
+    try {
+      const res = await callFunction<{ eventId: string }, { entries: number }>(
+        'sendGuestlistDigest',
+        { eventId: id },
+      )
+      toast(t('admin.guestlist.listSent', { count: res.entries }))
     } catch {
       toast(t('admin.common.error'), 'error')
+    } finally {
+      setSending(false)
     }
   }
 
@@ -161,14 +186,35 @@ export default function GuestlistAdmin() {
         title={t('admin.events.guestlist')}
         subtitle={fmtDateTime(event.startsAt, lang)}
         actions={
-          <button
-            type="button"
-            onClick={exportCsv}
-            disabled={!entries.length}
-            className={buttonClass('glass', '', 'sm')}
-          >
-            <Download className="size-4" aria-hidden="true" /> CSV
-          </button>
+          <>
+            <Link to={`/admin/events/${id}/scan`} className={buttonClass('primary', '', 'sm')}>
+              <ScanLine className="size-4" aria-hidden="true" /> {t('admin.scan.open')}
+            </Link>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              disabled={!entries.length}
+              className={buttonClass('glass', '', 'sm')}
+            >
+              <Printer className="size-4" aria-hidden="true" /> {t('admin.guestlist.print')}
+            </button>
+            <button
+              type="button"
+              onClick={sendList}
+              disabled={sending}
+              className={buttonClass('glass', '', 'sm')}
+            >
+              <Mail className="size-4" aria-hidden="true" /> {t('admin.guestlist.sendList')}
+            </button>
+            <button
+              type="button"
+              onClick={exportCsv}
+              disabled={!entries.length}
+              className={buttonClass('glass', '', 'sm')}
+            >
+              <Download className="size-4" aria-hidden="true" /> CSV
+            </button>
+          </>
         }
       />
 
@@ -270,6 +316,51 @@ export default function GuestlistAdmin() {
           ))}
         </ul>
       )}
+      {/* Print view: only this is printed (see .print-area in index.css). */}
+      <section className="print-area" aria-hidden="true">
+        <h1>
+          {t('admin.events.guestlist')} – {event.title}
+        </h1>
+        <p>
+          {fmtDateTime(event.startsAt, lang)} · {event.venue.name} ·{' '}
+          {t('admin.guestlist.confirmed')}: {stats.confirmed} · {t('admin.guestlist.waitlist')}:{' '}
+          {stats.waitlist}
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>✓</th>
+              <th>#</th>
+              <th>{t('admin.guestlist.name')}</th>
+              <th>+</th>
+              <th>{t('admin.guestlist.statusCol')}</th>
+              <th>{t('admin.guestlist.phone')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...entries]
+              .sort((a, b) =>
+                `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`, 'de'),
+              )
+              .map((e, i) => (
+                <tr key={e.id}>
+                  <td>{e.checkedIn ? '☑' : '☐'}</td>
+                  <td>{i + 1}</td>
+                  <td>
+                    <b>{e.lastName}</b>, {e.firstName}
+                  </td>
+                  <td>{e.plusOnes || ''}</td>
+                  <td>
+                    {e.status === 'confirmed'
+                      ? t('admin.guestlist.confirmed')
+                      : t('admin.guestlist.waitlist')}
+                  </td>
+                  <td>{e.phone}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </section>
     </>
   )
 }

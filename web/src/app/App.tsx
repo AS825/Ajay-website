@@ -20,6 +20,7 @@ const PressPage = lazy(() => import('../routes/PressPage').then((m) => ({ defaul
 const LegalPage = lazy(() => import('../routes/LegalPage').then((m) => ({ default: m.LegalPage })))
 // The admin is its own chunk with Auth, Storage and the full Firestore SDK.
 const AdminApp = lazy(() => import('../admin/AdminApp'))
+const PassPage = lazy(() => import('../routes/PassPage').then((m) => ({ default: m.PassPage })))
 const NotFoundPage = lazy(() =>
   import('../routes/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
 )
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: 'events', element: <EventsPage /> },
       { path: 'events/:slug', element: <EventDetailPage /> },
       { path: 'booking', element: <BookingPage /> },
+      { path: 'pass/:eventId/:entryId', element: <PassPage /> },
       { path: 'press', element: <PressPage /> },
       { path: 'impressum', element: <LegalPage page="impressum" /> },
       { path: 'datenschutz', element: <LegalPage page="datenschutz" /> },

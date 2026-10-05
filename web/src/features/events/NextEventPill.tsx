@@ -29,6 +29,7 @@ export function NextEventPill() {
   const hiddenHere =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/events/') ||
+    pathname.startsWith('/pass/') ||
     (pathname === '/' && !pastHero)
   const visible = !!next && !!countdown && !hiddenHere
 

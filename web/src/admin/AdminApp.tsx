@@ -11,6 +11,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const EventsList = lazy(() => import('./pages/EventsList'))
 const EventEditor = lazy(() => import('./pages/EventEditor'))
 const GuestlistAdmin = lazy(() => import('./pages/GuestlistAdmin'))
+const Scanner = lazy(() => import('./pages/Scanner'))
 const Inbox = lazy(() => import('./pages/Inbox'))
 const Design = lazy(() => import('./pages/Design'))
 const LinksAdmin = lazy(() => import('./pages/LinksAdmin'))
@@ -63,6 +64,7 @@ export default function AdminApp() {
             <Route path="events" element={<EventsList />} />
             <Route path="events/:id" element={<EventEditor />} />
             <Route path="events/:id/guestlist" element={<GuestlistAdmin />} />
+            <Route path="events/:id/scan" element={<Scanner />} />
             <Route path="inbox" element={<Inbox />} />
             <Route path="design" element={<Design />} />
             <Route path="links" element={<LinksAdmin />} />

@@ -7,11 +7,23 @@ import {
 } from '@ajay/shared'
 
 /** Document shape for the "Trigger Email from Firestore" extension (SPEC §2). */
+export interface MailAttachment {
+  filename: string
+  /** base64 */
+  content: string
+  encoding: 'base64'
+  contentType: string
+  /** Referenced in the HTML as <img src="cid:..."> (inline image). */
+  cid?: string
+}
+
 export interface MailDoc {
   to: string | string[]
   replyTo?: string
-  message: { subject: string; html: string; text: string }
+  message: { subject: string; html: string; text: string; attachments?: MailAttachment[] }
 }
+
+export const QR_CID = 'guest-pass-qr'
 
 /** Stored booking fields (form data without consent checkbox and honeypot). */
 export type BookingData = Omit<Booking, 'privacyAccepted' | 'website'>
@@ -84,6 +96,9 @@ export function guestlistMail(p: {
   plusOnes: number
   event: EventDoc<Date>
   eventUrl: string
+  /** Guest pass link; with `qrPng` the QR code is embedded in the mail (confirmed guests). */
+  passUrl?: string
+  qrPng?: Buffer
 }): MailDoc['message'] {
   const de = p.lang === 'de'
   const { date, time } = eventDateTime(p.event, p.lang)
@@ -112,6 +127,13 @@ export function guestlistMail(p: {
   const outro = de
     ? 'Bitte bring einen Ausweis mit. Der Name auf der Liste muss mit dem Ausweis übereinstimmen.'
     : 'Please bring a photo ID. The name on the list must match your ID.'
+  const withPass = confirmed && p.passUrl && p.qrPng
+  const qrText = de
+    ? 'Zeig diesen QR-Code am Einlass – er gilt für dich und deine Begleitung.'
+    : 'Show this QR code at the door – it covers you and your plus-ones.'
+  const qrBlock = withPass
+    ? `<div style="margin:24px 0 8px;text-align:center"><div style="display:inline-block;background:#fff;padding:14px;border-radius:18px"><img src="cid:${QR_CID}" width="220" height="220" alt="QR" style="display:block"></div><p style="margin:12px 0 0;color:#d4d4d8;font-size:14px">${esc(qrText)}</p></div>`
+    : ''
   return {
     subject,
     html: layout({
@@ -119,10 +141,87 @@ export function guestlistMail(p: {
       heading: esc(
         confirmed ? (de ? 'Du bist drauf.' : "You're in.") : de ? 'Warteliste.' : 'Waitlist.',
       ),
-      body: `${esc(intro)}${rows(details)}<p style="margin:20px 0 0;color:#a1a1aa;font-size:14px">${esc(outro)}</p>`,
-      cta: { href: p.eventUrl, label: de ? 'Event ansehen' : 'View event' },
+      body: `${esc(intro)}${qrBlock}${rows(details)}<p style="margin:20px 0 0;color:#a1a1aa;font-size:14px">${esc(outro)}</p>`,
+      cta: withPass
+        ? { href: p.passUrl!, label: de ? 'Gästepass öffnen' : 'Open guest pass' }
+        : { href: p.eventUrl, label: de ? 'Event ansehen' : 'View event' },
     }),
-    text: `${intro}\n\n${textRows(details)}\n\n${outro}\n\n${p.eventUrl}`,
+    text: `${intro}\n\n${withPass ? `${qrText}\n${p.passUrl}\n\n` : ''}${textRows(details)}\n\n${outro}\n\n${p.eventUrl}`,
+    ...(withPass
+      ? {
+          attachments: [
+            {
+              filename: 'guest-pass.png',
+              content: p.qrPng!.toString('base64'),
+              encoding: 'base64' as const,
+              contentType: 'image/png',
+              cid: QR_CID,
+            },
+          ],
+        }
+      : {}),
+  }
+}
+
+export interface DigestGuest {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  plusOnes: number
+  status: GuestlistStatus
+  checkedIn: boolean
+}
+
+/**
+ * Guest list before an event, for Ajay / the door: sorted by last name, with
+ * totals, plus a CSV attachment (Excel-friendly).
+ */
+export function guestlistDigestMail(p: {
+  event: EventDoc<Date>
+  guests: DigestGuest[]
+  csv: string
+  adminUrl: string
+}): MailDoc['message'] {
+  const { date, time } = eventDateTime(p.event, 'de')
+  const confirmed = p.guests.filter((g) => g.status === 'confirmed')
+  const waitlist = p.guests.filter((g) => g.status === 'waitlist')
+  const people = (list: DigestGuest[]) => list.reduce((n, g) => n + 1 + g.plusOnes, 0)
+  const byName = (a: DigestGuest, b: DigestGuest) =>
+    `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`, 'de')
+  const table = (list: DigestGuest[]) =>
+    `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-top:8px;border-collapse:collapse">${list
+      .slice()
+      .sort(byName)
+      .map(
+        (g, i) =>
+          `<tr style="border-top:1px solid #27272a"><td style="padding:8px 8px 8px 0;color:#71717a;font-size:12px;width:24px">${i + 1}</td><td style="padding:8px 0;color:#fff;font-size:15px"><b>${esc(g.lastName)}</b>, ${esc(g.firstName)}${g.plusOnes ? ` <span style="color:#a1a1aa">+${g.plusOnes}</span>` : ''}</td><td style="padding:8px 0;color:#a1a1aa;font-size:12px;text-align:right">${esc(g.phone)}</td></tr>`,
+      )
+      .join('')}</table>`
+  const summary = `${confirmed.length} Einträge · ${people(confirmed)} Personen bestätigt${waitlist.length ? ` · ${people(waitlist)} auf der Warteliste` : ''}`
+  return {
+    subject: `Gästeliste: ${p.event.title} – ${date}`,
+    html: layout({
+      preheader: summary,
+      heading: esc(`Gästeliste ${p.event.title}`),
+      body: `${esc(`${date}, ${time} · ${p.event.venue.name}`)}<p style="margin:12px 0 0;color:#fff;font-weight:700">${esc(summary)}</p>${confirmed.length ? table(confirmed) : '<p style="color:#a1a1aa">Noch keine bestätigten Gäste.</p>'}${waitlist.length ? `<p style="margin:24px 0 0;color:#fbbf24;font-weight:700">Warteliste</p>${table(waitlist)}` : ''}<p style="margin:20px 0 0;color:#a1a1aa;font-size:13px">Die komplette Liste (mit E-Mails) hängt als CSV an. Einchecken am Einlass: Admin → Events → Scanner.</p>`,
+      cta: { href: p.adminUrl, label: 'Scanner öffnen' },
+    }),
+    text: `Gästeliste ${p.event.title} – ${date}, ${time}\n${summary}\n\n${confirmed
+      .slice()
+      .sort(byName)
+      .map(
+        (g, i) => `${i + 1}. ${g.lastName}, ${g.firstName}${g.plusOnes ? ` +${g.plusOnes}` : ''}`,
+      )
+      .join('\n')}\n\n${p.adminUrl}`,
+    attachments: [
+      {
+        filename: `gaesteliste-${p.event.slug}.csv`,
+        content: Buffer.from(p.csv, 'utf8').toString('base64'),
+        encoding: 'base64',
+        contentType: 'text/csv',
+      },
+    ],
   }
 }
 

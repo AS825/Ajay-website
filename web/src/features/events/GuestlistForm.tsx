@@ -5,7 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { AnimatePresence, m } from 'motion/react'
 import { Minus, Plus } from 'lucide-react'
 import { z } from 'zod'
-import { guestlistSchema, type GuestlistInput, type JoinGuestlistResult } from '@ajay/shared'
+import {
+  guestlistSchema,
+  passUrl,
+  type GuestlistInput,
+  type JoinGuestlistResult,
+} from '@ajay/shared'
 import { callErrorReason, callFunction, type CallErrorReason } from '../../lib/callable'
 import { easeOutExpo } from '../../lib/motion'
 import { useSiteData } from '../../lib/data'
@@ -20,6 +25,8 @@ import {
 } from '../../components/form/Field'
 import { FormError, SubmitButton, SuccessCheck } from '../../components/form/FormStatus'
 import { buttonClass } from '../../components/ui/Button'
+import { QrCode } from '../../components/ui/QrCode'
+import { Link } from 'react-router-dom'
 
 /** Guestlist sign-up (SPEC §7), shown in a bottom sheet on the event page. */
 export function GuestlistForm({
@@ -106,6 +113,22 @@ export function GuestlistForm({
                 : t('guestlist.waitlistDoneText', { email: result.email })}
             </p>
           </div>
+          {result.status === 'confirmed' && result.pass && (
+            <div className="w-full">
+              <QrCode
+                text={passUrl(window.location.origin, result.pass)}
+                label={t('pass.qrLabel')}
+                className="mx-auto w-56"
+              />
+              <p className="mt-3 text-sm text-white/70">{t('pass.showAtDoor')}</p>
+              <Link
+                to={`/pass/${result.pass.eventId}/${result.pass.entryId}?t=${encodeURIComponent(result.pass.token)}`}
+                className={buttonClass('primary', 'mt-4 w-full')}
+              >
+                {t('pass.open')}
+              </Link>
+            </div>
+          )}
           <button type="button" onClick={onDone} className={buttonClass('glass', 'w-full')}>
             {t('guestlist.done')}
           </button>

@@ -27,7 +27,12 @@ const db = getFirestore()
 interface MailDoc {
   to: string | string[]
   replyTo?: string
-  message: { subject: string; html: string; text: string }
+  message: {
+    subject: string
+    html: string
+    text: string
+    attachments?: { filename: string; content: string; contentType: string; cid?: string }[]
+  }
   delivery?: unknown
 }
 
@@ -70,13 +75,32 @@ db.collection('mail').onSnapshot(async (snap) => {
     const stamp = new Date().toISOString().replace(/[:.]/g, '-')
     const name = `${stamp}-${mail.message.subject.replace(/[^\w-]+/g, '-').slice(0, 60)}.html`
     const header = `<div style="font:13px system-ui;background:#fff;color:#111;padding:12px 16px;border-bottom:3px solid #ff2d2d"><b>To:</b> ${esc(to)}${mail.replyTo ? ` &nbsp; <b>Reply-To:</b> ${esc(mail.replyTo)}` : ''}<br><b>Subject:</b> ${esc(mail.message.subject)}</div>`
-    writeFileSync(join(OUT, name), mail.message.html.replace(/<body([^>]*)>/i, `<body$1>${header}`))
+    // Inline images (cid:…) become data URLs in the preview; other attachments are saved next to it.
+    let html = mail.message.html
+    const files: string[] = []
+    for (const a of mail.message.attachments ?? []) {
+      if (a.cid) html = html.replaceAll(`cid:${a.cid}`, `data:${a.contentType};base64,${a.content}`)
+      else {
+        const file = `${name.replace(/\.html$/, '')}-${a.filename}`
+        writeFileSync(join(OUT, file), Buffer.from(a.content, 'base64'))
+        files.push(file)
+      }
+    }
+    const attachmentLinks = files.map((f) => ` <a href="${f}">📎 ${esc(f)}</a>`).join('')
+    writeFileSync(
+      join(OUT, name),
+      html.replace(
+        /<body([^>]*)>/i,
+        `<body$1>${header.replace('</div>', `${attachmentLinks}</div>`)}`,
+      ),
+    )
     writeIndex()
 
     let state = 'PREVIEW'
     if (viaMailpit) {
       try {
         await transport.sendMail({
+          attachments: (mail.message.attachments ?? []).map((a) => ({ ...a, encoding: 'base64' })),
           from: FROM,
           to,
           replyTo: mail.replyTo,

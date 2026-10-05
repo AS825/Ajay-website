@@ -100,7 +100,50 @@ npx firebase deploy --project prod --only functions
 
 ---
 
-## 9. Später / optional
+## 9. E-Mails einrichten (Gästepass mit QR-Code, Booking, Gästeliste)
+
+Die Website schreibt jede Mail in die Datenbank-Sammlung `mail`. Verschickt werden sie von der
+offiziellen Firebase-Erweiterung **Trigger Email from Firestore**. Ohne diesen Schritt funktionieren
+Formulare und QR-Pässe (Gäste sehen ihren QR-Code direkt nach dem Eintragen), aber es gehen keine
+Mails raus.
+
+**a) Ein Postfach zum Versenden (SMTP) wählen** – eine der Optionen:
+
+| Option                                                                        | SMTP-Adresse                                       | Hinweis                                                                                                    |
+| ----------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Mail-Anbieter der Domain (z. B. World4You, easyname, IONOS, Google Workspace) | steht in dessen Hilfe, meist `smtp.<anbieter>:465` | beste Zustellbarkeit mit `no-reply@ajay.at`                                                                |
+| Gmail                                                                         | `smtp.gmail.com:465`                               | braucht ein **App-Passwort** (Google-Konto → Sicherheit → 2-Faktor an → App-Passwörter), ca. 500 Mails/Tag |
+| Brevo (kostenlos bis 300 Mails/Tag)                                           | `smtp-relay.brevo.com:587`                         | Konto anlegen, SMTP-Schlüssel erzeugen                                                                     |
+
+**b) Erweiterung installieren:** Firebase-Konsole → **Extensions** (bzw. „Erweiterungen“) →
+_Trigger Email from Firestore_ → **Installieren** und ausfüllen:
+
+- _Firestore Instance Location / Standort:_ derselbe wie die Datenbank (z. B. europe-west3)
+- _SMTP connection URI:_ `smtps://BENUTZER@SMTP-SERVER:465` – bei Gmail z. B.
+  `smtps://ajay%40gmail.com@smtp.gmail.com:465` (das `@` im Benutzernamen als `%40`);
+  bei Port 587: `smtp://BENUTZER@SMTP-SERVER:587`
+- _SMTP password:_ das Passwort bzw. App-Passwort (wird sicher im Secret Manager gespeichert)
+- _Email documents collection:_ `mail`
+- _Default FROM address:_ z. B. `AJAY ADAM <no-reply@ajay.at>` (bei Gmail die Gmail-Adresse)
+- Rest auf Standard lassen → **Installieren** (dauert ein paar Minuten).
+
+**c) Testen:** Auf der Live-Seite selbst auf die Gästeliste eintragen – die Mail mit dem QR-Code
+sollte in 1–2 Minuten ankommen. Wenn nicht: Firestore → Sammlung `mail` → das neueste Dokument →
+Feld `delivery.error` zeigt den Grund (meist falsches Passwort oder Absender).
+
+**Gästeliste vor dem Event:** geht automatisch **6 Stunden vor Beginn** an die Adressen in
+`ADMIN_EMAILS` (oder `GUESTLIST_EMAILS`, beide in `functions/.env`; die Stunden über
+`GUESTLIST_DIGEST_HOURS`). Im Admin unter _Events → Gästeliste → Liste mailen_ jederzeit auch von
+Hand – inklusive CSV-Anhang.
+
+## 10. Einlass mit QR-Code
+
+Admin → Events → Gästeliste → **Scanner**: die Handykamera scannt den QR-Code der Gäste – grün
+= willkommen (mit Name und Begleitung), gelb = schon drin / nur Warteliste, rot = ungültig. Doppelter
+Einlass ist ausgeschlossen. Ohne Netz oder Kamera: in der Gästeliste suchen und auf _Einchecken_
+tippen. _Drucken_ liefert zusätzlich eine Papierliste.
+
+## 11. Später / optional
 
 **Eigene Domain ajay.at**
 
@@ -109,17 +152,6 @@ npx firebase deploy --project prod --only functions
    (kann bis zu 24 h dauern).
 3. _Authentication_ → _Einstellungen_ → _Autorisierte Domains_ → `ajay.at` hinzufügen.
 4. In `functions/.env`: `SITE_ORIGIN=https://ajay.at`, dann `npx firebase deploy --project prod --only functions`.
-
-**E-Mails (Bestätigungen für Gästeliste und Booking)**
-Ohne diesen Schritt funktionieren Formulare, nur werden keine Mails verschickt (sie liegen in der
-Sammlung `mail`). Einrichtung:
-
-```powershell
-npx firebase ext:install firebase/firestore-send-email --project prod
-```
-
-Sammlung: `mail`, SMTP-Zugang des Absenders (z. B. `no-reply@ajay.at` beim Mail-Anbieter der Domain),
-Absender: `AJAY ADAM <no-reply@ajay.at>`.
 
 **Spam-Schutz App Check** (empfohlen, sobald die Seite bekannt ist)
 

@@ -192,3 +192,54 @@
 .rich-text strong {
   color: #fff;
 }
+
+/* Printable guest list (Admin → Guestlist → Print). Hidden on screen. */
+.print-area {
+  display: none;
+}
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    display: block;
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    color: #000;
+    font-size: 11pt;
+  }
+  .print-area h1 {
+    font-size: 18pt;
+    font-weight: 800;
+    margin-bottom: 4pt;
+  }
+  .print-area p {
+    margin-bottom: 10pt;
+    color: #333;
+  }
+  .print-area table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .print-area th,
+  .print-area td {
+    border-bottom: 0.5pt solid #999;
+    padding: 5pt 6pt;
+    text-align: left;
+  }
+  .print-area tr {
+    break-inside: avoid;
+  }
+}

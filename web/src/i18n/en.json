@@ -288,7 +288,13 @@
       "promote": "Move {{name}} from waitlist to guestlist",
       "promoted": "{{name}} is now on the guestlist.",
       "confirmOverCapacity": "This exceeds the capacity. Add to the guestlist anyway?",
-      "confirmDelete": "Remove {{name}} from the list?"
+      "confirmDelete": "Remove {{name}} from the list?",
+      "print": "Print",
+      "sendList": "Send list",
+      "listSent": "Guest list sent by e-mail ({{count}} entries).",
+      "name": "Name",
+      "statusCol": "Status",
+      "phone": "Phone"
     },
     "inbox": {
       "empty": "No booking requests yet.",
@@ -442,6 +448,25 @@
       "text": "The database is still empty. Import the starting content: all links from the Linktree, texts, design and section order. Everything can be edited afterwards; nothing existing is overwritten.",
       "button": "Import starting content",
       "done": "Starting content imported."
+    },
+    "scan": {
+      "open": "Scanner",
+      "counter": "{{in}} / {{total}} people in",
+      "manual": "Guest list (manual check-in)",
+      "camera": "Camera",
+      "hint": "Hold the guest's QR code inside the frame",
+      "tapToContinue": "Tap to scan the next one",
+      "alreadyAt": "Already checked in at {{time}}",
+      "needsHttps": "The camera only works over HTTPS (the live site) or on localhost.",
+      "permission": "Camera access was denied. Allow it in the browser settings and reload.",
+      "noCamera": "No camera found.",
+      "result": {
+        "ok": "Welcome!",
+        "already": "Already in",
+        "waitlist": "Waitlist only",
+        "wrongEvent": "Other event",
+        "invalid": "Invalid code"
+      }
     }
   },
   "notFound": {
@@ -511,5 +536,22 @@
     "title": "Instagram",
     "follow": "Clips, sets and behind the scenes – follow on Instagram.",
     "post": "Open post on Instagram"
+  },
+  "pass": {
+    "title": "Guest pass",
+    "qrLabel": "Guest pass QR code",
+    "showAtDoor": "Show this QR code at the door – it covers you and your plus-ones.",
+    "brightness": "Tip: turn up your screen brightness.",
+    "open": "Open guest pass",
+    "guests": "{{count}} person",
+    "guests_other": "{{count}} people",
+    "valid": "Valid",
+    "checkedIn": "Checked in",
+    "waitlist": "Waitlist",
+    "waitlistText": "You're on the waitlist. If a spot opens up, you'll get an e-mail with your QR code.",
+    "past": "This event has already taken place.",
+    "eventDetails": "Event details",
+    "notFoundTitle": "Pass not found.",
+    "notFoundText": "The link is incomplete or no longer valid. Please use the link from your confirmation e-mail."
   }
 }

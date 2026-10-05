@@ -4,6 +4,7 @@ import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore'
 import {
   eventState,
   guestlistSchema,
+  passUrl,
   type EventDoc,
   type GuestlistStatus,
   type JoinGuestlistResult,
@@ -11,22 +12,14 @@ import {
 import { callableOptions, siteOrigin } from '../lib/env'
 import { clientIp, enforceRateLimit } from '../lib/rateLimit'
 import { parseOrThrow } from '../lib/validate'
+import { toDates } from '../lib/events'
+import { newPassToken, qrPng } from '../lib/qr'
 import { guestlistMail, type MailDoc } from '../mail/templates'
 
 const fail = (
   code: 'failed-precondition' | 'not-found' | 'already-exists' | 'invalid-argument',
   reason: string,
 ) => new HttpsError(code, reason, { reason })
-
-function toDates(d: EventDoc<Timestamp>): EventDoc<Date> {
-  return {
-    ...d,
-    startsAt: d.startsAt.toDate(),
-    endsAt: d.endsAt.toDate(),
-    createdAt: d.createdAt.toDate(),
-    guestlist: { ...d.guestlist, deadline: d.guestlist.deadline?.toDate() ?? null },
-  }
-}
 
 /**
  * Guestlist sign-up (SPEC §7). Runs in a transaction: checks the event is
@@ -51,6 +44,12 @@ export const joinGuestlist = onCall(callableOptions, async (req): Promise<JoinGu
   const entryRef = eventRef
     .collection('guestlist')
     .doc(createHash('sha256').update(email).digest('hex').slice(0, 32))
+
+  // Pass token + QR are prepared outside the transaction (it may retry).
+  const token = newPassToken()
+  const pass = { eventId: input.eventId, entryId: entryRef.id, token }
+  const url = passUrl(siteOrigin(), pass)
+  const qr = await qrPng(url)
 
   const status = await db.runTransaction(async (tx): Promise<GuestlistStatus> => {
     const [eventSnap, entrySnap] = await Promise.all([tx.get(eventRef), tx.get(entryRef)])
@@ -78,6 +77,7 @@ export const joinGuestlist = onCall(callableOptions, async (req): Promise<JoinGu
       plusOnes: input.plusOnes,
       status: result,
       checkedIn: false,
+      qrToken: token,
       newsletter: input.newsletter,
       privacyAcceptedAt: FieldValue.serverTimestamp(),
       lang: input.lang,
@@ -94,11 +94,13 @@ export const joinGuestlist = onCall(callableOptions, async (req): Promise<JoinGu
         plusOnes: input.plusOnes,
         event,
         eventUrl: `${siteOrigin()}/events/${encodeURIComponent(event.slug)}`,
+        passUrl: url,
+        qrPng: qr,
       }),
     }
     tx.set(db.collection('mail').doc(), { ...mail, createdAt: FieldValue.serverTimestamp() })
     return result
   })
 
-  return { status }
+  return { status, pass }
 })

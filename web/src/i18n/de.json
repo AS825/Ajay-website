@@ -288,7 +288,13 @@
       "promote": "{{name}} von der Warteliste auf die Gästeliste setzen",
       "promoted": "{{name}} steht jetzt auf der Gästeliste.",
       "confirmOverCapacity": "Damit wird die Kapazität überschritten. Trotzdem auf die Gästeliste setzen?",
-      "confirmDelete": "{{name}} von der Liste entfernen?"
+      "confirmDelete": "{{name}} von der Liste entfernen?",
+      "print": "Drucken",
+      "sendList": "Liste mailen",
+      "listSent": "Gästeliste per E-Mail verschickt ({{count}} Einträge).",
+      "name": "Name",
+      "statusCol": "Status",
+      "phone": "Telefon"
     },
     "inbox": {
       "empty": "Noch keine Booking-Anfragen.",
@@ -442,6 +448,25 @@
       "text": "Die Datenbank ist noch leer. Importiere die Startinhalte: alle Links aus dem Linktree, Texte, Design und Reihenfolge der Sektionen. Alles ist danach bearbeitbar; Bestehendes wird nicht überschrieben.",
       "button": "Startinhalte importieren",
       "done": "Startinhalte importiert."
+    },
+    "scan": {
+      "open": "Scanner",
+      "counter": "{{in}} / {{total}} Personen drin",
+      "manual": "Gästeliste (manuell einchecken)",
+      "camera": "Kamera",
+      "hint": "QR-Code des Gasts in den Rahmen halten",
+      "tapToContinue": "Tippen für den nächsten Scan",
+      "alreadyAt": "Schon eingecheckt um {{time}}",
+      "needsHttps": "Die Kamera funktioniert nur über HTTPS (Live-Seite) oder auf localhost.",
+      "permission": "Kamerazugriff wurde verweigert. In den Browser-Einstellungen erlauben und neu laden.",
+      "noCamera": "Keine Kamera gefunden.",
+      "result": {
+        "ok": "Willkommen!",
+        "already": "Schon drin",
+        "waitlist": "Nur Warteliste",
+        "wrongEvent": "Anderes Event",
+        "invalid": "Ungültiger Code"
+      }
     }
   },
   "notFound": {
@@ -511,5 +536,22 @@
     "title": "Instagram",
     "follow": "Clips, Sets und Behind the Scenes – folge auf Instagram.",
     "post": "Beitrag auf Instagram öffnen"
+  },
+  "pass": {
+    "title": "Gästepass",
+    "qrLabel": "QR-Code des Gästepasses",
+    "showAtDoor": "Zeig diesen QR-Code am Einlass – er gilt für dich und deine Begleitung.",
+    "brightness": "Tipp: Bildschirmhelligkeit hochdrehen.",
+    "open": "Gästepass öffnen",
+    "guests": "{{count}} Person",
+    "guests_other": "{{count}} Personen",
+    "valid": "Gültig",
+    "checkedIn": "Eingecheckt",
+    "waitlist": "Warteliste",
+    "waitlistText": "Du stehst auf der Warteliste. Wird ein Platz frei, bekommst du eine E-Mail mit deinem QR-Code.",
+    "past": "Dieses Event hat bereits stattgefunden.",
+    "eventDetails": "Zum Event",
+    "notFoundTitle": "Pass nicht gefunden.",
+    "notFoundText": "Der Link ist unvollständig oder nicht mehr gültig. Bitte nutze den Link aus deiner Bestätigungs-Mail."
   }
 }

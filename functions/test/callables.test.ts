@@ -251,3 +251,108 @@ describe('claimAdmin', () => {
     assert.equal(await reasonOf(claim({})), 'code:functions/unauthenticated')
   })
 })
+
+describe('guest pass, promotion mail, guest list digest', () => {
+  const getPass = httpsCallable<
+    unknown,
+    { firstName: string; status: string; event: { title: string } }
+  >(fns, 'getGuestPass')
+  const digest = httpsCallable<unknown, { entries: number }>(fns, 'sendGuestlistDigest')
+
+  test('join returns a pass; QR mail; pass only with the right token', async () => {
+    const id = await createEvent()
+    const g = guest(id, { email: 'qr@example.com', firstName: 'Quinn' })
+    const res = await join(g)
+    const pass = (
+      res.data as unknown as { pass: { eventId: string; entryId: string; token: string } }
+    ).pass
+    assert.equal(pass.eventId, id)
+    assert.ok(pass.token.length >= 20)
+    const entry = (await db.doc(`events/${id}/guestlist/${pass.entryId}`).get()).data()!
+    assert.equal(entry.qrToken, pass.token)
+
+    const mail = (
+      await db.collection('mail').where('to', '==', 'qr@example.com').get()
+    ).docs[0]!.data()
+    assert.equal(mail.message.attachments[0].cid, 'guest-pass-qr')
+    assert.equal(mail.message.attachments[0].contentType, 'image/png')
+    assert.ok(mail.message.html.includes('cid:guest-pass-qr'))
+    assert.ok(mail.message.html.includes(`/pass/${id}/${pass.entryId}?t=`))
+
+    const view = await getPass(pass)
+    assert.equal(view.data.firstName, 'Quinn')
+    assert.equal(view.data.status, 'confirmed')
+    assert.equal(await reasonOf(getPass({ ...pass, token: 'x'.repeat(24) })), 'notFound')
+    assert.equal(await reasonOf(getPass({ ...pass, entryId: 'nope' })), 'notFound')
+  })
+
+  test('waitlist mail has no QR; promotion sends the QR mail', async () => {
+    const id = await createEvent({}, { capacity: 1, maxPlusOnes: 0 })
+    await join(guest(id))
+    const res = await join(guest(id, { email: 'later@example.com' }))
+    assert.equal(res.data.status, 'waitlist')
+    const first = (await db.collection('mail').where('to', '==', 'later@example.com').get()).docs
+    assert.equal(first.length, 1)
+    assert.equal(first[0]!.data().message.attachments, undefined)
+
+    const entryId = (res.data as unknown as { pass: { entryId: string } }).pass.entryId
+    const promote = httpsCallable<unknown, { ok: boolean; mailed: boolean }>(fns, 'promoteGuest')
+    assert.equal(
+      await reasonOf(promote({ eventId: id, entryId })),
+      'code:functions/permission-denied',
+    )
+    const auth = getAuth()
+    const u =
+      (await auth.getUserByEmail('door@example.com').catch(() => null)) ??
+      (await auth.createUser({
+        email: 'door@example.com',
+        password: 'secret123',
+        emailVerified: true,
+      }))
+    await auth.setCustomUserClaims(u.uid, { admin: true })
+    await signInWithEmailAndPassword(clientAuth, 'door@example.com', 'secret123')
+    assert.equal(await reasonOf(promote({ eventId: id, entryId })), 'overCapacity')
+    assert.equal((await promote({ eventId: id, entryId, force: true })).data.mailed, true)
+    assert.equal(await reasonOf(promote({ eventId: id, entryId, force: true })), 'notWaitlist')
+    await signOut(clientAuth)
+    assert.equal((await db.doc(`events/${id}`).get()).data()!.guestlist.count, 2)
+    const mails = (await db.collection('mail').where('to', '==', 'later@example.com').get()).docs
+    assert.equal(mails.length, 2)
+    const promoted = mails.map((m) => m.data()).find((m) => m.message.attachments)
+    assert.match(promoted!.message.subject, /guestlist/)
+  })
+
+  test('guest list digest: admins only, mails list + CSV', async () => {
+    const id = await createEvent()
+    await join(guest(id, { firstName: 'Zoe', lastName: 'Zander' }))
+    await join(guest(id, { firstName: 'Adam', lastName: 'Ahorn', plusOnes: 1 }))
+    assert.equal(await reasonOf(digest({ eventId: id })), 'code:functions/permission-denied')
+
+    const auth = getAuth()
+    const existing = await auth.getUserByEmail('door@example.com').catch(() => null)
+    const u =
+      existing ??
+      (await auth.createUser({
+        email: 'door@example.com',
+        password: 'secret123',
+        emailVerified: true,
+      }))
+    await auth.setCustomUserClaims(u.uid, { admin: true })
+    await signInWithEmailAndPassword(clientAuth, 'door@example.com', 'secret123')
+    assert.equal((await digest({ eventId: id })).data.entries, 2)
+    await signOut(clientAuth)
+
+    const mail = (
+      await db.collection('mail').where('message.subject', '>=', 'Gästeliste').get()
+    ).docs
+      .map((d) => d.data())
+      .find((m) => (m.to as string[]).includes('door@example.com'))!
+    assert.ok(
+      ((m) => m.indexOf('Ahorn') < m.indexOf('Zander'))(mail.message.html),
+      'sorted by last name',
+    )
+    const csv = Buffer.from(mail.message.attachments[0].content, 'base64').toString('utf8')
+    assert.ok(csv.includes('Ahorn,Adam,1,bestätigt'))
+    assert.ok((await db.doc(`events/${id}`).get()).data()!.guestlist.digestSentAt)
+  })
+})

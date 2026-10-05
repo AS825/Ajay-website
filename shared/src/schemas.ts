@@ -66,7 +66,32 @@ export type Guestlist = z.output<typeof guestlistSchema>
 export type GuestlistStatus = 'confirmed' | 'waitlist'
 export interface JoinGuestlistResult {
   status: GuestlistStatus
+  /** Guest pass reference for the QR code (absent for silently dropped spam). */
+  pass?: { eventId: string; entryId: string; token: string }
 }
+
+/** Public view of a guest pass, returned by `getGuestPass` for a valid token. */
+export interface GuestPassView {
+  firstName: string
+  lastName: string
+  plusOnes: number
+  status: GuestlistStatus
+  checkedIn: boolean
+  event: {
+    title: string
+    slug: string
+    startsAt: string
+    endsAt: string
+    venue: { name: string; address: string }
+    flyerUrl: string
+  }
+}
+
+export const guestPassRequestSchema = z.object({
+  eventId: z.string().min(1).max(200),
+  entryId: z.string().min(1).max(200),
+  token: z.string().min(10).max(100),
+})
 
 /** Booking request as sent to `submitBooking` (form fields + UI language). */
 export const bookingRequestSchema = bookingSchema.extend({

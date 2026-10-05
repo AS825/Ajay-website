@@ -1,6 +1,7 @@
 import { onRequest } from 'firebase-functions/v2/https'
 import { logger } from 'firebase-functions'
 import { getFirestore, type Timestamp } from 'firebase-admin/firestore'
+import { isEmulator } from '../lib/env'
 import { EVENT_TIME_ZONE, injectEventMeta, seedSite, type EventDoc } from '@ajay/shared'
 
 /**
@@ -15,13 +16,11 @@ import { EVENT_TIME_ZONE, injectEventMeta, seedSite, type EventDoc } from '@ajay
 let shellCache: { html: string; at: number } | null = null
 const SHELL_TTL_MS = 5 * 60 * 1000
 
-function originOf(req: {
+/** Origin the request came in on (custom domain or *.web.app). */
+function requestOrigin(req: {
   headers: Record<string, string | string[] | undefined>
   protocol: string
 }) {
-  if (process.env.SITE_ORIGIN) return process.env.SITE_ORIGIN
-  // Locally the request may arrive with the functions emulator's host; use the Hosting emulator.
-  if (process.env.FUNCTIONS_EMULATOR === 'true') return 'http://127.0.0.1:5000'
   const header = (name: string) => {
     const v = req.headers[name]
     return (Array.isArray(v) ? v[0] : v)?.split(',')[0]?.trim()
@@ -30,6 +29,14 @@ function originOf(req: {
   const proto = header('x-forwarded-proto') ?? req.protocol
   return `${proto}://${host}`
 }
+
+/** Where index.html is fetched from: the Hosting emulator locally, else the request origin. */
+const shellOrigin = (req: Parameters<typeof requestOrigin>[0]) =>
+  isEmulator ? 'http://127.0.0.1:5000' : requestOrigin(req)
+
+/** Canonical / og:url origin: SITE_ORIGIN (e.g. https://ajay.at) in production. */
+const canonicalOrigin = (req: Parameters<typeof requestOrigin>[0]) =>
+  isEmulator ? 'http://localhost:5000' : (process.env.SITE_ORIGIN ?? requestOrigin(req))
 
 async function loadShell(origin: string): Promise<string> {
   if (shellCache && Date.now() - shellCache.at < SHELL_TTL_MS) return shellCache.html
@@ -51,10 +58,9 @@ function toDates(d: EventDoc<Timestamp>): EventDoc<Date> {
 }
 
 export const ogRenderer = onRequest({ memory: '256MiB', concurrency: 40 }, async (req, res) => {
-  const origin = originOf(req)
   let shell: string
   try {
-    shell = await loadShell(origin)
+    shell = await loadShell(shellOrigin(req))
   } catch (err) {
     logger.error('Could not load index.html', err)
     res.status(502).send('Temporarily unavailable')
@@ -91,7 +97,7 @@ export const ogRenderer = onRequest({ memory: '256MiB', concurrency: 40 }, async
   }).format(event.startsAt)
 
   const html = injectEventMeta(shell, event, {
-    url: `${origin}/events/${encodeURIComponent(event.slug)}`,
+    url: `${canonicalOrigin(req)}/events/${encodeURIComponent(event.slug)}`,
     artistName: site?.artistName ?? seedSite.artistName,
     dateLabel,
   })

@@ -32,6 +32,8 @@ interface SiteData {
   /** False until links and events have arrived at least once. */
   ready: boolean
   linksBy(category: LinkCategory): LinkView[]
+  /** Re-fetch everything (e.g. after a guestlist sign-up changed the count). */
+  reload(): void
 }
 
 const SiteDataContext = createContext<SiteData | null>(null)
@@ -56,6 +58,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemeSettings>(seedTheme)
   const [links, setLinks] = useState<LinkView[] | null>(null)
   const [events, setEvents] = useState<EventView[] | null>(null)
+  const [version, setVersion] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -90,7 +93,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       cancelled = true
       document.removeEventListener('visibilitychange', onVisible)
     }
-  }, [])
+  }, [version])
 
   useEffect(() => applyTheme(theme), [theme])
 
@@ -102,6 +105,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       events: events ?? [],
       ready: links !== null && events !== null,
       linksBy: (category) => (links ?? []).filter((l) => l.category === category),
+      reload: () => setVersion((v) => v + 1),
     }),
     [site, theme, links, events],
   )

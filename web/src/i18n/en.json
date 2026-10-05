@@ -64,7 +64,6 @@
       "minutes": "Min",
       "seconds": "Sec",
       "about": "About the event",
-      "guestlistSoon": "The guestlist form is built in phase 4. Drag this sheet down or tap outside to close it.",
       "waitlistInfo": "The guestlist is full. You can join the waitlist and will be notified if a spot opens up.",
       "spotsLeft": "{{count}} spots left",
       "noLineup": "TBA"
@@ -138,7 +137,9 @@
       "tbd": "To be discussed"
     },
     "submit": "Send request",
-    "notYet": "Sending is activated in phase 4. Your input was validated successfully."
+    "successTitle": "Request sent!",
+    "successText": "Thanks, {{name}}. You'll get a confirmation at {{email}} – I'll get back to you soon.",
+    "another": "Send another request"
   },
   "support": {
     "text": "Enjoying the sets and edits?",
@@ -195,5 +196,40 @@
     "d": "d",
     "h": "h",
     "m": "m"
+  },
+  "forms": {
+    "sending": "Sending…",
+    "errors": {
+      "duplicate": "You're already on this list with this email address.",
+      "closed": "The guestlist for this event is closed.",
+      "past": "This event has already taken place.",
+      "notFound": "This event is no longer available.",
+      "tooManyPlusOnes": "Too many plus-ones for this event.",
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "invalid": "Please check your entries.",
+      "network": "No connection. Please check your internet and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "guestlist": {
+    "title": "Join Guestlist",
+    "waitlistTitle": "Join Waitlist",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "plusOnes": "Plus-ones",
+    "plusOnesHint": "Max. {{max}}",
+    "decrease": "Fewer plus-ones",
+    "increase": "More plus-ones",
+    "privacy": "I have read the <1>privacy policy</1> and agree to my data being processed for the guestlist.",
+    "newsletter": "Keep me posted about upcoming events (newsletter, optional).",
+    "submit": "Put me on the list",
+    "submitWaitlist": "Put me on the waitlist",
+    "confirmedTitle": "You're on the list!",
+    "confirmedText": "We've sent a confirmation to {{email}}. Bring a photo ID – see you there.",
+    "waitlistDoneTitle": "You're on the waitlist",
+    "waitlistDoneText": "The guestlist is full right now. We've sent a confirmation to {{email}} and will let you know if a spot opens up.",
+    "done": "Done"
   }
 }

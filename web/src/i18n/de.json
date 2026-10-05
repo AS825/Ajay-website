@@ -64,7 +64,6 @@
       "minutes": "Min",
       "seconds": "Sek",
       "about": "Über das Event",
-      "guestlistSoon": "Das Gästelisten-Formular kommt in Phase 4. Zum Schließen das Sheet nach unten ziehen oder daneben tippen.",
       "waitlistInfo": "Die Gästeliste ist voll. Du kannst dich auf die Warteliste setzen und wirst benachrichtigt, wenn ein Platz frei wird.",
       "spotsLeft": "Noch {{count}} Plätze",
       "noLineup": "TBA"
@@ -138,7 +137,9 @@
       "tbd": "Nach Absprache"
     },
     "submit": "Anfrage senden",
-    "notYet": "Das Senden wird in Phase 4 aktiviert. Deine Eingaben wurden erfolgreich geprüft."
+    "successTitle": "Anfrage gesendet!",
+    "successText": "Danke, {{name}}. Du bekommst eine Bestätigung an {{email}} – ich melde mich bald.",
+    "another": "Weitere Anfrage senden"
   },
   "support": {
     "text": "Dir gefallen die Sets und Edits?",
@@ -195,5 +196,40 @@
     "d": "T",
     "h": "h",
     "m": "m"
+  },
+  "forms": {
+    "sending": "Wird gesendet…",
+    "errors": {
+      "duplicate": "Du stehst mit dieser E-Mail-Adresse bereits auf der Liste.",
+      "closed": "Die Gästeliste für dieses Event ist geschlossen.",
+      "past": "Dieses Event hat bereits stattgefunden.",
+      "notFound": "Dieses Event ist nicht mehr verfügbar.",
+      "tooManyPlusOnes": "Zu viele Begleitpersonen für dieses Event.",
+      "rateLimited": "Zu viele Versuche. Bitte versuche es in ein paar Minuten nochmal.",
+      "invalid": "Bitte prüfe deine Eingaben.",
+      "network": "Keine Verbindung. Bitte prüfe dein Internet und versuche es nochmal.",
+      "unknown": "Etwas ist schiefgelaufen. Bitte versuche es nochmal."
+    }
+  },
+  "guestlist": {
+    "title": "Auf die Gästeliste",
+    "waitlistTitle": "Auf die Warteliste",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "plusOnes": "Begleitpersonen",
+    "plusOnesHint": "Max. {{max}}",
+    "decrease": "Weniger Begleitpersonen",
+    "increase": "Mehr Begleitpersonen",
+    "privacy": "Ich habe die <1>Datenschutzerklärung</1> gelesen und bin einverstanden, dass meine Daten für die Gästeliste verarbeitet werden.",
+    "newsletter": "Haltet mich über kommende Events auf dem Laufenden (Newsletter, optional).",
+    "submit": "Ich bin dabei",
+    "submitWaitlist": "Auf die Warteliste setzen",
+    "confirmedTitle": "Du stehst auf der Liste!",
+    "confirmedText": "Wir haben dir eine Bestätigung an {{email}} geschickt. Bring einen Ausweis mit – bis dann.",
+    "waitlistDoneTitle": "Du stehst auf der Warteliste",
+    "waitlistDoneText": "Die Gästeliste ist gerade voll. Wir haben dir eine Bestätigung an {{email}} geschickt und melden uns, falls ein Platz frei wird.",
+    "done": "Fertig"
   }
 }

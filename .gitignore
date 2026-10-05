@@ -9,3 +9,5 @@ ui-debug.log*
 emulator-data/
 .DS_Store
 functions/lib/
+!functions/.env.local
+dev-mail/

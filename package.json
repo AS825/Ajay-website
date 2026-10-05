@@ -9,7 +9,7 @@
     "functions"
   ],
   "scripts": {
-    "dev": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions --ui \"npm run seed && npm run dev -w web\"",
+    "dev": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions --ui \"npm run seed && node scripts/dev-session.mjs\"",
     "emulators": "npm run build:functions && firebase emulators:start --project demo-ajay --only firestore,auth,storage,functions",
     "seed": "npm run seed -w scripts",
     "build": "npm run build -w web && npm run build -w functions",
@@ -19,7 +19,8 @@
     "format:check": "prettier --check .",
     "build:functions": "npm run build -w functions",
     "serve": "npm run build && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions,hosting --ui \"npm run seed && node scripts/wait-forever.mjs\"",
-    "test": "npm test -w shared"
+    "test": "npm test -w shared",
+    "test:functions": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,functions \"node --import tsx --test functions/test/callables.test.ts\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

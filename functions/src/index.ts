@@ -5,3 +5,5 @@
 import './init'
 
 export { ogRenderer } from './http/ogRenderer'
+export { joinGuestlist } from './callable/joinGuestlist'
+export { submitBooking } from './callable/submitBooking'

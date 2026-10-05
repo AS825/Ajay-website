@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowUpRight, CalendarPlus, Check, MapPin, Share2 } from 'lucide-react'
@@ -25,6 +25,11 @@ import { ClipReveal, Reveal, RevealText } from '../components/motion/Reveal'
 import { Countdown } from '../features/events/Countdown'
 import { PageShell } from './PageShell'
 import { NotFoundPage } from './NotFoundPage'
+
+// Form libraries load only when the guestlist sheet is opened.
+const GuestlistForm = lazy(() =>
+  import('../features/events/GuestlistForm').then((m) => ({ default: m.GuestlistForm })),
+)
 
 type Sheet = 'guestlist' | 'calendar' | null
 
@@ -348,11 +353,16 @@ function EventDetail({ event }: { event: EventView }) {
             : t('events.detail.joinGuestlist')
         }
       >
-        <p className="mb-2 font-semibold">{event.title}</p>
         {state.guestlist === 'full' && (
-          <p className="mb-3 text-sm text-white/80">{t('events.detail.waitlistInfo')}</p>
+          <p className="mb-4 text-sm text-white/80">{t('events.detail.waitlistInfo')}</p>
         )}
-        <p className="text-sm text-muted">{t('events.detail.guestlistSoon')}</p>
+        <Suspense fallback={<div className="h-96" aria-busy="true" />}>
+          <GuestlistForm
+            event={event}
+            waitlist={state.guestlist === 'full'}
+            onDone={() => setSheet(null)}
+          />
+        </Suspense>
       </BottomSheet>
 
       <BottomSheet

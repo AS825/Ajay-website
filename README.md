@@ -18,8 +18,12 @@ web/      the site (Vite app)
   src/lib         firebase, data provider, theme, formatting
   src/i18n        en.json / de.json
 functions/ Cloud Functions (2nd gen, europe-west1), bundled with esbuild
-  src/http/ogRenderer.ts   per-event Open Graph / Twitter / JSON-LD for /events/:slug
-scripts/  seed.ts (emulator only)
+  src/http/ogRenderer.ts        per-event Open Graph / Twitter / JSON-LD for /events/:slug
+  src/callable/joinGuestlist.ts guestlist sign-up (transaction: capacity, deadline, duplicates)
+  src/callable/submitBooking.ts booking request + notification and receipt mails
+  src/mail/templates.ts         e-mail templates (EN/DE)
+  test/                         integration tests against the emulators
+scripts/  seed.ts, dev-mailer.ts (emulator only)
 firestore.rules, storage.rules, firebase.json
 ```
 
@@ -85,3 +89,32 @@ curl -s http://localhost:5000/events/todo-placeholder-event-1 | grep -E "og:|<ti
 
 In production, set `SITE_ORIGIN=https://ajay.at` for the functions so canonical URLs always use the
 main domain.
+
+## E-mails
+
+Functions never send mail directly: they write documents to the `mail` collection, which the
+**Trigger Email from Firestore** extension delivers in production.
+
+**Locally**, `npm run dev` runs a small dev mailer instead (`scripts/dev-mailer.ts`): every mail is
+saved as an HTML preview in `dev-mail/` – open `dev-mail/index.html`. If
+[Mailpit](https://mailpit.axllent.org/) is running (`docker run -p 8025:8025 -p 1025:1025
+axllent/mailpit` or the Windows `.exe`), mails are additionally delivered there:
+http://localhost:8025. The terminal prints a line per mail.
+
+**Production setup** (once, when deploying):
+
+```bash
+firebase ext:install firebase/firestore-send-email
+```
+
+Use collection `mail`, SMTP of the sending domain (e.g. `smtps://no-reply@ajay.at:PASSWORD@smtp.example.com:465`,
+stored as a secret) and default FROM `AJAY ADAM <no-reply@ajay.at>`.
+
+## Spam protection
+
+- Honeypot field in both forms (filled → request silently dropped).
+- App Check (reCAPTCHA Enterprise) is enforced on all callables in production; set
+  `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` for the web build. The emulator doesn't enforce it.
+- Rate limits per IP hash and e-mail hash in `rateLimits/` (guestlist: 10 per IP / 10 min,
+  5 per e-mail / day; booking: 5 per IP / hour, 3 per e-mail / day). In production, add a Firestore
+  TTL policy on `rateLimits.expiresAt` so old entries delete themselves.

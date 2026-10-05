@@ -47,6 +47,8 @@ beforeEach(async () => {
     await setDoc(doc(db, 'bookings/b1'), { name: 'x' })
     await setDoc(doc(db, 'mail/m1'), { to: 'x' })
     await setDoc(doc(db, 'rateLimits/r1'), { count: 1 })
+    await setDoc(doc(db, 'feeds/youtube'), { items: [] })
+    await setDoc(doc(db, 'secrets/instagram'), { accessToken: 'secret' })
   })
 })
 
@@ -59,6 +61,7 @@ describe('firestore: public', () => {
     await assertSucceeds(getDoc(doc(visitor(), 'settings/site')))
     await assertSucceeds(getDoc(doc(visitor(), 'links/visible')))
     await assertSucceeds(getDoc(doc(visitor(), 'events/pub')))
+    await assertSucceeds(getDoc(doc(visitor(), 'feeds/youtube')))
     await assertSucceeds(
       getDocs(query(collection(visitor(), 'links'), where('visible', '==', true))),
     )
@@ -76,6 +79,7 @@ describe('firestore: public', () => {
       'bookings/b1',
       'mail/m1',
       'rateLimits/r1',
+      'secrets/instagram',
     ]) {
       await assertFails(getDoc(doc(visitor(), path)))
       await assertFails(getDoc(doc(user(), path)))
@@ -90,6 +94,7 @@ describe('firestore: public', () => {
       await assertFails(setDoc(doc(db, 'events/pub/guestlist/me'), { email: 'me@x.y' }))
       await assertFails(setDoc(doc(db, 'bookings/new'), { name: 'spam' }))
       await assertFails(setDoc(doc(db, 'mail/new'), { to: 'victim@x.y' }))
+      await assertFails(setDoc(doc(db, 'feeds/youtube'), { items: ['spam'] }))
       await assertFails(deleteDoc(doc(db, 'events/pub')))
     }
   })

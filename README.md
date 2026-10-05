@@ -147,3 +147,22 @@ rich text). Everything works on a phone.
 
 Uploads go to Storage under `media/images|videos|docs/…` with type and size limits enforced by
 `storage.rules` (images 10 MB, videos 30 MB, PDF 20 MB). Images are compressed in the browser first.
+
+## Automatic content (YouTube & Instagram)
+
+The `syncFeedsScheduled` function runs every hour and pulls the latest content into Firestore
+(`feeds/youtube`, `feeds/instagram`); the site shows it in _Sets & Video → Latest uploads_ and in
+the _Instagram_ section. Thumbnails and post images are copied to our Storage, so visitors don't
+contact YouTube or Instagram until they tap play or open a post. If a sync fails, the last content
+stays online and the error is shown in the admin.
+
+- **YouTube** needs no setup: the public RSS feeds of every YouTube channel link
+  (`youtube.com/channel/UC…`) in _Admin → Links → Social_ are used.
+- **Instagram** needs the official Instagram API (the old Basic Display API was shut down in 2024):
+  1. Ajay's account must be a **professional account** (Business or Creator, free, in the Instagram app).
+  2. Create an app at <https://developers.facebook.com> → use case _Instagram API with Instagram
+     Login_, add Ajay's account and generate an **access token** (long-lived, 60 days).
+  3. Paste it in _Admin → Links → Automatic content_ and press _Connect_. The sync renews it
+     automatically before it expires.
+
+Locally there is no scheduler – use **Sync now** in the admin (requires internet).

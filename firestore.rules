@@ -29,7 +29,13 @@ service cloud.firestore {
       }
     }
 
-    // bookings, mail, rateLimits and anything else: admin only.
+    // Synced YouTube/Instagram content (written by the syncFeeds function only).
+    match /feeds/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // bookings, mail, rateLimits, secrets (Instagram token) and anything else: admin only.
     match /{document=**} {
       allow read, write: if isAdmin();
     }

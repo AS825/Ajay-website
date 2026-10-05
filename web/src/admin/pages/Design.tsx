@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { doc, setDoc, updateDoc } from 'firebase/firestore'
 import { Eye, EyeOff, Minus, Plus, Smartphone, X } from 'lucide-react'
 import {
+  normalizeSections,
   seedSite,
   seedTheme,
   type BackgroundType,
@@ -156,7 +157,8 @@ export default function Design() {
     [themeDoc],
   )
   const initialSections = useMemo(
-    () => (siteDoc === undefined ? null : (siteDoc?.sections ?? seedSite.sections)),
+    () =>
+      siteDoc === undefined ? null : normalizeSections(siteDoc?.sections ?? seedSite.sections),
     [siteDoc],
   )
   // eslint-disable-next-line react-hooks/set-state-in-effect

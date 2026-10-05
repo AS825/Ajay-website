@@ -7,6 +7,7 @@ import { UpcomingEvents } from '../features/home/UpcomingEvents'
 import { Tiles } from '../features/home/Tiles'
 import { Music } from '../features/home/Music'
 import { Sets } from '../features/home/Sets'
+import { Instagram } from '../features/home/Instagram'
 import { Drops } from '../features/home/Drops'
 import { About } from '../features/home/About'
 import { Support } from '../features/home/Support'
@@ -18,6 +19,7 @@ const SECTIONS: Record<SectionId, ComponentType> = {
   tiles: Tiles,
   music: Music,
   sets: Sets,
+  instagram: Instagram,
   drops: Drops,
   about: About,
   booking: BookingSection,

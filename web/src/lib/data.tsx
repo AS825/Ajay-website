@@ -10,9 +10,13 @@ import {
   type Timestamp,
 } from 'firebase/firestore/lite'
 import {
+  normalizeSections,
   seedSite,
   seedTheme,
   type EventDoc,
+  type FeedDoc,
+  type FeedPost,
+  type FeedVideo,
   type LinkCategory,
   type LinkDoc,
   type SiteSettings,
@@ -30,6 +34,9 @@ interface SiteData {
   theme: ThemeSettings
   links: LinkView[]
   events: EventView[]
+  /** Auto-synced latest YouTube uploads / Instagram posts (empty until the first sync). */
+  videos: FeedVideo[]
+  posts: FeedPost[]
   /** False until links and events have arrived at least once. */
   ready: boolean
   linksBy(category: LinkCategory): LinkView[]
@@ -60,6 +67,8 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   const [links, setLinks] = useState<LinkView[] | null>(null)
   const [events, setEvents] = useState<EventView[] | null>(null)
   const [version, setVersion] = useState(0)
+  const [videos, setVideos] = useState<FeedVideo[]>([])
+  const [posts, setPosts] = useState<FeedPost[]>([])
   const [preview, setPreview] = useState<PreviewState | null>(null)
 
   // Design editor live preview: the admin posts unsaved theme/sections into this iframe.
@@ -77,19 +86,27 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false
     const load = async () => {
-      const [siteSnap, themeSnap, linkSnap, eventSnap] = await Promise.all([
+      const [siteSnap, themeSnap, linkSnap, eventSnap, ytSnap, igSnap] = await Promise.all([
         getDoc(doc(db, 'settings/site')),
         getDoc(doc(db, 'settings/theme')),
         getDocs(query(collection(db, 'links'), where('visible', '==', true), orderBy('order'))),
         getDocs(
           query(collection(db, 'events'), where('status', '==', 'published'), orderBy('startsAt')),
         ),
+        getDoc(doc(db, 'feeds/youtube')),
+        getDoc(doc(db, 'feeds/instagram')),
       ])
       if (cancelled) return
-      if (siteSnap.exists()) setSite({ ...seedSite, ...(siteSnap.data() as SiteSettings) })
+      if (siteSnap.exists()) {
+        const data = siteSnap.data() as SiteSettings
+        // Sections added in newer versions (e.g. instagram) show up without a manual migration.
+        setSite({ ...seedSite, ...data, sections: normalizeSections(data.sections) })
+      }
       if (themeSnap.exists()) setTheme({ ...seedTheme, ...(themeSnap.data() as ThemeSettings) })
       setLinks(linkSnap.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) })))
       setEvents(eventSnap.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>)))
+      setVideos((ytSnap.data() as FeedDoc<FeedVideo> | undefined)?.items ?? [])
+      setPosts((igSnap.data() as FeedDoc<FeedPost> | undefined)?.items ?? [])
     }
     const refresh = () => {
       load().catch((err) => {
@@ -111,7 +128,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
 
   const effectiveTheme = preview?.theme ?? theme
   const effectiveSite = useMemo(
-    () => (preview ? { ...site, sections: preview.sections } : site),
+    () => (preview ? { ...site, sections: normalizeSections(preview.sections) } : site),
     [preview, site],
   )
   useEffect(() => applyTheme(effectiveTheme), [effectiveTheme])
@@ -122,11 +139,13 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       theme: effectiveTheme,
       links: links ?? [],
       events: events ?? [],
+      videos,
+      posts,
       ready: links !== null && events !== null,
       linksBy: (category) => (links ?? []).filter((l) => l.category === category),
       reload: () => setVersion((v) => v + 1),
     }),
-    [effectiveSite, effectiveTheme, links, events],
+    [effectiveSite, effectiveTheme, links, events, videos, posts],
   )
 
   return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>

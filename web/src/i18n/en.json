@@ -86,7 +86,8 @@
     "title": "Sets & Video",
     "play": "Play video",
     "consent": "Plays via YouTube (youtube-nocookie.com). Data is only sent to YouTube after you tap.",
-    "watchLive": "Watch live on Twitch"
+    "watchLive": "Watch live on Twitch",
+    "latest": "Latest uploads"
   },
   "drops": {
     "eyebrow": "For DJs",
@@ -346,7 +347,8 @@
         "drops": "Drops",
         "about": "About",
         "booking": "Booking",
-        "support": "Support"
+        "support": "Support",
+        "instagram": "Instagram"
       }
     },
     "links": {
@@ -410,6 +412,28 @@
       "videoHeavy": "Note: videos over 3 MB slow down the page on mobile.",
       "addPhotos": "Add photos",
       "uploading": "{{count}} left…"
+    },
+    "feeds": {
+      "title": "Automatic content",
+      "intro": "New YouTube uploads and Instagram posts appear on the website automatically (checked every hour).",
+      "syncNow": "Sync now",
+      "youtubeHint": "Latest uploads of the YouTube channels in your social links.",
+      "instagramHint": "Needs an Instagram professional account (Business/Creator) and an access token from the Meta developer dashboard (Instagram API with Instagram Login). The token is stored securely and renewed automatically.",
+      "videos": "videos",
+      "posts": "posts",
+      "lastSync": "Last sync {{date}} · {{count}} {{label}}",
+      "never": "Not synced yet.",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "token": "Access token",
+      "replaceToken": "Replace access token",
+      "connect": "Connect",
+      "tokenInvalid": "That doesn't look like a valid token.",
+      "tokenSaved": "Token saved.",
+      "synced": "Synced: {{videos}} videos, {{posts}} posts.",
+      "disconnect": "Disconnect Instagram",
+      "confirmDisconnect": "Remove the Instagram token? Posts already on the site stay until the next sync.",
+      "disconnected": "Instagram disconnected."
     }
   },
   "notFound": {
@@ -473,5 +497,11 @@
     "waitlistDoneTitle": "You're on the waitlist",
     "waitlistDoneText": "The guestlist is full right now. We've sent a confirmation to {{email}} and will let you know if a spot opens up.",
     "done": "Done"
+  },
+  "instagram": {
+    "eyebrow": "Follow",
+    "title": "Instagram",
+    "follow": "Clips, sets and behind the scenes – follow on Instagram.",
+    "post": "Open post on Instagram"
   }
 }

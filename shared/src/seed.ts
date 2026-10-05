@@ -1,4 +1,4 @@
-import type { LinkDoc, SiteSettings, ThemeSettings } from './types'
+import type { LinkDoc, SectionConfig, SiteSettings, ThemeSettings } from './types'
 
 /**
  * Initial content from Ajay's Linktree (SPEC §5). Written to Firestore by
@@ -146,6 +146,15 @@ export const seedLinks: Record<string, LinkDoc> = {
     order: 20,
     visible: true,
   },
+  featuredVideo: {
+    // TODO(Ajay): real title – editable in Admin → Links → Sets.
+    title: 'Featured Video',
+    url: 'https://www.youtube.com/watch?v=68r066j96Mg',
+    category: 'sets',
+    icon: 'youtube',
+    order: 5,
+    visible: true,
+  },
   fullSets: {
     title: 'Full DJ Sets',
     subtitle: { en: 'Video playlist', de: 'Video-Playlist' },
@@ -220,6 +229,7 @@ export const seedSite: SiteSettings = {
     { id: 'tiles', visible: true },
     { id: 'music', visible: true },
     { id: 'sets', visible: true },
+    { id: 'instagram', visible: true },
     { id: 'drops', visible: true },
     { id: 'about', visible: true },
     { id: 'booking', visible: true },
@@ -282,4 +292,24 @@ export const seedTheme: ThemeSettings = {
     subline: { en: 'DJ & PRODUCER — VIENNA' },
     quote: { en: 'NO GENRE, JUST VIBES' },
   },
+}
+
+/**
+ * Brings a stored section list up to date with the sections the code knows:
+ * unknown ids are dropped, new ones (e.g. "instagram") are inserted after their
+ * predecessor in the default order, visible by default.
+ */
+export function normalizeSections(stored: SectionConfig[] | undefined): SectionConfig[] {
+  const known = seedSite.sections.map((s) => s.id)
+  const list = (stored ?? []).filter((s) => known.includes(s.id))
+  for (const [i, id] of known.entries()) {
+    if (list.some((s) => s.id === id)) continue
+    const prev = known
+      .slice(0, i)
+      .reverse()
+      .find((p) => list.some((s) => s.id === p))
+    const at = prev ? list.findIndex((s) => s.id === prev) + 1 : 0
+    list.splice(at, 0, { id, visible: true })
+  }
+  return list
 }

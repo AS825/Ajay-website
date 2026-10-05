@@ -53,3 +53,30 @@ test('maps links', () => {
   )
   assert.match(appleMapsUrl(v), /^https:\/\/maps\.apple\.com\/\?q=Club%20X/)
 })
+
+test('normalizeSections inserts new sections after their predecessor', async () => {
+  const { normalizeSections } = await import('../src/seed')
+  const stored = [
+    { id: 'events' as const, visible: true },
+    { id: 'sets' as const, visible: false },
+    { id: 'marquee' as const, visible: true },
+  ]
+  const out = normalizeSections(stored)
+  assert.deepEqual(
+    out.map((s) => s.id),
+    [
+      'events',
+      'tiles',
+      'music',
+      'sets',
+      'instagram',
+      'drops',
+      'about',
+      'booking',
+      'support',
+      'marquee',
+    ],
+  )
+  assert.equal(out.find((s) => s.id === 'sets')?.visible, false)
+  assert.equal(out.length, 10)
+})

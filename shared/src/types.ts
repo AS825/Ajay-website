@@ -40,7 +40,16 @@ export interface LinkDoc {
 }
 
 export type SectionId =
-  'marquee' | 'events' | 'tiles' | 'music' | 'sets' | 'drops' | 'about' | 'booking' | 'support'
+  | 'marquee'
+  | 'events'
+  | 'tiles'
+  | 'music'
+  | 'sets'
+  | 'instagram'
+  | 'drops'
+  | 'about'
+  | 'booking'
+  | 'support'
 
 export interface SectionConfig {
   id: SectionId
@@ -131,4 +140,31 @@ export interface EventDoc<T = TimestampLike> {
     externalUrl: string
   }
   createdAt: T
+}
+
+/** Latest uploads from Ajay's YouTube channels, synced by the `syncFeeds` function. */
+export interface FeedVideo {
+  id: string
+  title: string
+  publishedAt: string
+  /** Thumbnail copied to our Storage – no request to Google before the visitor taps play. */
+  thumbUrl: string
+  channelTitle: string
+}
+
+/** Latest Instagram posts (Instagram API), images copied to our Storage. */
+export interface FeedPost {
+  id: string
+  caption: string
+  permalink: string
+  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
+  imageUrl: string
+  timestamp: string
+}
+
+export interface FeedDoc<T> {
+  items: T[]
+  updatedAt: string | null
+  /** Last error message (shown in the admin), empty when the last sync worked. */
+  error: string
 }

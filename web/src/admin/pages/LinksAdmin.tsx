@@ -17,6 +17,7 @@ import { Empty, LocalizedField, PageHeader, Select, Spinner, TextField, Toggle }
 import { MediaField } from '../ui/MediaField'
 import { SortableList } from '../ui/SortableList'
 import { toast } from '../ui/Toast'
+import { FeedsCard } from '../ui/FeedsCard'
 import { SocialIcon } from '../../components/ui/SocialIcon'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
@@ -177,6 +178,7 @@ export default function LinksAdmin() {
           </button>
         }
       />
+      <FeedsCard />
       <div className="no-scrollbar mb-4 overflow-x-auto">
         <SegmentedControl
           label={t('admin.links.category')}

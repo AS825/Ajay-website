@@ -86,7 +86,8 @@
     "title": "Sets & Videos",
     "play": "Video abspielen",
     "consent": "Wird über YouTube (youtube-nocookie.com) abgespielt. Daten gehen erst nach dem Tippen an YouTube.",
-    "watchLive": "Live auf Twitch ansehen"
+    "watchLive": "Live auf Twitch ansehen",
+    "latest": "Neueste Uploads"
   },
   "drops": {
     "eyebrow": "Für DJs",
@@ -346,7 +347,8 @@
         "drops": "Drops",
         "about": "Über",
         "booking": "Booking",
-        "support": "Support"
+        "support": "Support",
+        "instagram": "Instagram"
       }
     },
     "links": {
@@ -410,6 +412,28 @@
       "videoHeavy": "Hinweis: Videos über 3 MB machen die Seite auf dem Handy langsam.",
       "addPhotos": "Fotos hinzufügen",
       "uploading": "Noch {{count}}…"
+    },
+    "feeds": {
+      "title": "Automatische Inhalte",
+      "intro": "Neue YouTube-Uploads und Instagram-Posts erscheinen automatisch auf der Website (stündlich geprüft).",
+      "syncNow": "Jetzt aktualisieren",
+      "youtubeHint": "Neueste Uploads der YouTube-Kanäle aus deinen Social-Links.",
+      "instagramHint": "Braucht ein Instagram-Professional-Konto (Business/Creator) und einen Zugangsschlüssel aus dem Meta-Developer-Dashboard (Instagram API with Instagram Login). Der Schlüssel wird sicher gespeichert und automatisch verlängert.",
+      "videos": "Videos",
+      "posts": "Posts",
+      "lastSync": "Zuletzt aktualisiert {{date}} · {{count}} {{label}}",
+      "never": "Noch nicht synchronisiert.",
+      "connected": "Verbunden",
+      "notConnected": "Nicht verbunden",
+      "token": "Zugangsschlüssel (Access Token)",
+      "replaceToken": "Zugangsschlüssel ersetzen",
+      "connect": "Verbinden",
+      "tokenInvalid": "Das sieht nicht nach einem gültigen Schlüssel aus.",
+      "tokenSaved": "Schlüssel gespeichert.",
+      "synced": "Aktualisiert: {{videos}} Videos, {{posts}} Posts.",
+      "disconnect": "Instagram trennen",
+      "confirmDisconnect": "Instagram-Schlüssel entfernen? Bereits angezeigte Posts bleiben bis zur nächsten Aktualisierung.",
+      "disconnected": "Instagram getrennt."
     }
   },
   "notFound": {
@@ -473,5 +497,11 @@
     "waitlistDoneTitle": "Du stehst auf der Warteliste",
     "waitlistDoneText": "Die Gästeliste ist gerade voll. Wir haben dir eine Bestätigung an {{email}} geschickt und melden uns, falls ein Platz frei wird.",
     "done": "Fertig"
+  },
+  "instagram": {
+    "eyebrow": "Folgen",
+    "title": "Instagram",
+    "follow": "Clips, Sets und Behind the Scenes – folge auf Instagram.",
+    "post": "Beitrag auf Instagram öffnen"
   }
 }

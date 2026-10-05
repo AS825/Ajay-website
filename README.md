@@ -58,7 +58,10 @@ The public site reads Firestore with the lightweight Firestore Lite SDK (no real
 load performance). Data changes made in the Emulator UI show up after a reload or when you switch
 back to the tab.
 
-Emulator data is in-memory and re-seeded on every start. `npm run seed -- --force` resets the
+**Local data is kept between runs:** when you stop `npm run dev` with **Ctrl+C**, the emulators
+save everything (events, uploads, logins, guestlists) to `emulator-data/` and load it again on the
+next start. Wait for “Export complete” before closing the terminal. `npm run reset` deletes the local
+data – the next start begins with fresh seed content. `npm run seed -- --force` resets only the
 seed documents while the emulators are running.
 
 ## Scripts

@@ -9,8 +9,8 @@
     "functions"
   ],
   "scripts": {
-    "dev": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions --ui \"npm run seed && node scripts/dev-session.mjs\"",
-    "emulators": "npm run build:functions && firebase emulators:start --project demo-ajay --only firestore,auth,storage,functions",
+    "dev": "npm run build:functions && node scripts/emulators.mjs exec \"npm run seed && node scripts/dev-session.mjs\"",
+    "emulators": "npm run build:functions && node scripts/emulators.mjs start",
     "seed": "npm run seed -w scripts",
     "build": "npm run build -w web && npm run build -w functions",
     "typecheck": "npm run typecheck -w shared && npm run typecheck -w web && npm run typecheck -w scripts && npm run typecheck -w functions",
@@ -18,12 +18,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build:functions": "npm run build -w functions",
-    "serve": "npm run build && firebase emulators:exec --project demo-ajay --only firestore,auth,storage,functions,hosting --ui \"npm run seed && node scripts/wait-forever.mjs\"",
+    "serve": "npm run build && node scripts/emulators.mjs exec --hosting \"npm run seed && node scripts/wait-forever.mjs\"",
     "test": "npm test -w shared",
     "test:functions": "npm run build:functions && firebase emulators:exec --project demo-ajay --only firestore,functions \"node --import tsx --test functions/test/callables.test.ts\"",
     "test:rules": "firebase emulators:exec --project demo-ajay-rules --only firestore,storage \"node --import tsx --test tests/rules/rules.test.ts\"",
     "set-admin": "npm run set-admin -w scripts --",
-    "check:i18n": "node scripts/check-i18n.mjs"
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "reset": "node -e \"require('fs').rmSync('emulator-data',{recursive:true,force:true});console.log('Local emulator data deleted.')\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

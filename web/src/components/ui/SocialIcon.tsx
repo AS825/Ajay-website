@@ -31,11 +31,25 @@ const BRAND: Partial<Record<IconKey, SimpleIcon>> = {
   paypal: siPaypal,
 }
 
-export function SocialIcon({ icon, className = 'size-5' }: { icon?: IconKey; className?: string }) {
+export function SocialIcon({
+  icon,
+  className = 'size-5',
+  colored = false,
+}: {
+  icon?: IconKey
+  className?: string
+  /** Use the platform's brand colour instead of the text colour. */
+  colored?: boolean
+}) {
   const brand = icon ? BRAND[icon] : undefined
   if (brand) {
     return (
-      <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        className={className}
+        fill={colored ? `#${brand.hex}` : 'currentColor'}
+        aria-hidden="true"
+      >
         <path d={brand.path} />
       </svg>
     )

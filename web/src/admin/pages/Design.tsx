@@ -8,6 +8,7 @@ import {
   seedTheme,
   type BackgroundType,
   type SectionConfig,
+  type SiteStyle,
   type SiteSettings,
   type ThemeSettings,
 } from '@ajay/shared'
@@ -223,6 +224,19 @@ export default function Design() {
         <div className="space-y-4">
           <Card title={t('admin.design.brand')}>
             <div className="space-y-4">
+              <div>
+                <p className="mb-2 text-sm font-medium text-white/80">{t('admin.design.style')}</p>
+                <SegmentedControl<SiteStyle>
+                  label={t('admin.design.style')}
+                  value={theme.style}
+                  onChange={(style) => setT({ style })}
+                  options={(['sand', 'dark'] as const).map((v) => ({
+                    value: v,
+                    label: t(`admin.design.styles.${v}`),
+                  }))}
+                />
+                <p className="mt-2 text-xs text-muted">{t('admin.design.styleHint')}</p>
+              </div>
               <ColorField
                 label={t('admin.design.accent')}
                 value={theme.accentColor}

@@ -48,6 +48,9 @@ export type SectionId =
   | 'instagram'
   | 'drops'
   | 'about'
+  | 'info'
+  | 'stats'
+  | 'venues'
   | 'booking'
   | 'support'
 
@@ -65,6 +68,14 @@ export interface Tile {
   imageUrl?: string
 }
 
+/** One row of the "Media statistics" block (press kit). */
+export interface StatItem {
+  icon: IconKey
+  label: Localized
+  /** Shown as typed, e.g. "8M+"; the leading number counts up on screen. */
+  value: string
+}
+
 export interface SiteSettings {
   artistName: string
   aka: string
@@ -77,6 +88,12 @@ export interface SiteSettings {
   bioLong: Localized
   genres: string[]
   aboutPhotos: string[]
+  /** Press-kit blocks on the home page: key facts, media statistics, venues played. */
+  facts: Localized[]
+  infoPhoto: string
+  stats: StatItem[]
+  venues: { austria: string[]; international: string[] }
+  venuesPhoto: string
   pressKitPdfUrl: string
   pressPhotos: string[]
   sections: SectionConfig[]
@@ -90,7 +107,11 @@ export interface SiteSettings {
 
 export type BackgroundType = 'color' | 'gradient' | 'image' | 'video'
 
+/** "sand": light press-kit look (default). "dark": the original black club look. */
+export type SiteStyle = 'sand' | 'dark'
+
 export interface ThemeSettings {
+  style: SiteStyle
   accentColor: string
   logoUrl: string
   marqueeText: string

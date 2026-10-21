@@ -10,6 +10,9 @@ import { Sets } from '../features/home/Sets'
 import { Instagram } from '../features/home/Instagram'
 import { Drops } from '../features/home/Drops'
 import { About } from '../features/home/About'
+import { MainInfo } from '../features/home/MainInfo'
+import { Stats } from '../features/home/Stats'
+import { Venues } from '../features/home/Venues'
 import { Support } from '../features/home/Support'
 import { BookingSection } from '../features/booking/BookingSection'
 
@@ -22,6 +25,9 @@ const SECTIONS: Record<SectionId, ComponentType> = {
   instagram: Instagram,
   drops: Drops,
   about: About,
+  info: MainInfo,
+  stats: Stats,
+  venues: Venues,
   booking: BookingSection,
   support: Support,
 }

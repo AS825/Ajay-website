@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, setDoc } from 'firebase/firestore'
-import { seedSite, type SiteSettings, type Tile } from '@ajay/shared'
+import { Plus, Trash2 } from 'lucide-react'
+import {
+  isTodo,
+  seedSite,
+  type IconKey,
+  type Localized,
+  type SiteSettings,
+  type StatItem,
+  type Tile,
+} from '@ajay/shared'
 import { adminDb } from '../firebase'
 import { omitId, sameData, useDocData } from '../hooks'
-import { Card, LocalizedField, PageHeader, Spinner, TextField } from '../ui/Kit'
+import { Card, LocalizedField, PageHeader, Select, Spinner, TextField } from '../ui/Kit'
 import { MediaField } from '../ui/MediaField'
 import { ImageList } from '../ui/ImageList'
 import { LocalizedRichText } from '../ui/RichText'
@@ -12,18 +21,46 @@ import { SaveBar } from '../ui/SaveBar'
 import { SortableList } from '../ui/SortableList'
 import { toast } from '../ui/Toast'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
+import { buttonClass } from '../../components/ui/Button'
 
 type Tab = 'general' | 'about' | 'press' | 'tiles' | 'legal'
+const STAT_ICONS: IconKey[] = [
+  'spotify',
+  'youtube',
+  'instagram',
+  'tiktok',
+  'soundcloud',
+  'twitch',
+  'mixcloud',
+  'applemusic',
+  'deezer',
+  'bandcamp',
+]
+const lines = (v: string) =>
+  v
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+
+/** Facts are edited as one line per fact; German line n translates English line n. */
+function factsFromLines(en: string, de: string): Localized[] {
+  const deLines = de.split('\n').map((l) => l.trim())
+  return lines(en).map((line, i) => (deLines[i] ? { en: line, de: deLines[i] } : { en: line }))
+}
+
 const isUrl = (s: string) => s === '' || s === 'TODO' || /^https?:\/\/\S+$/.test(s)
 
 /** Texts & legal (SPEC §10.9) plus general site settings, tiles and press kit. Sections order lives in Design. */
 export default function Content() {
   const { t } = useTranslation()
   const siteDoc = useDocData<SiteSettings>('settings/site')
-  const initial = useMemo(
-    () => (siteDoc === undefined ? null : { ...seedSite, ...(siteDoc ? omitId(siteDoc) : {}) }),
-    [siteDoc],
-  )
+  const initial = useMemo(() => {
+    if (siteDoc === undefined) return null
+    const merged = { ...seedSite, ...(siteDoc ? omitId(siteDoc) : {}) }
+    // Same fallback as the website: the placeholder bio shows the press-kit text.
+    if (isTodo(merged.bioShort.en)) merged.bioShort = seedSite.bioShort
+    return merged
+  }, [siteDoc])
   const [site, setSite] = useState<SiteSettings | null>(null)
   const [tab, setTab] = useState<Tab>('general')
   const [saving, setSaving] = useState(false)
@@ -39,6 +76,8 @@ export default function Content() {
   }
 
   const set = (patch: Partial<SiteSettings>) => setSite((s) => (s ? { ...s, ...patch } : s))
+  const setStat = (i: number, patch: Partial<StatItem>) =>
+    set({ stats: site.stats.map((x, j) => (j === i ? { ...x, ...patch } : x)) })
   const setTile = (id: string, patch: Partial<Tile>) =>
     set({ tiles: site.tiles.map((x) => (x.id === id ? { ...x, ...patch } : x)) })
   // Sections are edited in Design; never overwrite them from here.
@@ -169,6 +208,115 @@ export default function Content() {
 
       {tab === 'press' && (
         <div className="space-y-4">
+          <Card title={t('admin.content.factsTitle')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label={t('admin.content.factsEn')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={9}
+                value={site.facts.map((f) => f.en).join('\n')}
+                onChange={(v) =>
+                  set({ facts: factsFromLines(v, site.facts.map((f) => f.de ?? '').join('\n')) })
+                }
+              />
+              <TextField
+                label={t('admin.content.factsDe')}
+                hint={t('admin.content.factsDeHint')}
+                multiline
+                rows={9}
+                value={site.facts.map((f) => f.de ?? '').join('\n')}
+                onChange={(v) =>
+                  set({ facts: factsFromLines(site.facts.map((f) => f.en).join('\n'), v) })
+                }
+              />
+              <div className="sm:col-span-2">
+                <MediaField
+                  label={t('admin.content.infoPhoto')}
+                  value={site.infoPhoto}
+                  onChange={(infoPhoto) => set({ infoPhoto })}
+                  folder="press"
+                  image={{ aspect: 1, maxSize: 1400 }}
+                  aspect="aspect-square"
+                />
+              </div>
+            </div>
+          </Card>
+          <Card title={t('admin.content.statsTitle')}>
+            <ul className="space-y-4">
+              {site.stats.map((stat, i) => (
+                <li
+                  key={i}
+                  className="grid gap-3 rounded-[16px] border border-hairline p-3 sm:grid-cols-[10rem_1fr_8rem_auto] sm:items-end"
+                >
+                  <Select<IconKey>
+                    label={t('admin.content.statPlatform')}
+                    value={stat.icon}
+                    onChange={(icon) => setStat(i, { icon })}
+                    options={STAT_ICONS.map((v) => ({ value: v, label: v }))}
+                  />
+                  <LocalizedField
+                    label={t('admin.content.statLabel')}
+                    value={stat.label}
+                    onChange={(label) => setStat(i, { label })}
+                  />
+                  <TextField
+                    label={t('admin.content.statValue')}
+                    placeholder="8M+"
+                    value={stat.value}
+                    onChange={(value) => setStat(i, { value })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => set({ stats: site.stats.filter((_, j) => j !== i) })}
+                    className={buttonClass('glass', '', 'icon')}
+                    aria-label={t('admin.common.delete')}
+                  >
+                    <Trash2 className="size-4" aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() =>
+                set({ stats: [...site.stats, { icon: 'spotify', label: { en: '' }, value: '' }] })
+              }
+              className={buttonClass('glass', 'mt-4', 'sm')}
+            >
+              <Plus className="size-4" aria-hidden="true" /> {t('admin.content.statAdd')}
+            </button>
+          </Card>
+          <Card title={t('admin.content.venuesTitle')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label={t('venues.austria')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={10}
+                value={site.venues.austria.join('\n')}
+                onChange={(v) => set({ venues: { ...site.venues, austria: lines(v) } })}
+              />
+              <TextField
+                label={t('venues.international')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={10}
+                value={site.venues.international.join('\n')}
+                onChange={(v) => set({ venues: { ...site.venues, international: lines(v) } })}
+              />
+              <div className="sm:col-span-2">
+                <MediaField
+                  label={t('admin.content.venuesPhoto')}
+                  value={site.venuesPhoto}
+                  onChange={(venuesPhoto) => set({ venuesPhoto })}
+                  folder="press"
+                  image={{ aspect: 3 / 5, maxSize: 1400 }}
+                  aspect="aspect-[3/5] max-w-56"
+                />
+              </div>
+            </div>
+          </Card>
           <Card>
             <MediaField
               kind="docs"

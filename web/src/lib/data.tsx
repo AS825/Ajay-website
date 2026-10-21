@@ -10,6 +10,7 @@ import {
   type Timestamp,
 } from 'firebase/firestore/lite'
 import {
+  isTodo,
   normalizeSections,
   seedSite,
   seedTheme,
@@ -152,7 +153,13 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
         ? (() => {
             const data = siteSnap.data() as SiteSettings
             // Sections added in newer versions (e.g. instagram) show up without a manual migration.
-            return { ...seedSite, ...data, sections: normalizeSections(data.sections) }
+            return {
+              ...seedSite,
+              ...data,
+              // Placeholder bios from the first import give way to the press-kit text.
+              bioShort: isTodo(data.bioShort?.en) ? seedSite.bioShort : data.bioShort,
+              sections: normalizeSections(data.sections),
+            }
           })()
         : null
       const nextTheme = themeSnap.exists()

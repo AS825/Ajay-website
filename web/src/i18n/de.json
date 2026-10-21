@@ -95,8 +95,8 @@
     "getIt": "Holen"
   },
   "about": {
-    "eyebrow": "Über",
-    "title": "No genre, just vibes",
+    "eyebrow": "Ein bisschen",
+    "title": "Über mich",
     "genres": "Genres",
     "photosTodo": "TODO: Fotos"
   },
@@ -357,8 +357,17 @@
         "about": "Über",
         "booking": "Booking",
         "support": "Support",
-        "instagram": "Instagram"
-      }
+        "instagram": "Instagram",
+        "info": "Infos",
+        "stats": "Reichweite",
+        "venues": "Venues"
+      },
+      "style": "Look",
+      "styles": {
+        "sand": "Sand (Press Kit)",
+        "dark": "Dunkel (Club)"
+      },
+      "styleHint": "„Sand“ nutzt die Press-Kit-Farben; die Hintergrund-Einstellungen unten gelten dann nicht."
     },
     "links": {
       "add": "Link hinzufügen",
@@ -410,7 +419,20 @@
       "tileHrefHint": "(z. B. /#music, /press oder https://…)",
       "tileImage": "Bild",
       "legalHint": "Rechtstexte müssen von Ajay bzw. einer Anwältin/einem Anwalt geprüft werden. Ein Impressum ist in Österreich Pflicht.",
-      "linkPrompt": "Link (leer zum Entfernen):"
+      "linkPrompt": "Link (leer zum Entfernen):",
+      "factsTitle": "Infos",
+      "factsEn": "Fakten (Englisch)",
+      "factsDe": "Fakten (Deutsch, optional)",
+      "factsDeHint": "(gleiche Zeile wie auf Englisch)",
+      "onePerLine": "(eine pro Zeile)",
+      "infoPhoto": "Foto für Infos",
+      "statsTitle": "Reichweite",
+      "statPlatform": "Plattform",
+      "statLabel": "Beschriftung",
+      "statValue": "Zahl",
+      "statAdd": "Zeile hinzufügen",
+      "venuesTitle": "Gespielt in (Venues)",
+      "venuesPhoto": "Foto für Venues"
     },
     "media": {
       "upload": "Hochladen",
@@ -559,5 +581,17 @@
     "title": "Da hat etwas nicht geladen.",
     "text": "Vermutlich wurde die Website gerade aktualisiert. Neu laden behebt das.",
     "reload": "Neu laden"
+  },
+  "info": {
+    "title": "Die wichtigsten Infos"
+  },
+  "stats": {
+    "title": "Reichweite"
+  },
+  "venues": {
+    "title": "Gespielt in",
+    "austria": "Österreich",
+    "international": "International",
+    "more": "Und viele mehr …"
   }
 }

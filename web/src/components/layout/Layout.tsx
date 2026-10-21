@@ -41,8 +41,22 @@ function useRouteScroll() {
   return () => requestAnimationFrame(() => requestAnimationFrame(() => scrollToTarget(true)))
 }
 
+/** Public pages only: the admin keeps its dark UI, so the style lives on <html> while mounted. */
+function useSiteStyle() {
+  const { theme } = useSiteData()
+  useEffect(() => {
+    const root = document.documentElement
+    root.dataset.style = theme.style
+    return () => {
+      delete root.dataset.style
+    }
+  }, [theme.style])
+}
+
 function SiteBackground() {
   const { theme } = useSiteData()
+  // The sand look has a fixed page colour; background settings apply to the dark style.
+  if (theme.style === 'sand') return null
   const bg = theme.background
   const media = (bg.type === 'image' || bg.type === 'video') && bg.mediaUrl
   return (
@@ -81,6 +95,7 @@ export function Layout() {
   const outlet = useOutlet()
   const reduced = useReducedMotion()
   const onPageChanged = useRouteScroll()
+  useSiteStyle()
 
   return (
     <>

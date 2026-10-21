@@ -27,7 +27,7 @@ export function Equalizer({
 }) {
   return (
     <div
-      className={`flex items-end gap-[3px] ${mirror ? 'items-center' : ''} ${className}`}
+      className={`flex items-end gap-[3px] text-accent ${mirror ? 'items-center' : ''} ${className}`}
       aria-hidden="true"
     >
       {Array.from({ length: bars }, (_, i) => {
@@ -42,7 +42,7 @@ export function Equalizer({
         return (
           <span
             key={i}
-            className="eq-bar h-full flex-1 rounded-full bg-accent"
+            className="eq-bar h-full flex-1 rounded-full bg-current"
             style={{ ...style, transformOrigin: mirror ? 'center' : 'bottom' }}
           />
         )

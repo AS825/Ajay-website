@@ -72,11 +72,14 @@ test('normalizeSections inserts new sections after their predecessor', async () 
       'instagram',
       'drops',
       'about',
+      'info',
+      'stats',
+      'venues',
       'booking',
       'support',
       'marquee',
     ],
   )
   assert.equal(out.find((s) => s.id === 'sets')?.visible, false)
-  assert.equal(out.length, 10)
+  assert.equal(out.length, 13)
 })

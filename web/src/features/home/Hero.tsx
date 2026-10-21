@@ -9,6 +9,7 @@ import { easeOutExpo } from '../../lib/motion'
 import { ButtonLink } from '../../components/ui/Button'
 import { RevealText } from '../../components/motion/Reveal'
 import { Equalizer, LightSweep, Vinyl } from '../../components/motion/Dj'
+import { SandHero } from './SandHero'
 
 /** Slowly drifting accent glow (SPEC §3 "langsam wandernder Farbverlauf"). */
 function AccentDrift({ animate }: { animate: boolean }) {
@@ -50,8 +51,13 @@ function AccentDrift({ animate }: { animate: boolean }) {
   )
 }
 
-/** Full-screen hero (SPEC §4.1): Ken Burns / video, drifting accent, animated grain, parallax. */
 export function Hero() {
+  const { theme } = useSiteData()
+  return theme.style === 'sand' ? <SandHero /> : <DarkHero />
+}
+
+/** Full-screen hero (SPEC §4.1): Ken Burns / video, drifting accent, animated grain, parallax. */
+function DarkHero() {
   const { t } = useTranslation()
   const { lang } = useLang()
   const { theme, site } = useSiteData()

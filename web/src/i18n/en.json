@@ -95,8 +95,8 @@
     "getIt": "Get it"
   },
   "about": {
-    "eyebrow": "About",
-    "title": "No genre, just vibes",
+    "eyebrow": "A little",
+    "title": "About me",
     "genres": "Genres",
     "photosTodo": "TODO: photos"
   },
@@ -357,8 +357,17 @@
         "about": "About",
         "booking": "Booking",
         "support": "Support",
-        "instagram": "Instagram"
-      }
+        "instagram": "Instagram",
+        "info": "Main info",
+        "stats": "Media statistics",
+        "venues": "Venues played"
+      },
+      "style": "Look",
+      "styles": {
+        "sand": "Sand (press kit)",
+        "dark": "Dark (club)"
+      },
+      "styleHint": "Sand uses the press-kit colours and ignores the background settings below."
     },
     "links": {
       "add": "Add link",
@@ -410,7 +419,20 @@
       "tileHrefHint": "(e.g. /#music, /press or https://…)",
       "tileImage": "Image",
       "legalHint": "Legal texts must be checked by Ajay or a lawyer. Imprint is mandatory in Austria.",
-      "linkPrompt": "Link (empty to remove):"
+      "linkPrompt": "Link (empty to remove):",
+      "factsTitle": "Main info",
+      "factsEn": "Facts (English)",
+      "factsDe": "Facts (German, optional)",
+      "factsDeHint": "(same line as the English fact)",
+      "onePerLine": "(one per line)",
+      "infoPhoto": "Main info photo",
+      "statsTitle": "Media statistics",
+      "statPlatform": "Platform",
+      "statLabel": "Label",
+      "statValue": "Number",
+      "statAdd": "Add row",
+      "venuesTitle": "Venues played",
+      "venuesPhoto": "Venues photo"
     },
     "media": {
       "upload": "Upload",
@@ -559,5 +581,17 @@
     "title": "Something didn't load.",
     "text": "Probably the website was just updated. Reloading fixes it.",
     "reload": "Reload"
+  },
+  "info": {
+    "title": "Main info"
+  },
+  "stats": {
+    "title": "Media statistics"
+  },
+  "venues": {
+    "title": "Venues played",
+    "austria": "Austria",
+    "international": "International",
+    "more": "Many more …"
   }
 }

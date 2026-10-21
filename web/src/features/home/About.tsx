@@ -25,7 +25,12 @@ export function About() {
         </div>
         <div className="space-y-3">
           <ClipReveal className="overflow-hidden">
-            <img src={main} alt={site.artistName} loading="lazy" className="photo-soft w-full object-cover" />
+            <img
+              src={main}
+              alt={site.artistName}
+              loading="lazy"
+              className="photo-soft w-full object-cover"
+            />
           </ClipReveal>
           {more.length > 0 && (
             <div className="grid grid-cols-3 gap-3">

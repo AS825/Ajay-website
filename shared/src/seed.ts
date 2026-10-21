@@ -303,13 +303,13 @@ export const seedSite: SiteSettings = {
   pressKitPdfUrl: '',
   pressPhotos: [],
   sections: [
+    { id: 'events', visible: true },
     { id: 'about', visible: true },
     { id: 'info', visible: true },
     { id: 'stats', visible: true },
     { id: 'venues', visible: true },
     { id: 'rider', visible: true },
     { id: 'livesets', visible: true },
-    { id: 'events', visible: true },
     { id: 'contact', visible: true },
   ],
   legal: { impressum: TODO_LEGAL, datenschutz: TODO_LEGAL, agb: TODO_LEGAL },
@@ -326,13 +326,18 @@ export const seedTheme: ThemeSettings = {
 
 /**
  * Brings a stored section list up to date with the sections the code knows.
- * Lists from the old site layout (they still contain ids like "marquee") start over
+ * Lists from an old site layout (ids like "marquee", or the first press-kit order) start over
  * in the press-kit order, keeping only the visibility of blocks that still exist.
  * Otherwise new ids are inserted after their predecessor in the default order.
  */
+/** The first press-kit order (events near the end); saved lists in this order get the current default. */
+const FIRST_PRESS_KIT_ORDER = 'about,info,stats,venues,rider,livesets,events,contact'
+
 export function normalizeSections(stored: SectionConfig[] | undefined): SectionConfig[] {
   const known = seedSite.sections.map((s) => s.id)
-  const legacy = (stored ?? []).some((s) => !known.includes(s.id))
+  const legacy =
+    (stored ?? []).some((s) => !known.includes(s.id)) ||
+    (stored ?? []).map((s) => s.id).join(',') === FIRST_PRESS_KIT_ORDER
   if (legacy) {
     return seedSite.sections.map((s) => ({
       ...s,

@@ -57,14 +57,31 @@ test('maps links', () => {
 test('normalizeSections inserts new sections after their predecessor', async () => {
   const { normalizeSections } = await import('../src/seed')
   const out = normalizeSections([
-    { id: 'events', visible: true },
+    { id: 'about', visible: true },
     { id: 'venues', visible: false },
   ])
   assert.deepEqual(
     out.map((s) => s.id),
-    ['about', 'info', 'stats', 'events', 'contact', 'venues', 'rider', 'livesets'],
+    ['events', 'about', 'info', 'stats', 'venues', 'rider', 'livesets', 'contact'],
   )
   assert.equal(out.find((s) => s.id === 'venues')?.visible, false)
+})
+
+test('normalizeSections moves events up for the first press-kit order', async () => {
+  const { normalizeSections } = await import('../src/seed')
+  const ids = [
+    'about',
+    'info',
+    'stats',
+    'venues',
+    'rider',
+    'livesets',
+    'events',
+    'contact',
+  ] as const
+  const out = normalizeSections(ids.map((id) => ({ id, visible: id !== 'stats' })))
+  assert.equal(out[0]?.id, 'events')
+  assert.equal(out.find((s) => s.id === 'stats')?.visible, false)
 })
 
 test('normalizeSections resets lists from the old layout to the press-kit order', async () => {

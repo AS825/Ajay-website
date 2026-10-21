@@ -278,9 +278,10 @@
         "url": "Bitte Links mit https:// eingeben.",
         "venue": "Veröffentlichte Events brauchen eine Location."
       },
-      "noSignupHint": "Ohne Gästeliste oder Ticketlink gibt es auf der Event-Seite keinen Anmelde-Button.",
+      "noSignupHint": "Ohne Gästelisten-Link gibt es auf der Event-Seite keinen Anmelde-Button.",
       "guestlistLink": "Gästelisten-Link",
-      "guestlistLinkHint": "(z. B. getguestlist.io – ersetzt die eigene Gästeliste)"
+      "guestlistLinkHint": "(z. B. getguestlist.io – ersetzt die eigene Gästeliste)",
+      "flyerBundled": "Noch kein Flyer. Flyer kommen mit der Website und heißen wie der Event-Tag: {{file}}"
     },
     "guestlist": {
       "confirmed": "Bestätigt",
@@ -475,7 +476,9 @@
       "videoHeavy": "Hinweis: Videos über 3 MB machen die Seite auf dem Handy langsam.",
       "addPhotos": "Fotos hinzufügen",
       "uploading": "Noch {{count}}…",
-      "orLink": "… oder Bild-Link einfügen"
+      "orLink": "… oder Bild-Link einfügen",
+      "disabled": "Bilder-Upload ist vorerst ausgeschaltet (braucht den Firebase-Blaze-Tarif). Bilder kommen mit der Website – schick sie an Claude.",
+      "removeOld": "Alten Upload entfernen"
     },
     "feeds": {
       "title": "Automatische Inhalte",

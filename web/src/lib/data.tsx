@@ -26,6 +26,8 @@ import {
 import { db } from './firebase'
 import { PREVIEW_READY, PREVIEW_STATE, isPreview, type PreviewState } from './preview'
 import type { EventView } from './events'
+import { bundledFlyer } from './flyers'
+import { OWN_GUESTLIST, STORAGE_ENABLED } from './features'
 
 export type LinkView = LinkDoc & { id: string }
 
@@ -46,14 +48,25 @@ interface SiteData {
 
 const SiteDataContext = createContext<SiteData | null>(null)
 
+const isStorageUrl = (url: string) => url.includes('firebasestorage.googleapis.com')
+
 function toEventView(id: string, d: EventDoc<Timestamp>): EventView {
+  const startsAt = d.startsAt.toDate()
   return {
     ...d,
     id,
-    startsAt: d.startsAt.toDate(),
+    startsAt,
     endsAt: d.endsAt.toDate(),
     createdAt: d.createdAt.toDate(),
-    guestlist: { ...d.guestlist, deadline: d.guestlist.deadline?.toDate() ?? null },
+    // Flyers ship with the site (named by date); uploads only count once Storage is on.
+    flyerUrl:
+      bundledFlyer(startsAt) ?? (!STORAGE_ENABLED && isStorageUrl(d.flyerUrl) ? '' : d.flyerUrl),
+    guestlist: {
+      ...d.guestlist,
+      // Without Cloud Functions nobody could join the own guestlist, so only the external link counts.
+      enabled: OWN_GUESTLIST && d.guestlist.enabled,
+      deadline: d.guestlist.deadline?.toDate() ?? null,
+    },
   }
 }
 

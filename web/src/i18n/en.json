@@ -278,9 +278,10 @@
         "url": "Please enter links starting with https://",
         "venue": "Published events need a venue name."
       },
-      "noSignupHint": "Without a guestlist or ticket link, the event page has no sign-up button.",
+      "noSignupHint": "Without a guestlist link, the event page has no sign-up button.",
       "guestlistLink": "Guestlist link",
-      "guestlistLinkHint": "(e.g. getguestlist.io – replaces the own guestlist)"
+      "guestlistLinkHint": "(e.g. getguestlist.io – replaces the own guestlist)",
+      "flyerBundled": "No flyer yet. Flyers ship with the website, named after the event day: {{file}}"
     },
     "guestlist": {
       "confirmed": "Confirmed",
@@ -475,7 +476,9 @@
       "videoHeavy": "Note: videos over 3 MB slow down the page on mobile.",
       "addPhotos": "Add photos",
       "uploading": "{{count}} left…",
-      "orLink": "… or paste an image link"
+      "orLink": "… or paste an image link",
+      "disabled": "Image upload is switched off for now (needs the Firebase Blaze plan). Images ship with the website – send them to Claude.",
+      "removeOld": "Remove old upload"
     },
     "feeds": {
       "title": "Automatic content",

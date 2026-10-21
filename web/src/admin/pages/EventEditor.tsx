@@ -18,7 +18,8 @@ import { adminDb } from '../firebase'
 import { useDocData } from '../hooks'
 import type { AdminEvent } from '../types'
 import { Card, LocalizedField, PageHeader, Spinner, TextField, Toggle } from '../ui/Kit'
-import { MediaField } from '../ui/MediaField'
+import { bundledFlyer } from '../../lib/flyers'
+import { OWN_GUESTLIST } from '../../lib/features'
 import { SaveBar } from '../ui/SaveBar'
 import { toast } from '../ui/Toast'
 import { buttonClass } from '../../components/ui/Button'
@@ -120,6 +121,7 @@ export default function EventEditor() {
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => (f ? { ...f, [k]: v } : f))
   const dirty = JSON.stringify(form) !== JSON.stringify(initial)
+  const flyer = form.starts ? bundledFlyer(viennaLocalToDate(form.starts)) : undefined
 
   const save = async () => {
     const error = validate(form)
@@ -156,7 +158,7 @@ export default function EventEditor() {
         status: form.published ? 'published' : 'draft',
         // count is maintained by joinGuestlist and the guestlist admin, never overwritten here.
         'guestlist.externalUrl': form.glUrl.trim(),
-        'guestlist.enabled': form.glEnabled,
+        'guestlist.enabled': OWN_GUESTLIST && form.glEnabled,
         'guestlist.capacity': Number(form.capacity) || 0,
         'guestlist.maxPlusOnes': Number(form.maxPlusOnes) || 0,
         'guestlist.deadline': form.deadline
@@ -328,16 +330,13 @@ export default function EventEditor() {
 
         <div className="space-y-4">
           <Card title={t('admin.events.flyer')}>
-            <MediaField
-              label={t('admin.events.flyerUpload')}
-              hint={t('admin.events.flyerHint')}
-              value={form.flyerUrl}
-              onChange={(v) => set('flyerUrl', v)}
-              allowLink
-              folder="flyers"
-              image={{ aspect: 4 / 5, maxSize: 1600 }}
-              aspect="aspect-[4/5]"
-            />
+            {flyer ? (
+              <img src={flyer} alt="" className="w-40 rounded-[12px]" />
+            ) : (
+              <p className="text-sm text-muted">
+                {t('admin.events.flyerBundled', { file: `${form.starts.slice(0, 10)}.webp` })}
+              </p>
+            )}
           </Card>
 
           <Card title={t('admin.events.guestlist')}>
@@ -349,19 +348,21 @@ export default function EventEditor() {
                 value={form.glUrl}
                 onChange={(v) => set('glUrl', v)}
               />
-              {!form.glUrl.trim() && (
+              {OWN_GUESTLIST && !form.glUrl.trim() && (
                 <Toggle
                   checked={form.glEnabled}
                   onChange={(v) => set('glEnabled', v)}
                   label={t('admin.events.guestlistEnabled')}
                 />
               )}
-              {!form.glUrl.trim() && !form.glEnabled && !form.externalUrl.trim() && (
-                <p className="rounded-[14px] border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-100">
-                  {t('admin.events.noSignupHint')}
-                </p>
-              )}
-              {!form.glUrl.trim() && form.glEnabled && (
+              {!form.glUrl.trim() &&
+                !(OWN_GUESTLIST && form.glEnabled) &&
+                !form.externalUrl.trim() && (
+                  <p className="rounded-[14px] border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-100">
+                    {t('admin.events.noSignupHint')}
+                  </p>
+                )}
+              {OWN_GUESTLIST && !form.glUrl.trim() && form.glEnabled && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
                     <TextField

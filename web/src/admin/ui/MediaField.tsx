@@ -5,6 +5,7 @@ import { compressImage, uploadMedia, type ImageOptions, type MediaKind } from '.
 import { buttonClass } from '../../components/ui/Button'
 import { Label } from './Kit'
 import { toast } from './Toast'
+import { STORAGE_ENABLED } from '../../lib/features'
 
 const ACCEPT: Record<MediaKind, string> = {
   images: 'image/jpeg,image/png,image/webp,image/avif,image/gif,image/svg+xml',
@@ -60,6 +61,27 @@ export function MediaField({
       setProgress(null)
       if (input.current) input.current.value = ''
     }
+  }
+
+  if (!STORAGE_ENABLED && !allowLink) {
+    // Uploads need Firebase Storage (Blaze plan); until then images ship with the site.
+    return (
+      <div>
+        <Label hint={hint}>{label}</Label>
+        <p className="rounded-[14px] border border-hairline bg-white/[0.04] p-3 text-xs text-muted">
+          {t('admin.media.disabled')}
+        </p>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className={buttonClass('outline', 'mt-2', 'sm')}
+          >
+            <Trash2 className="size-4" aria-hidden="true" /> {t('admin.media.removeOld')}
+          </button>
+        )}
+      </div>
+    )
   }
 
   return (

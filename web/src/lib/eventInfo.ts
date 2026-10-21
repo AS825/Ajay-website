@@ -18,7 +18,64 @@ type EventInfo = Partial<Pick<EventDoc, 'slug' | 'title' | 'lineup' | 'minAge'>>
  * assets/flyers). For a day that also has an event in the admin, these fields
  * override it; otherwise a complete entry (title + start) becomes an event of its own.
  */
+const COZE_GUESTLIST = 'https://linktr.ee/cozexevents'
+const VIE_I_PEE = { venueName: 'Vie i Pee', address: 'Waldsteingartenstraße 135, 1020 Wien' }
+const FAST_LANE = `👑 FAST LANE TICKET – deine Vorteile 👑
+– kein Warten in der Schlange
+– bevorzugter Einlass
+– eigener VIP-Eingang`
+
 const EVENT_INFO: Record<string, EventInfo> = {
+  '2026-10-23': {
+    slug: 'coze-23-10-2026',
+    title: 'COZÉ',
+    ...VIE_I_PEE,
+    start: '23:00',
+    end: '05:00',
+    lineup: ['AJAY', 'MO', 'HAMZIU', 'MC JOHN JAMES'],
+    minAge: null,
+    guestlistUrl: COZE_GUESTLIST,
+    description: {
+      en: `Die besten Erinnerungen starten mit: „VERTRAU MIR, KOMM EINFACH MIT“
+
+🗓️ FRIDAY 23/10/26
+💃 LADIES SPECIAL: Free entry till 00:00
+⏰ START: 23:00
+🎧 AJAY | MO | HAMZIU | MC JOHN JAMES
+🔗 FAST LANE TICKET & GUESTLIST: über den Gästelisten-Button
+
+${FAST_LANE}
+
+Wer bei COZÉ fehlt, verpasst alles 🍾
+Keine Ausreden. Kein Drama. Nur Beats, Drinks & Good Vibes 🖤`,
+    },
+  },
+  '2026-10-25': {
+    slug: 'coze-x-lituation-25-10-2026',
+    title: 'COZÉ x LITUATION – Robin Roxette',
+    ...VIE_I_PEE,
+    start: '23:00',
+    end: '05:00',
+    lineup: ['AJAY', 'MO', 'MASSI', 'ROBIN ROXETTE (AMS)'],
+    minAge: null,
+    guestlistUrl: COZE_GUESTLIST,
+    description: {
+      en: `Special Guest: ROBIN ROXETTE (AMS 🇳🇱)
+
+🗓️ SUNDAY 25/10/26 – NEXT DAY IS A HOLIDAY 💯
+💃 LADIES SPECIAL: Free entry till 00:00
+⏰ START: 23:00
+🎧 AJAY | MO | MASSI | ROBIN ROXETTE
+🔗 FAST LANE TICKET & GUESTLIST: über den Gästelisten-Button
+
+${FAST_LANE}
+
+Wer bei COZÉ x LITUATION fehlt, verpasst alles 🍾
+Keine Ausreden. Kein Drama. Nur Beats, Drinks & Good Vibes 💜
+
+Afrobeats x Dancehall x Reggaeton and more … Feel the Heat 🔥`,
+    },
+  },
   '2026-10-30': {
     slug: 'pre-halloween-party',
     title: 'Pre Halloween Party 🎃',

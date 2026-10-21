@@ -4,6 +4,7 @@ import { localize } from '@ajay/shared'
 import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
 import { BRAND } from '../../lib/brand'
+import { useImageWithFallback } from '../../lib/hooks'
 import { Container, Section } from '../../components/ui/Section'
 
 /** "A little about me" (press kit): bio on the left, portrait on the right. */
@@ -11,7 +12,8 @@ export function About() {
   const { t } = useTranslation()
   const { lang } = useLang()
   const { site } = useSiteData()
-  const [main = BRAND.about, ...more] = site.aboutPhotos
+  const [first, ...more] = site.aboutPhotos
+  const main = useImageWithFallback(first, BRAND.about)
 
   return (
     <Section id="about" eyebrow={t('about.eyebrow')} title={t('about.title')}>
@@ -26,7 +28,7 @@ export function About() {
         <div className="space-y-3">
           <ClipReveal className="overflow-hidden">
             <img
-              src={main}
+              {...main}
               alt={site.artistName}
               loading="lazy"
               className="photo-soft w-full object-cover"

@@ -41,3 +41,13 @@ export function useNow(intervalMs = 1000): Date {
   }, [intervalMs])
   return now
 }
+
+/**
+ * Uploaded image with a built-in fallback: if the upload is empty or fails to load
+ * (e.g. Storage unavailable), the bundled press-kit image is shown instead.
+ */
+export function useImageWithFallback(uploaded: string | undefined, fallback: string) {
+  const [failed, setFailed] = useState<string | null>(null)
+  const src = uploaded && uploaded !== failed ? uploaded : fallback
+  return { src, onError: () => uploaded && setFailed(uploaded) }
+}

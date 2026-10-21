@@ -4,6 +4,7 @@ import { Reveal } from '../../components/motion/Reveal'
 import { SmartLink } from '../../components/ui/SmartLink'
 import { useSiteData } from '../../lib/data'
 import { BRAND } from '../../lib/brand'
+import { useImageWithFallback } from '../../lib/hooks'
 import { easeOutExpo } from '../../lib/motion'
 
 /** Closing page of the press kit: website and booking mail, portrait, "click here" to booking. */
@@ -11,6 +12,7 @@ export function Contact() {
   const { t } = useTranslation()
   const { site } = useSiteData()
   const reduced = useReducedMotion()
+  const photo = useImageWithFallback(site.contactPhoto, BRAND.contact)
 
   return (
     <section
@@ -26,7 +28,7 @@ export function Contact() {
           </a>
         </Reveal>
         <m.img
-          src={site.contactPhoto || BRAND.contact}
+          {...photo}
           alt={site.artistName}
           loading="lazy"
           className="photo-soft mx-auto w-[min(86vw,460px)]"

@@ -28,7 +28,7 @@ import { db } from './firebase'
 import { PREVIEW_READY, PREVIEW_STATE, isPreview, type PreviewState } from './preview'
 import type { EventView } from './events'
 import { bundledFlyer } from './flyers'
-import { bundledEventInfo } from './eventInfo'
+import { bundledEventInfo, bundledEvents, eventDay } from './eventInfo'
 import { OWN_GUESTLIST, STORAGE_ENABLED } from './features'
 
 export type LinkView = LinkDoc & { id: string }
@@ -54,11 +54,22 @@ const isStorageUrl = (url: string) => url.includes('firebasestorage.googleapis.c
 
 function toEventView(id: string, d: EventDoc<Timestamp>, defaultGuestlistUrl: string): EventView {
   const startsAt = d.startsAt.toDate()
-  const { venueName, ...info } = bundledEventInfo(startsAt) ?? {}
+  const {
+    venueName,
+    address,
+    guestlistUrl,
+    start: _s,
+    end: _e,
+    ...info
+  } = bundledEventInfo(startsAt) ?? {}
   return {
     ...d,
     ...info,
-    venue: venueName ? { ...d.venue, name: venueName } : d.venue,
+    venue: {
+      ...d.venue,
+      ...(venueName ? { name: venueName } : {}),
+      ...(address ? { address } : {}),
+    },
     id,
     startsAt,
     endsAt: d.endsAt.toDate(),
@@ -68,7 +79,7 @@ function toEventView(id: string, d: EventDoc<Timestamp>, defaultGuestlistUrl: st
       bundledFlyer(startsAt) ?? (!STORAGE_ENABLED && isStorageUrl(d.flyerUrl) ? '' : d.flyerUrl),
     guestlist: {
       ...d.guestlist,
-      externalUrl: d.guestlist.externalUrl?.trim() || defaultGuestlistUrl.trim(),
+      externalUrl: guestlistUrl || d.guestlist.externalUrl?.trim() || defaultGuestlistUrl.trim(),
       // Without Cloud Functions nobody could join the own guestlist, so only the external link counts.
       enabled: OWN_GUESTLIST && d.guestlist.enabled,
       deadline: d.guestlist.deadline?.toDate() ?? null,
@@ -265,11 +276,16 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<SiteData>(() => {
     const shownLinks = links?.length ? links : SEED_LINKS
+    // Events from the admin plus the ones that ship with the site, by date.
+    const taken = new Set((events ?? []).map((e) => eventDay(e.startsAt)))
+    const shownEvents = [...(events ?? []), ...bundledEvents(taken)].sort(
+      (a, b) => a.startsAt.getTime() - b.startsAt.getTime(),
+    )
     return {
       site: effectiveSite,
       theme: effectiveTheme,
       links: shownLinks,
-      events: events ?? [],
+      events: shownEvents,
       videos,
       posts,
       ready: links !== null && events !== null,

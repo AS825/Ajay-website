@@ -94,6 +94,8 @@ export interface SiteSettings {
   producedPhoto: string
   /** Where "click here" in the contact block leads. */
   contactUrl: string
+  /** Guestlist page for events that have no link of their own. */
+  guestlistUrl: string
   /** Technical rider: one line per piece of gear, plus a note. */
   rider: { gear: string[]; note: Localized }
   /** YouTube playlist with live sets (shown with a QR code). */

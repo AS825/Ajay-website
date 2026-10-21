@@ -173,7 +173,22 @@ function EventDetail({ event }: { event: EventView }) {
 
           <div className="grid gap-8 md:grid-cols-[5fr_6fr] md:gap-14">
             <ClipReveal className="overflow-hidden rounded-[var(--radius-card)] border border-hairline md:sticky md:top-24 md:self-start">
-              {event.flyerUrl ? (
+              {event.flyerUrl && state.externalGuestlist ? (
+                // Tapping the flyer opens the guestlist too.
+                <a
+                  href={g.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('events.detail.joinGuestlist')}
+                  className="group block"
+                >
+                  <img
+                    src={event.flyerUrl}
+                    alt={event.title}
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.02]"
+                  />
+                </a>
+              ) : event.flyerUrl ? (
                 <img
                   src={event.flyerUrl}
                   alt={event.title}

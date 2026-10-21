@@ -465,7 +465,9 @@
       "tracks": "Productions (right)",
       "producedPhoto": "Photo (cut-out)",
       "contactUrl": "“Click here” link (contact)",
-      "contactUrlHint": "(empty = booking form)"
+      "contactUrlHint": "(empty = booking form)",
+      "guestlistUrl": "Default guestlist link",
+      "guestlistUrlHint": "(for events without their own link)"
     },
     "media": {
       "upload": "Upload",

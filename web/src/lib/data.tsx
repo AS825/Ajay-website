@@ -50,7 +50,7 @@ const SiteDataContext = createContext<SiteData | null>(null)
 
 const isStorageUrl = (url: string) => url.includes('firebasestorage.googleapis.com')
 
-function toEventView(id: string, d: EventDoc<Timestamp>): EventView {
+function toEventView(id: string, d: EventDoc<Timestamp>, defaultGuestlistUrl: string): EventView {
   const startsAt = d.startsAt.toDate()
   return {
     ...d,
@@ -63,6 +63,7 @@ function toEventView(id: string, d: EventDoc<Timestamp>): EventView {
       bundledFlyer(startsAt) ?? (!STORAGE_ENABLED && isStorageUrl(d.flyerUrl) ? '' : d.flyerUrl),
     guestlist: {
       ...d.guestlist,
+      externalUrl: d.guestlist.externalUrl?.trim() || defaultGuestlistUrl.trim(),
       // Without Cloud Functions nobody could join the own guestlist, so only the external link counts.
       enabled: OWN_GUESTLIST && d.guestlist.enabled,
       deadline: d.guestlist.deadline?.toDate() ?? null,
@@ -190,7 +191,13 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
         site: nextSite,
         theme: nextTheme,
         links: linkSnap.docs.map((d) => ({ id: d.id, ...(d.data() as LinkDoc) })),
-        events: eventSnap.docs.map((d) => toEventView(d.id, d.data() as EventDoc<Timestamp>)),
+        events: eventSnap.docs.map((d) =>
+          toEventView(
+            d.id,
+            d.data() as EventDoc<Timestamp>,
+            (nextSite ?? seedSite).guestlistUrl ?? seedSite.guestlistUrl,
+          ),
+        ),
         videos: (ytSnap.data() as FeedDoc<FeedVideo> | undefined)?.items ?? [],
         posts: (igSnap.data() as FeedDoc<FeedPost> | undefined)?.items ?? [],
       }

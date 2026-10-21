@@ -378,6 +378,8 @@ export const seedSite: SiteSettings = {
   },
   producedPhoto: '',
   contactUrl: 'https://linktr.ee/ajayadam',
+  guestlistUrl:
+    'https://getguestlist.io/signup?l=469768da-f313-4cb9&d=guestlist&code=Lection_insta',
   rider: {
     gear: ['2 × Pioneer CDJs (2000 or higher)', '1 × Pioneer DJM S9 / S7 / S11'],
     note: {

@@ -465,7 +465,9 @@
       "tracks": "Produktionen (rechts)",
       "producedPhoto": "Foto (freigestellt)",
       "contactUrl": "Link für „Click here“ (Kontakt)",
-      "contactUrlHint": "(leer = Booking-Formular)"
+      "contactUrlHint": "(leer = Booking-Formular)",
+      "guestlistUrl": "Standard-Gästelisten-Link",
+      "guestlistUrlHint": "(für Events ohne eigenen Link)"
     },
     "media": {
       "upload": "Hochladen",

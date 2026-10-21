@@ -97,19 +97,27 @@ function EventDetail({ event }: { event: EventView }) {
     setSheet(null)
   }
 
-  // Primary action: guestlist (or waitlist), else external tickets.
-  const guestlistAction =
-    state.guestlist === 'open' || state.guestlist === 'full' ? (
-      <button
-        type="button"
-        onClick={() => setSheet('guestlist')}
-        className={buttonClass('primary', 'flex-1')}
-      >
-        {state.guestlist === 'open'
-          ? t('events.detail.joinGuestlist')
-          : t('events.detail.joinWaitlist')}
-      </button>
-    ) : null
+  // Primary action: external guestlist page, own guestlist (or waitlist), else external tickets.
+  const guestlistAction = state.externalGuestlist ? (
+    <a
+      href={g.externalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={buttonClass('primary', 'flex-1')}
+    >
+      {t('events.detail.joinGuestlist')} <ArrowUpRight className="size-4" aria-hidden="true" />
+    </a>
+  ) : state.guestlist === 'open' || state.guestlist === 'full' ? (
+    <button
+      type="button"
+      onClick={() => setSheet('guestlist')}
+      className={buttonClass('primary', 'flex-1')}
+    >
+      {state.guestlist === 'open'
+        ? t('events.detail.joinGuestlist')
+        : t('events.detail.joinWaitlist')}
+    </button>
+  ) : null
   const ticketAction = state.externalTickets ? (
     <a
       href={event.ticketing.externalUrl}
@@ -169,7 +177,6 @@ function EventDetail({ event }: { event: EventView }) {
                 <img
                   src={event.flyerUrl}
                   alt={event.title}
-                  fetchPriority="high"
                   className={`aspect-[4/5] w-full object-cover ${state.isPast ? 'grayscale-[60%]' : ''}`}
                 />
               ) : (

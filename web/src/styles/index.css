@@ -163,25 +163,45 @@ html[data-site] {
   opacity: 0.35;
 }
 
-/* Cut-out portrait: fade the photo's own backdrop into the page at the left and top edges. */
-.hero-photo {
-  mask-image:
-    linear-gradient(to right, transparent, #000 30%),
-    linear-gradient(to bottom, transparent, #000 12%, #000 90%, transparent);
-  mask-composite: intersect;
+/* Cover logo (components/motion/AnimatedLogo.tsx): slow float and a warm sheen every 7 s. */
+.logo-float {
+  animation: logo-float 9s ease-in-out infinite;
 }
-/* Other cut-outs (about, contact): soften all edges so their backdrop never shows as a box. */
-.photo-soft {
-  mask-image:
-    linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
-    linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
-  mask-composite: intersect;
+@keyframes logo-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
 }
-@media (max-width: 767px) {
-  .hero-photo {
-    mask-image:
-      linear-gradient(to right, transparent, #000 30%),
-      linear-gradient(to top, transparent, #000 25%);
+.logo-sheen {
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  background: linear-gradient(
+    105deg,
+    transparent 43%,
+    rgb(214 168 112 / 0.85) 48%,
+    rgb(255 236 210 / 0.95) 50%,
+    rgb(214 168 112 / 0.85) 52%,
+    transparent 57%
+  );
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  /* 0% = band just right of the logo, 100% = just left of it. */
+  animation: logo-sheen 7s ease-in-out 2.2s infinite;
+  background-position: 0% 0;
+}
+@keyframes logo-sheen {
+  0% {
+    background-position: 0% 0;
+  }
+  30%,
+  100% {
+    background-position: 100% 0;
   }
 }
 

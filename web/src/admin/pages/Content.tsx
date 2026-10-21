@@ -241,6 +241,13 @@ export default function Content() {
                     value={stat.value}
                     onChange={(value) => setStat(i, { value })}
                   />
+                  <TextField
+                    className="sm:col-span-4"
+                    label={t('admin.content.statUrl')}
+                    placeholder="https://"
+                    value={stat.url ?? ''}
+                    onChange={(url) => setStat(i, { url })}
+                  />
                   <button
                     type="button"
                     onClick={() => set({ stats: site.stats.filter((_, j) => j !== i) })}
@@ -261,6 +268,56 @@ export default function Content() {
             >
               <Plus className="size-4" aria-hidden="true" /> {t('admin.content.statAdd')}
             </button>
+          </Card>
+          <Card title={t('admin.content.artistsTitle')}>
+            <div className="space-y-4">
+              <TextField
+                label={t('admin.content.artistsList')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={10}
+                value={site.artists.join('\n')}
+                onChange={(v) => set({ artists: lines(v) })}
+              />
+              <MediaField
+                label={t('admin.content.artistsPhoto')}
+                value={site.artistsPhoto}
+                onChange={(artistsPhoto) => set({ artistsPhoto })}
+                folder="press"
+                image={{ maxSize: 1400 }}
+                aspect="aspect-[3/4]"
+              />
+            </div>
+          </Card>
+          <Card title={t('admin.content.producedTitle')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label={t('admin.content.remixes')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={10}
+                value={site.productions.remixes.join('\n')}
+                onChange={(v) => set({ productions: { ...site.productions, remixes: lines(v) } })}
+              />
+              <TextField
+                label={t('admin.content.tracks')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={10}
+                value={site.productions.tracks.join('\n')}
+                onChange={(v) => set({ productions: { ...site.productions, tracks: lines(v) } })}
+              />
+              <div className="sm:col-span-2">
+                <MediaField
+                  label={t('admin.content.producedPhoto')}
+                  value={site.producedPhoto}
+                  onChange={(producedPhoto) => set({ producedPhoto })}
+                  folder="press"
+                  image={{ maxSize: 1200 }}
+                  aspect="aspect-square"
+                />
+              </div>
+            </div>
           </Card>
           <Card title={t('admin.content.riderTitle')}>
             <div className="space-y-4">
@@ -295,6 +352,12 @@ export default function Content() {
                 label={t('admin.content.liveSets')}
                 value={site.liveSetsUrl}
                 onChange={(liveSetsUrl) => set({ liveSetsUrl })}
+              />
+              <TextField
+                label={t('admin.content.contactUrl')}
+                hint={t('admin.content.contactUrlHint')}
+                value={site.contactUrl}
+                onChange={(contactUrl) => set({ contactUrl })}
               />
               <MediaField
                 label={t('admin.content.contactPhoto')}

@@ -37,6 +37,7 @@ interface Form {
   lineup: string
   minAge: string
   published: boolean
+  glUrl: string
   glEnabled: boolean
   capacity: string
   deadline: string
@@ -59,6 +60,7 @@ function toForm(e: AdminEvent): Form {
     lineup: e.lineup.join('\n'),
     minAge: e.minAge === null ? '' : String(e.minAge),
     published: e.status === 'published',
+    glUrl: e.guestlist.externalUrl ?? '',
     glEnabled: e.guestlist.enabled,
     capacity: String(e.guestlist.capacity),
     deadline: e.guestlist.deadline ? dateToViennaLocal(e.guestlist.deadline.toDate()) : '',
@@ -79,7 +81,8 @@ function validate(f: Form): string | null {
   if (f.glEnabled && (!isInt(f.capacity, 1) || !isInt(f.maxPlusOnes)))
     return 'admin.events.errors.guestlist'
   if (Number(f.maxPlusOnes) > 10) return 'admin.events.errors.guestlist'
-  if (!isUrl(f.externalUrl) || !isUrl(f.mapsUrl)) return 'admin.events.errors.url'
+  if (!isUrl(f.externalUrl) || !isUrl(f.mapsUrl) || !isUrl(f.glUrl.trim()))
+    return 'admin.events.errors.url'
   if (f.published && !f.venueName.trim()) return 'admin.events.errors.venue'
   return null
 }
@@ -152,6 +155,7 @@ export default function EventEditor() {
         minAge: form.minAge === '' ? null : Number(form.minAge),
         status: form.published ? 'published' : 'draft',
         // count is maintained by joinGuestlist and the guestlist admin, never overwritten here.
+        'guestlist.externalUrl': form.glUrl.trim(),
         'guestlist.enabled': form.glEnabled,
         'guestlist.capacity': Number(form.capacity) || 0,
         'guestlist.maxPlusOnes': Number(form.maxPlusOnes) || 0,
@@ -329,6 +333,7 @@ export default function EventEditor() {
               hint={t('admin.events.flyerHint')}
               value={form.flyerUrl}
               onChange={(v) => set('flyerUrl', v)}
+              allowLink
               folder="flyers"
               image={{ aspect: 4 / 5, maxSize: 1600 }}
               aspect="aspect-[4/5]"
@@ -337,17 +342,26 @@ export default function EventEditor() {
 
           <Card title={t('admin.events.guestlist')}>
             <div className="space-y-4">
-              <Toggle
-                checked={form.glEnabled}
-                onChange={(v) => set('glEnabled', v)}
-                label={t('admin.events.guestlistEnabled')}
+              <TextField
+                label={t('admin.events.guestlistLink')}
+                hint={t('admin.events.guestlistLinkHint')}
+                placeholder="https://getguestlist.io/…"
+                value={form.glUrl}
+                onChange={(v) => set('glUrl', v)}
               />
-              {!form.glEnabled && !form.externalUrl.trim() && (
+              {!form.glUrl.trim() && (
+                <Toggle
+                  checked={form.glEnabled}
+                  onChange={(v) => set('glEnabled', v)}
+                  label={t('admin.events.guestlistEnabled')}
+                />
+              )}
+              {!form.glUrl.trim() && !form.glEnabled && !form.externalUrl.trim() && (
                 <p className="rounded-[14px] border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-100">
                   {t('admin.events.noSignupHint')}
                 </p>
               )}
-              {form.glEnabled && (
+              {!form.glUrl.trim() && form.glEnabled && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
                     <TextField

@@ -53,7 +53,19 @@ export function Stats() {
               delay={i * 0.08}
               className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 md:grid-cols-[5rem_minmax(0,16rem)_1fr] md:gap-10"
             >
-              <SocialIcon icon={s.icon} colored className="size-10 md:size-16" />
+              {s.url ? (
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={localize(s.label, lang)}
+                  className="pressable transition-opacity hover:opacity-70"
+                >
+                  <SocialIcon icon={s.icon} colored className="size-10 md:size-16" />
+                </a>
+              ) : (
+                <SocialIcon icon={s.icon} colored className="size-10 md:size-16" />
+              )}
               <dt className="text-base leading-tight uppercase md:text-right md:text-2xl">
                 {localize(s.label, lang)}
               </dt>

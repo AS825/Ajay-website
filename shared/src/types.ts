@@ -41,7 +41,16 @@ export interface LinkDoc {
 
 /** Home page blocks, in the order of the press kit. */
 export type SectionId =
-  'about' | 'info' | 'stats' | 'venues' | 'rider' | 'livesets' | 'events' | 'contact'
+  | 'events'
+  | 'about'
+  | 'info'
+  | 'stats'
+  | 'venues'
+  | 'artists'
+  | 'produced'
+  | 'rider'
+  | 'livesets'
+  | 'contact'
 
 export interface SectionConfig {
   id: SectionId
@@ -54,6 +63,8 @@ export interface StatItem {
   label: Localized
   /** Shown as typed, e.g. "8M+"; the leading number counts up on screen. */
   value: string
+  /** Profile the row links to. */
+  url?: string
 }
 
 export interface SiteSettings {
@@ -75,6 +86,14 @@ export interface SiteSettings {
   venues: { austria: string[]; international: string[] }
   venuesPhoto: string
   riderPhoto: string
+  /** "Artist support": artists Ajay played for / with. */
+  artists: string[]
+  artistsPhoto: string
+  /** "Produced by Ajay": remixes (left column) and productions (right column). */
+  productions: { remixes: string[]; tracks: string[] }
+  producedPhoto: string
+  /** Where "click here" in the contact block leads. */
+  contactUrl: string
   /** Technical rider: one line per piece of gear, plus a note. */
   rider: { gear: string[]; note: Localized }
   /** YouTube playlist with live sets (shown with a QR code). */
@@ -117,6 +136,8 @@ export interface EventDoc<T = TimestampLike> {
   dresscode?: Localized
   status: EventStatus
   guestlist: {
+    /** External sign-up page (e.g. getguestlist.io); replaces the own guestlist when set. */
+    externalUrl?: string
     enabled: boolean
     capacity: number
     deadline: T | null

@@ -70,7 +70,8 @@
       "waitlistInfo": "The guestlist is full. You can join the waitlist and will be notified if a spot opens up.",
       "spotsLeft": "{{count}} spots left",
       "noLineup": "TBA"
-    }
+    },
+    "guestlist": "Guestlist"
   },
   "tiles": {
     "eyebrow": "Explore",
@@ -277,7 +278,9 @@
         "url": "Please enter links starting with https://",
         "venue": "Published events need a venue name."
       },
-      "noSignupHint": "Without a guestlist or ticket link, the event page has no sign-up button."
+      "noSignupHint": "Without a guestlist or ticket link, the event page has no sign-up button.",
+      "guestlistLink": "Guestlist link",
+      "guestlistLinkHint": "(e.g. getguestlist.io – replaces the own guestlist)"
     },
     "guestlist": {
       "confirmed": "Confirmed",
@@ -367,7 +370,9 @@
         "rider": "DJ rider",
         "livesets": "Live DJ sets",
         "lection": "LECTION",
-        "contact": "Contact"
+        "contact": "Contact",
+        "artists": "Artist support",
+        "produced": "Produced by Ajay"
       },
       "style": "Look",
       "styles": {
@@ -449,7 +454,17 @@
       "riderNote": "Note for promoters",
       "liveSets": "Live sets playlist (YouTube)",
       "contactPhoto": "Contact photo",
-      "riderPhoto": "Photo of the setup"
+      "riderPhoto": "Photo of the setup",
+      "statUrl": "Link to the profile",
+      "artistsTitle": "Artist support",
+      "artistsList": "Artists",
+      "artistsPhoto": "Photo for artist support",
+      "producedTitle": "Produced by Ajay",
+      "remixes": "Remixes (left)",
+      "tracks": "Productions (right)",
+      "producedPhoto": "Photo (cut-out)",
+      "contactUrl": "“Click here” link (contact)",
+      "contactUrlHint": "(empty = booking form)"
     },
     "media": {
       "upload": "Upload",
@@ -459,7 +474,8 @@
       "tooLarge": "File is too large (max. {{mb}} MB).",
       "videoHeavy": "Note: videos over 3 MB slow down the page on mobile.",
       "addPhotos": "Add photos",
-      "uploading": "{{count}} left…"
+      "uploading": "{{count}} left…",
+      "orLink": "… or paste an image link"
     },
     "feeds": {
       "title": "Automatic content",
@@ -628,5 +644,13 @@
   "contact": {
     "title": "Contact",
     "cta": "Click here"
+  },
+  "artists": {
+    "title": "Artist support",
+    "more": "And many more!"
+  },
+  "produced": {
+    "title": "Produced by Ajay",
+    "more": "Many more …"
   }
 }

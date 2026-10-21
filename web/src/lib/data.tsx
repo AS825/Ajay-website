@@ -67,6 +67,7 @@ interface Snapshot {
 }
 
 const CACHE_KEY = 'ajay:site-data:v1'
+const OLD_LECTION_URL = 'https://linktr.ee/lection.vie'
 
 /**
  * Last successfully loaded content, kept in localStorage: the page renders it
@@ -157,6 +158,14 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
               ...data,
               // Placeholder bios from the first import give way to the press-kit text.
               bioShort: isTodo(data.bioShort?.en) ? seedSite.bioShort : data.bioShort,
+              // Links from the press kit replace the first placeholders.
+              spotifyArtistUrl: isTodo(data.spotifyArtistUrl)
+                ? seedSite.spotifyArtistUrl
+                : data.spotifyArtistUrl,
+              lectionUrl:
+                !data.lectionUrl || data.lectionUrl === OLD_LECTION_URL
+                  ? seedSite.lectionUrl
+                  : data.lectionUrl,
               sections: normalizeSections(data.sections),
             }
           })()

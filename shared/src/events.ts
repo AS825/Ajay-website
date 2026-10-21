@@ -7,6 +7,8 @@ export interface EventState {
   isLive: boolean
   /** open → join; full → join the waitlist (SPEC §7); closed → deadline passed. */
   guestlist: GuestlistState
+  /** Sign-up happens on an external guestlist page. */
+  externalGuestlist: boolean
   externalTickets: boolean
 }
 
@@ -15,13 +17,20 @@ export function eventState(e: EventDoc<Date>, now: Date = new Date()): EventStat
   const isPast = e.endsAt < now
   const isLive = !isPast && e.startsAt <= now
   const g = e.guestlist
+  const externalGuestlist = !isPast && !!g.externalUrl?.trim()
   let guestlist: GuestlistState = 'disabled'
-  if (g.enabled && !isPast) {
+  if (g.enabled && !isPast && !externalGuestlist) {
     if (g.deadline !== null && g.deadline < now) guestlist = 'closed'
     else if (g.count >= g.capacity) guestlist = 'full'
     else guestlist = 'open'
   }
-  return { isPast, isLive, guestlist, externalTickets: !isPast && !!e.ticketing.externalUrl }
+  return {
+    isPast,
+    isLive,
+    guestlist,
+    externalGuestlist,
+    externalTickets: !isPast && !!e.ticketing.externalUrl,
+  }
 }
 
 export function googleMapsUrl(venue: EventDoc['venue']): string {

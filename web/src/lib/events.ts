@@ -9,7 +9,7 @@ export function eventBadge(e: EventView, now = new Date()): EventBadge {
   const s = eventState(e, now)
   if (s.isPast) return 'past'
   if (s.isLive) return 'live'
-  if (s.guestlist === 'open') return 'guestlistOpen'
+  if (s.guestlist === 'open' || s.externalGuestlist) return 'guestlistOpen'
   if (s.externalTickets) return 'tickets'
   if (s.guestlist === 'full') return 'guestlistFull'
   return null

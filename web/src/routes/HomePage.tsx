@@ -6,6 +6,8 @@ import { About } from '../features/home/About'
 import { MainInfo } from '../features/home/MainInfo'
 import { Stats } from '../features/home/Stats'
 import { Venues } from '../features/home/Venues'
+import { Artists } from '../features/home/Artists'
+import { Produced } from '../features/home/Produced'
 import { Rider } from '../features/home/Rider'
 import { LiveSets } from '../features/home/LiveSets'
 import { UpcomingEvents } from '../features/home/UpcomingEvents'
@@ -16,6 +18,8 @@ const SECTIONS: Record<SectionId, ComponentType> = {
   info: MainInfo,
   stats: Stats,
   venues: Venues,
+  artists: Artists,
+  produced: Produced,
   rider: Rider,
   livesets: LiveSets,
   events: UpcomingEvents,

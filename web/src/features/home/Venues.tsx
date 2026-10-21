@@ -1,28 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { ClipReveal, Reveal } from '../../components/motion/Reveal'
+import { ClipReveal } from '../../components/motion/Reveal'
+import { BulletList } from '../../components/ui/BulletList'
 import { Container, Section } from '../../components/ui/Section'
 import { useSiteData } from '../../lib/data'
 import { BRAND } from '../../lib/brand'
 import { useImageWithFallback } from '../../lib/hooks'
-
-function VenueList({ title, venues }: { title: string; venues: string[] }) {
-  const { t } = useTranslation()
-  return (
-    <div>
-      <h3 className="mb-3 text-sm font-bold tracking-[0.12em] uppercase">{title}:</h3>
-      <ul className="space-y-0.5 text-lg uppercase md:text-xl">
-        {[...venues, t('venues.more')].map((v, i) => (
-          <li key={`${v}-${i}`}>
-            <Reveal delay={Math.min(i, 12) * 0.03} className="flex items-center gap-3">
-              <span className="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true" />
-              <span>{v}</span>
-            </Reveal>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
 
 /** "Venues played" (press kit): club photo plus Austria / international lists. */
 export function Venues() {
@@ -39,9 +21,14 @@ export function Venues() {
           <img {...photo} alt="" loading="lazy" className="size-full object-cover" />
         </ClipReveal>
         <div className="grid gap-10 sm:grid-cols-2">
-          {austria.length > 0 && <VenueList title={t('venues.austria')} venues={austria} />}
+          {austria.length > 0 && (
+            <BulletList title={t('venues.austria')} items={[...austria, t('venues.more')]} />
+          )}
           {international.length > 0 && (
-            <VenueList title={t('venues.international')} venues={international} />
+            <BulletList
+              title={t('venues.international')}
+              items={[...international, t('venues.more')]}
+            />
           )}
         </div>
       </Container>

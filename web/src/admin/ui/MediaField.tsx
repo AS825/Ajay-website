@@ -23,6 +23,7 @@ export function MediaField({
   image,
   aspect = 'aspect-video',
   hint,
+  allowLink = false,
 }: {
   label: string
   value: string
@@ -32,6 +33,8 @@ export function MediaField({
   image?: ImageOptions
   aspect?: string
   hint?: string
+  /** Also accept a pasted link (e.g. /flyers/x.webp shipped with the site) instead of an upload. */
+  allowLink?: boolean
 }) {
   const { t } = useTranslation()
   const id = useId()
@@ -89,7 +92,7 @@ export function MediaField({
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-2">
           <input
             id={id}
             ref={input}
@@ -107,6 +110,17 @@ export function MediaField({
             <Upload className="size-4" aria-hidden="true" />{' '}
             {value ? t('admin.media.replace') : t('admin.media.upload')}
           </button>
+          {allowLink && (
+            <input
+              type="text"
+              inputMode="url"
+              value={value}
+              onChange={(e) => onChange(e.target.value.trim())}
+              placeholder={t('admin.media.orLink')}
+              aria-label={t('admin.media.orLink')}
+              className="min-h-10 w-full min-w-0 rounded-[14px] border border-hairline bg-white/[0.06] px-3 text-xs"
+            />
+          )}
           {value && (
             <button
               type="button"

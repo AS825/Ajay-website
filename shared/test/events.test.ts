@@ -33,12 +33,19 @@ test('live and past', () => {
     isPast: false,
     isLive: true,
     guestlist: 'open',
+    externalGuestlist: false,
     externalTickets: true,
   })
   const past = eventState(e, new Date('2026-10-17T00:00:00Z'))
   assert.equal(past.isPast, true)
   assert.equal(past.guestlist, 'disabled')
   assert.equal(past.externalTickets, false)
+  const ext = eventState(
+    { ...e, guestlist: { ...e.guestlist, externalUrl: 'https://getguestlist.io/x' } },
+    new Date('2026-10-15T20:00:00Z'),
+  )
+  assert.equal(ext.externalGuestlist, true)
+  assert.equal(ext.guestlist, 'disabled')
 })
 
 test('maps links', () => {
@@ -62,7 +69,18 @@ test('normalizeSections inserts new sections after their predecessor', async () 
   ])
   assert.deepEqual(
     out.map((s) => s.id),
-    ['events', 'about', 'info', 'stats', 'venues', 'rider', 'livesets', 'contact'],
+    [
+      'events',
+      'about',
+      'info',
+      'stats',
+      'venues',
+      'artists',
+      'produced',
+      'rider',
+      'livesets',
+      'contact',
+    ],
   )
   assert.equal(out.find((s) => s.id === 'venues')?.visible, false)
 })

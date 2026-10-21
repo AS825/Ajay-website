@@ -6,6 +6,7 @@ import { useLang } from '../../i18n'
 import { easeOutExpo } from '../../lib/motion'
 import { BRAND } from '../../lib/brand'
 import { useImageWithFallback } from '../../lib/hooks'
+import { AnimatedLogo } from '../../components/motion/AnimatedLogo'
 
 /**
  * Press-kit cover: the logo in the middle with two short lines below it and the
@@ -44,8 +45,7 @@ export function Hero() {
       <m.img
         {...photo}
         alt=""
-        fetchPriority="high"
-        className="hero-photo absolute top-0 right-0 -z-10 h-[62svh] w-auto max-w-none object-contain object-top md:top-auto md:right-[6vw] md:bottom-0 md:h-full"
+        className="absolute top-0 right-0 -z-10 h-[60svh] w-auto max-w-none object-contain object-top md:top-auto md:right-[-10vw] md:bottom-0 md:h-[80%] md:object-bottom lg:right-[-6vw]"
         style={reduced ? undefined : { y: photoY }}
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -64,14 +64,9 @@ export function Hero() {
           ...(reduced ? {} : { y: contentY, opacity: contentOpacity }),
         }}
       >
-        <m.h1
-          className="w-[min(78vw,400px)]"
-          initial={reduced ? false : { opacity: 0, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 1.6, ease: easeOutExpo, delay: 0.2 }}
-        >
-          <img {...logo} alt={site.artistName} className="w-full" />
-        </m.h1>
+        <h1 className="w-[min(80vw,440px)]">
+          <AnimatedLogo src={logo.src} onError={logo.onError} alt={site.artistName} />
+        </h1>
         {line1 && (
           <m.p className="mt-2 text-2xl uppercase md:text-3xl" {...fade(0.7)}>
             {line1}

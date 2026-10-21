@@ -4,7 +4,8 @@ import { ArrowRight } from 'lucide-react'
 import { Reveal } from '../../components/motion/Reveal'
 import { Container, Section } from '../../components/ui/Section'
 import { useSiteData } from '../../lib/data'
-import { eventBadge, isUpcoming } from '../../lib/events'
+import { isUpcoming } from '../../lib/events'
+import { eventState } from '@ajay/shared'
 import { formatEventDate } from '../../lib/format'
 import { useLang } from '../../i18n'
 
@@ -25,34 +26,52 @@ export function UpcomingEvents() {
           <ul className="mx-auto max-w-3xl border-t border-hairline">
             {upcoming.map((e, i) => {
               const d = formatEventDate(e.startsAt, lang)
-              const badge = eventBadge(e)
+              const state = eventState(e)
               return (
                 <li key={e.id} className="border-b border-hairline">
-                  <Reveal delay={Math.min(i, 4) * 0.06}>
+                  <Reveal
+                    delay={Math.min(i, 4) * 0.06}
+                    className="flex items-center gap-4 py-5 md:gap-6"
+                  >
                     <Link
                       to={`/events/${e.slug}`}
-                      className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-5 md:grid-cols-[6rem_1fr_auto]"
+                      className="group flex min-w-0 flex-1 items-center gap-4 md:gap-6"
                     >
-                      <span className="leading-none uppercase">
+                      {e.flyerUrl && (
+                        <img
+                          src={e.flyerUrl}
+                          alt=""
+                          loading="lazy"
+                          className="aspect-[9/16] w-16 shrink-0 object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.03] md:w-20"
+                        />
+                      )}
+                      <span className="w-16 shrink-0 leading-none uppercase md:w-20">
                         <span className="block text-3xl md:text-4xl">{d.day}</span>
                         <span className="text-sm">
                           {d.month} · {d.weekday}
                         </span>
                       </span>
-                      <span className="min-w-0">
+                      <span className="min-w-0 flex-1">
                         <span className="block truncate text-xl uppercase md:text-2xl">
                           {e.title}
                         </span>
                         <span className="block truncate text-sm text-muted">
                           {e.venue.name} · {d.time}
-                          {badge === 'guestlistOpen' && ` · ${t('events.badge.guestlistOpen')}`}
                         </span>
                       </span>
-                      <ArrowRight
-                        className="size-5 transition-transform duration-500 group-hover:translate-x-1"
-                        aria-hidden="true"
-                      />
                     </Link>
+                    {state.externalGuestlist ? (
+                      <a
+                        href={e.guestlist.externalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="pressable shrink-0 rounded-full border border-current px-4 py-2 text-xs uppercase transition-colors hover:bg-white hover:text-black md:text-sm"
+                      >
+                        {t('events.guestlist')}
+                      </a>
+                    ) : (
+                      <ArrowRight className="size-5 shrink-0" aria-hidden="true" />
+                    )}
                   </Reveal>
                 </li>
               )

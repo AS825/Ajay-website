@@ -70,7 +70,8 @@
       "waitlistInfo": "Die Gästeliste ist voll. Du kannst dich auf die Warteliste setzen und wirst benachrichtigt, wenn ein Platz frei wird.",
       "spotsLeft": "Noch {{count}} Plätze",
       "noLineup": "TBA"
-    }
+    },
+    "guestlist": "Gästeliste"
   },
   "tiles": {
     "eyebrow": "Entdecken",
@@ -277,7 +278,9 @@
         "url": "Bitte Links mit https:// eingeben.",
         "venue": "Veröffentlichte Events brauchen eine Location."
       },
-      "noSignupHint": "Ohne Gästeliste oder Ticketlink gibt es auf der Event-Seite keinen Anmelde-Button."
+      "noSignupHint": "Ohne Gästeliste oder Ticketlink gibt es auf der Event-Seite keinen Anmelde-Button.",
+      "guestlistLink": "Gästelisten-Link",
+      "guestlistLinkHint": "(z. B. getguestlist.io – ersetzt die eigene Gästeliste)"
     },
     "guestlist": {
       "confirmed": "Bestätigt",
@@ -367,7 +370,9 @@
         "rider": "DJ Rider",
         "livesets": "Live DJ Sets",
         "lection": "LECTION",
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "artists": "Artist Support",
+        "produced": "Produced by Ajay"
       },
       "style": "Look",
       "styles": {
@@ -449,7 +454,17 @@
       "riderNote": "Hinweis für Veranstalter",
       "liveSets": "Live-Set-Playlist (YouTube)",
       "contactPhoto": "Foto für Kontakt",
-      "riderPhoto": "Foto vom Setup"
+      "riderPhoto": "Foto vom Setup",
+      "statUrl": "Link zum Profil",
+      "artistsTitle": "Artist Support",
+      "artistsList": "Artists",
+      "artistsPhoto": "Foto für Artist Support",
+      "producedTitle": "Produced by Ajay",
+      "remixes": "Remixes (links)",
+      "tracks": "Produktionen (rechts)",
+      "producedPhoto": "Foto (freigestellt)",
+      "contactUrl": "Link für „Click here“ (Kontakt)",
+      "contactUrlHint": "(leer = Booking-Formular)"
     },
     "media": {
       "upload": "Hochladen",
@@ -459,7 +474,8 @@
       "tooLarge": "Datei zu groß (max. {{mb}} MB).",
       "videoHeavy": "Hinweis: Videos über 3 MB machen die Seite auf dem Handy langsam.",
       "addPhotos": "Fotos hinzufügen",
-      "uploading": "Noch {{count}}…"
+      "uploading": "Noch {{count}}…",
+      "orLink": "… oder Bild-Link einfügen"
     },
     "feeds": {
       "title": "Automatische Inhalte",
@@ -628,5 +644,13 @@
   "contact": {
     "title": "Kontakt",
     "cta": "Hier klicken"
+  },
+  "artists": {
+    "title": "Artist Support",
+    "more": "Und viele mehr!"
+  },
+  "produced": {
+    "title": "Produced by Ajay",
+    "more": "Und viele mehr …"
   }
 }

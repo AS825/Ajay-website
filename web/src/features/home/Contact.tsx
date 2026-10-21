@@ -31,7 +31,7 @@ export function Contact() {
           {...photo}
           alt={site.artistName}
           loading="lazy"
-          className="photo-soft mx-auto w-[min(86vw,460px)]"
+          className="mx-auto w-[min(86vw,460px)]"
           initial={reduced ? false : { opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-10% 0px' }}
@@ -39,7 +39,7 @@ export function Contact() {
         />
         <Reveal className="flex justify-center self-center pb-12 md:pb-0">
           <SmartLink
-            href="/booking"
+            href={site.contactUrl || '/booking'}
             className="pressable inline-flex items-center rounded-full bg-[#fff] px-6 py-2 text-2xl text-[#141110] uppercase transition-colors hover:bg-[#141110] hover:text-[#fff] md:text-4xl"
           >
             {t('contact.cta')}

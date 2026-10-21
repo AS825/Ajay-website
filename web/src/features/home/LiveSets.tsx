@@ -13,13 +13,13 @@ export function LiveSets() {
   if (!/^https?:\/\//.test(url)) return null
 
   return (
-    <Section id="livesets" title={t('livesets.title')}>
-      <Container>
+    <Section id="livesets" title={t('livesets.title')} align="center">
+      <Container className="flex justify-center">
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex flex-col items-start gap-4"
+          className="group inline-flex flex-col items-center gap-4"
         >
           <ClipReveal className="w-64 md:w-80">
             <QrCode text={url} label={t('livesets.qr')} className="rounded-none p-4" />

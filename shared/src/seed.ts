@@ -87,12 +87,11 @@ export const seedLinks: Record<string, LinkDoc> = {
   // Streaming
   spotify: {
     title: 'Spotify',
-    subtitle: { en: 'TODO: artist URL' },
-    url: 'TODO',
+    url: 'https://open.spotify.com/artist/2e7t4A3yqveh7uPvrjeAYF',
     category: 'streaming',
     icon: 'spotify',
     order: 10,
-    visible: false,
+    visible: true,
   },
   appleMusic: {
     title: 'Apple Music',
@@ -378,6 +377,7 @@ export const seedSite: SiteSettings = {
   },
   producedPhoto: '',
   contactUrl: 'https://linktr.ee/ajayadam',
+  pressKitUrl: 'https://e.pcloud.link/publink/show?code=kZ3sC77Zq5ls0hfjSBbkkJNYGU8g781jJow7',
   guestlistUrl:
     'https://getguestlist.io/signup?l=469768da-f313-4cb9&d=guestlist&code=Lection_insta',
   rider: {
@@ -401,6 +401,7 @@ export const seedSite: SiteSettings = {
     { id: 'produced', visible: true },
     { id: 'rider', visible: true },
     { id: 'livesets', visible: true },
+    { id: 'links', visible: true },
     { id: 'contact', visible: true },
   ],
   legal: { impressum: TODO_LEGAL, datenschutz: TODO_LEGAL, agb: TODO_LEGAL },

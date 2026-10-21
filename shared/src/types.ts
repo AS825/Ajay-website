@@ -50,6 +50,7 @@ export type SectionId =
   | 'produced'
   | 'rider'
   | 'livesets'
+  | 'links'
   | 'contact'
 
 export interface SectionConfig {
@@ -94,6 +95,8 @@ export interface SiteSettings {
   producedPhoto: string
   /** Where "click here" in the contact block leads. */
   contactUrl: string
+  /** Press kit download (menu and mobile navigation). */
+  pressKitUrl: string
   /** Guestlist page for events that have no link of their own. */
   guestlistUrl: string
   /** Technical rider: one line per piece of gear, plus a note. */

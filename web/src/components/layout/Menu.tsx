@@ -14,15 +14,16 @@ const ITEMS = [
   { key: 'venues', href: '/#venues' },
   { key: 'rider', href: '/#rider' },
   { key: 'livesets', href: '/#livesets' },
+  { key: 'links', href: '/#links' },
   { key: 'events', href: '/events' },
-  { key: 'press', href: '/press' },
+  { key: 'press', href: 'PRESS_KIT' },
   { key: 'booking', href: '/booking' },
 ] as const
 
 /** Full-screen overlay menu: fades in, links rise in one after another. */
 export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation()
-  const { linksBy } = useSiteData()
+  const { linksBy, site } = useSiteData()
   const reduced = useReducedMotion()
   useScrollLock(open)
 
@@ -76,7 +77,7 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
                     style={{ transformOrigin: 'left bottom' }}
                   >
                     <SmartLink
-                      href={item.href}
+                      href={item.href === 'PRESS_KIT' ? site.pressKitUrl || '/press' : item.href}
                       onClick={onClose}
                       className="pressable block py-1 text-[clamp(2.25rem,9vw,4rem)] leading-[1.05] tracking-[-0.03em] uppercase transition-opacity hover:opacity-50"
                     >

@@ -12,6 +12,8 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --header-h: 64px;
+  /* Height of the phone tab bar (components/layout/MobileNav.tsx); 0 from md up. */
+  --mobile-nav-h: 64px;
   color-scheme: dark;
 }
 
@@ -82,6 +84,12 @@ html[data-site] {
   ::selection {
     background: #141110;
     color: var(--sand);
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --mobile-nav-h: 0px;
   }
 }
 

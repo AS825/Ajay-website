@@ -79,6 +79,7 @@ test('normalizeSections inserts new sections after their predecessor', async () 
       'produced',
       'rider',
       'livesets',
+      'links',
       'contact',
     ],
   )

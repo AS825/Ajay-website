@@ -12,6 +12,7 @@ import { Rider } from '../features/home/Rider'
 import { LiveSets } from '../features/home/LiveSets'
 import { UpcomingEvents } from '../features/home/UpcomingEvents'
 import { Contact } from '../features/home/Contact'
+import { Links } from '../features/home/Links'
 
 const SECTIONS: Record<SectionId, ComponentType> = {
   about: About,
@@ -23,6 +24,7 @@ const SECTIONS: Record<SectionId, ComponentType> = {
   rider: Rider,
   livesets: LiveSets,
   events: UpcomingEvents,
+  links: Links,
   contact: Contact,
 }
 

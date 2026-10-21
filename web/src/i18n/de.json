@@ -13,7 +13,9 @@
     "skipToContent": "Zum Inhalt springen",
     "venues": "Venues",
     "rider": "DJ Rider",
-    "livesets": "Live-Sets"
+    "livesets": "Sets",
+    "links": "Links",
+    "mobile": "Hauptnavigation"
   },
   "lang": {
     "label": "Sprache",
@@ -373,7 +375,8 @@
         "lection": "LECTION",
         "contact": "Kontakt",
         "artists": "Artist Support",
-        "produced": "Produced by Ajay"
+        "produced": "Produced by Ajay",
+        "links": "Links (Linktree)"
       },
       "style": "Look",
       "styles": {
@@ -467,7 +470,8 @@
       "contactUrl": "Link für „Click here“ (Kontakt)",
       "contactUrlHint": "(leer = Booking-Formular)",
       "guestlistUrl": "Standard-Gästelisten-Link",
-      "guestlistUrlHint": "(für Events ohne eigenen Link)"
+      "guestlistUrlHint": "(für Events ohne eigenen Link)",
+      "pressKitUrl": "Press-Kit-Link (pCloud)"
     },
     "media": {
       "upload": "Hochladen",
@@ -657,5 +661,14 @@
   "produced": {
     "title": "Produced by Ajay",
     "more": "Und viele mehr …"
+  },
+  "links": {
+    "title": "Links",
+    "groups": {
+      "social": "Socials",
+      "streaming": "Streaming",
+      "sets": "DJ-Sets",
+      "drops": "Drops & Tools"
+    }
   }
 }

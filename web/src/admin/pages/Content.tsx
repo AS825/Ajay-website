@@ -354,6 +354,11 @@ export default function Content() {
                 onChange={(liveSetsUrl) => set({ liveSetsUrl })}
               />
               <TextField
+                label={t('admin.content.pressKitUrl')}
+                value={site.pressKitUrl}
+                onChange={(pressKitUrl) => set({ pressKitUrl })}
+              />
+              <TextField
                 label={t('admin.content.guestlistUrl')}
                 hint={t('admin.content.guestlistUrlHint')}
                 value={site.guestlistUrl}

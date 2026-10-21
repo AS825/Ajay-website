@@ -27,7 +27,7 @@ export function Produced() {
           {...photo}
           alt=""
           loading="lazy"
-          className="mx-auto w-[min(70vw,320px)] md:col-span-2 lg:col-span-1 lg:w-[280px] lg:self-end"
+          className="mx-auto w-[min(48vw,200px)] md:w-[260px] md:col-span-2 lg:col-span-1 lg:w-[280px] lg:self-end"
           initial={reduced ? false : { opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-10% 0px' }}

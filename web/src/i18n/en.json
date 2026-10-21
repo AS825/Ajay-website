@@ -6,14 +6,16 @@
     "sets": "Sets",
     "drops": "Drops",
     "about": "About",
-    "press": "Press Kit",
+    "press": "Press kit",
     "booking": "Booking",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "skipToContent": "Skip to content",
     "venues": "Venues",
     "rider": "DJ rider",
-    "livesets": "Live sets"
+    "livesets": "Sets",
+    "links": "Links",
+    "mobile": "Main navigation"
   },
   "lang": {
     "label": "Language",
@@ -373,7 +375,8 @@
         "lection": "LECTION",
         "contact": "Contact",
         "artists": "Artist support",
-        "produced": "Produced by Ajay"
+        "produced": "Produced by Ajay",
+        "links": "Links (Linktree)"
       },
       "style": "Look",
       "styles": {
@@ -467,7 +470,8 @@
       "contactUrl": "“Click here” link (contact)",
       "contactUrlHint": "(empty = booking form)",
       "guestlistUrl": "Default guestlist link",
-      "guestlistUrlHint": "(for events without their own link)"
+      "guestlistUrlHint": "(for events without their own link)",
+      "pressKitUrl": "Press kit link (pCloud)"
     },
     "media": {
       "upload": "Upload",
@@ -657,5 +661,14 @@
   "produced": {
     "title": "Produced by Ajay",
     "more": "Many more …"
+  },
+  "links": {
+    "title": "Links",
+    "groups": {
+      "social": "Socials",
+      "streaming": "Streaming",
+      "sets": "DJ sets",
+      "drops": "Drops & tools"
+    }
   }
 }

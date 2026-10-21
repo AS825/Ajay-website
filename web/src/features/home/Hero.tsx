@@ -45,7 +45,7 @@ export function Hero() {
       <m.img
         {...photo}
         alt=""
-        className="absolute top-0 right-0 -z-10 h-[60svh] w-auto max-w-none object-contain object-top md:top-auto md:right-[-10vw] md:bottom-0 md:h-[80%] md:object-bottom lg:right-[-6vw]"
+        className="absolute top-0 right-0 -z-10 h-[60svh] w-auto max-md:[mask-image:linear-gradient(to_bottom,#000_70%,transparent)] max-w-none object-contain object-top md:top-auto md:right-[-10vw] md:bottom-0 md:h-[80%] md:object-bottom lg:right-[-6vw]"
         style={reduced ? undefined : { y: photoY }}
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -58,7 +58,7 @@ export function Hero() {
       />
 
       <m.div
-        className="px-safe mx-auto flex w-full max-w-6xl flex-col items-center pb-16 text-center md:pb-0"
+        className="px-safe mx-auto flex w-full max-w-6xl flex-col items-center pb-[calc(var(--mobile-nav-h)+2.5rem)] text-center md:pb-0"
         style={{
           paddingTop: 'calc(var(--header-h) + var(--safe-top))',
           ...(reduced ? {} : { y: contentY, opacity: contentOpacity }),
@@ -68,12 +68,12 @@ export function Hero() {
           <AnimatedLogo src={logo.src} onError={logo.onError} alt={site.artistName} />
         </h1>
         {line1 && (
-          <m.p className="mt-2 text-2xl uppercase md:text-3xl" {...fade(0.7)}>
+          <m.p className="mt-2 text-base tracking-wide uppercase md:text-xl" {...fade(0.7)}>
             {line1}
           </m.p>
         )}
         {line2 && (
-          <m.p className="text-base uppercase md:text-lg" {...fade(0.85)}>
+          <m.p className="text-xs tracking-wide uppercase md:text-sm" {...fade(0.85)}>
             {line2}
           </m.p>
         )}

@@ -9,6 +9,7 @@ import { NextEventPill } from '../../features/events/NextEventPill'
 import { Header } from './Header'
 import { ErrorBoundary } from '../ErrorBoundary'
 import { Footer } from './Footer'
+import { MobileNav } from './MobileNav'
 
 /**
  * Scroll handling: after a page change we wait for the exit transition,
@@ -86,6 +87,7 @@ export function Layout() {
         </m.div>
       </AnimatePresence>
       <NextEventPill />
+      <MobileNav />
     </>
   )
 }

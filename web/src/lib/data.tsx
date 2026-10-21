@@ -12,6 +12,7 @@ import {
 import {
   isTodo,
   normalizeSections,
+  seedLinks,
   seedSite,
   seedTheme,
   type EventDoc,
@@ -27,6 +28,7 @@ import { db } from './firebase'
 import { PREVIEW_READY, PREVIEW_STATE, isPreview, type PreviewState } from './preview'
 import type { EventView } from './events'
 import { bundledFlyer } from './flyers'
+import { bundledEventInfo } from './eventInfo'
 import { OWN_GUESTLIST, STORAGE_ENABLED } from './features'
 
 export type LinkView = LinkDoc & { id: string }
@@ -52,8 +54,11 @@ const isStorageUrl = (url: string) => url.includes('firebasestorage.googleapis.c
 
 function toEventView(id: string, d: EventDoc<Timestamp>, defaultGuestlistUrl: string): EventView {
   const startsAt = d.startsAt.toDate()
+  const { venueName, ...info } = bundledEventInfo(startsAt) ?? {}
   return {
     ...d,
+    ...info,
+    venue: venueName ? { ...d.venue, name: venueName } : d.venue,
     id,
     startsAt,
     endsAt: d.endsAt.toDate(),
@@ -79,6 +84,12 @@ interface Snapshot {
   videos: FeedVideo[]
   posts: FeedPost[]
 }
+
+/** Ajay's Linktree links, shown until links are imported in the admin (or while offline). */
+const SEED_LINKS: LinkView[] = Object.entries(seedLinks)
+  .filter(([, l]) => l.visible)
+  .map(([id, l]) => ({ id, ...l }))
+  .sort((a, b) => a.order - b.order)
 
 const CACHE_KEY = 'ajay:site-data:v1'
 const OLD_LECTION_URL = 'https://linktr.ee/lection.vie'
@@ -252,20 +263,20 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
     [preview, site],
   )
 
-  const value = useMemo<SiteData>(
-    () => ({
+  const value = useMemo<SiteData>(() => {
+    const shownLinks = links?.length ? links : SEED_LINKS
+    return {
       site: effectiveSite,
       theme: effectiveTheme,
-      links: links ?? [],
+      links: shownLinks,
       events: events ?? [],
       videos,
       posts,
       ready: links !== null && events !== null,
-      linksBy: (category) => (links ?? []).filter((l) => l.category === category),
+      linksBy: (category) => shownLinks.filter((l) => l.category === category),
       reload: () => setVersion((v) => v + 1),
-    }),
-    [effectiveSite, effectiveTheme, links, events, videos, posts],
-  )
+    }
+  }, [effectiveSite, effectiveTheme, links, events, videos, posts])
 
   return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>
 }

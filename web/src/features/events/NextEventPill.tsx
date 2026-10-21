@@ -46,7 +46,7 @@ export function NextEventPill() {
       {visible && next && (
         <m.div
           className="pointer-events-none fixed inset-x-0 z-30 flex justify-center px-4"
-          style={{ bottom: 'calc(0.75rem + var(--safe-bottom))' }}
+          style={{ bottom: 'calc(var(--mobile-nav-h) + 0.75rem + var(--safe-bottom))' }}
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}

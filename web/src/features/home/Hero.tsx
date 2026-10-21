@@ -8,6 +8,7 @@ import { useLang } from '../../i18n'
 import { easeOutExpo } from '../../lib/motion'
 import { ButtonLink } from '../../components/ui/Button'
 import { RevealText } from '../../components/motion/Reveal'
+import { Equalizer, LightSweep, Vinyl } from '../../components/motion/Dj'
 
 /** Slowly drifting accent glow (SPEC §3 "langsam wandernder Farbverlauf"). */
 function AccentDrift({ animate }: { animate: boolean }) {
@@ -19,7 +20,10 @@ function AccentDrift({ animate }: { animate: boolean }) {
     ease: 'easeInOut' as const,
   }
   return (
-    <div className="absolute inset-0 overflow-hidden mix-blend-screen" aria-hidden="true">
+    <div
+      className="beat-pulse absolute inset-0 overflow-hidden mix-blend-screen"
+      aria-hidden="true"
+    >
       <m.div
         className={`${blob} -top-[10%] right-[-25%] size-[90vmax] opacity-60`}
         style={{
@@ -50,7 +54,7 @@ function AccentDrift({ animate }: { animate: boolean }) {
 export function Hero() {
   const { t } = useTranslation()
   const { lang } = useLang()
-  const { theme } = useSiteData()
+  const { theme, site } = useSiteData()
   const reduced = !!useReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const h = theme.hero
@@ -117,9 +121,27 @@ export function Hero() {
           <div className="size-full bg-black" />
         )}
         <AccentDrift animate={!reduced} />
+        <LightSweep />
         <div className="absolute -inset-[50%] grain animate-[grain_1.2s_steps(6)_infinite] motion-reduce:animate-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black" />
       </m.div>
+
+      {/* Turntable on large screens: the record spins on the beat behind the text. */}
+      <m.div
+        className="pointer-events-none absolute top-1/2 right-[-17vw] -z-10 hidden w-[42vw] max-w-[720px] -translate-y-1/2 opacity-80 lg:block"
+        aria-hidden="true"
+        initial={reduced ? false : { opacity: 0, x: 120, rotate: -40 }}
+        animate={{ opacity: 0.8, x: 0, rotate: 0 }}
+        transition={{ duration: 1.6, ease: easeOutExpo, delay: 0.3 }}
+      >
+        <Vinyl label={site.aka} />
+      </m.div>
+
+      {/* Spectrum along the bottom edge. */}
+      <Equalizer
+        bars={64}
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-24 opacity-35 md:h-36"
+      />
 
       <m.div
         className="px-safe mx-auto w-full max-w-6xl pb-10 md:pb-20"
@@ -138,7 +160,7 @@ export function Hero() {
           <RevealText
             as="h1"
             text={headline}
-            className={`display-xl block uppercase ${quote ? 'mb-6' : 'mb-10'}`}
+            className={`display-xl beat-glow block uppercase ${quote ? 'mb-6' : 'mb-10'}`}
             onMount
             delay={0.2}
           />

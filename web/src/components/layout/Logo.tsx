@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useSiteData } from '../../lib/data'
+import { NowPlaying } from '../motion/Dj'
 
 export function Logo() {
   const { theme, site } = useSiteData()
@@ -17,6 +18,7 @@ export function Logo() {
           <span className="text-accent">.</span>
         </span>
       )}
+      <NowPlaying className="ml-2.5" />
     </Link>
   )
 }

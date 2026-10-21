@@ -41,7 +41,7 @@ export function Tiles() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
                     <div>
-                      <p className="text-4xl leading-none font-extrabold tracking-[-0.045em]">
+                      <p className="text-4xl leading-none font-extrabold tracking-[-0.045em] group-hover:animate-[glitch_360ms_steps(2)_1]">
                         {tile.title}
                       </p>
                       <p className="mt-2 text-xs font-semibold tracking-[0.18em] text-white/70">

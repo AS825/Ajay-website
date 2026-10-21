@@ -145,6 +145,145 @@
   }
 }
 
+/*
+ * DJ-style loops (components/motion/Dj.tsx). One beat = 60/124 s.
+ * All are CSS-only and switched off by the reduced-motion block below.
+ */
+:root {
+  --beat: 0.484s;
+}
+
+.eq-bar {
+  transform: scaleY(0.12);
+  animation: eq ease-in-out infinite alternate;
+}
+@keyframes eq {
+  0% {
+    transform: scaleY(0.08);
+  }
+  35% {
+    transform: scaleY(calc(var(--eq-peak, 0.8) * 0.55));
+  }
+  60% {
+    transform: scaleY(calc(var(--eq-peak, 0.8) * 0.3));
+  }
+  100% {
+    transform: scaleY(var(--eq-peak, 0.8));
+  }
+}
+
+.vinyl-disc {
+  background: repeating-radial-gradient(circle at center, #0b0b0c 0 1.5px, #19191c 1.5px 3px), #111;
+  box-shadow:
+    0 30px 80px -20px rgb(0 0 0 / 0.9),
+    0 0 0 1px rgb(255 255 255 / 0.06),
+    0 0 80px -10px color-mix(in srgb, var(--accent) 45%, transparent);
+  animation: spin calc(var(--beat) * 4) linear infinite;
+}
+.vinyl-sheen {
+  background: conic-gradient(
+    from 30deg,
+    transparent 0 10%,
+    rgb(255 255 255 / 0.14) 14%,
+    transparent 20% 55%,
+    rgb(255 255 255 / 0.1) 60%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+}
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Beat pulse: scale + glow kick on every beat, quick attack, slow release. */
+@utility beat-pulse {
+  animation: beat-pulse var(--beat) cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+}
+@keyframes beat-pulse {
+  0% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+}
+
+/* Headline glow that thumps with the beat (text-shadow in the accent colour). */
+@utility beat-glow {
+  animation: beat-glow var(--beat) ease-out infinite;
+}
+@keyframes beat-glow {
+  0% {
+    text-shadow: 0 0 34px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  100% {
+    text-shadow: 0 0 0 transparent;
+  }
+}
+
+/* RGB-split glitch on hover (tile titles) – short, never strobing. */
+@keyframes glitch {
+  0% {
+    text-shadow:
+      2px 0 color-mix(in srgb, var(--accent) 90%, transparent),
+      -2px 0 #00e5ff;
+    transform: translateX(0);
+  }
+  33% {
+    text-shadow:
+      -3px 0 color-mix(in srgb, var(--accent) 90%, transparent),
+      3px 0 #00e5ff;
+    transform: translateX(1px);
+  }
+  66% {
+    text-shadow:
+      1px 0 color-mix(in srgb, var(--accent) 90%, transparent),
+      -1px 0 #00e5ff;
+    transform: translateX(-1px);
+  }
+  100% {
+    text-shadow: none;
+    transform: none;
+  }
+}
+
+/* Club spotlights sweeping across a section. */
+.light-beam {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: 40%;
+  height: 140%;
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent) 38%, transparent),
+    transparent 75%
+  );
+  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+  filter: blur(18px);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  animation: sweep calc(var(--beat) * 16) ease-in-out infinite alternate;
+}
+.light-beam--b {
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.18), transparent 70%);
+  animation-duration: calc(var(--beat) * 12);
+  animation-direction: alternate-reverse;
+}
+@keyframes sweep {
+  from {
+    transform: translateX(-50%) rotate(-38deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(38deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

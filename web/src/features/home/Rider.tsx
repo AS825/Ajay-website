@@ -5,12 +5,14 @@ import { Container, Section } from '../../components/ui/Section'
 import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
 import { BRAND } from '../../lib/brand'
+import { useImageWithFallback } from '../../lib/hooks'
 
 /** Technical rider (press kit): gear, photo of the setup and the note for promoters. */
 export function Rider() {
   const { t } = useTranslation()
   const { lang } = useLang()
   const { site } = useSiteData()
+  const photo = useImageWithFallback(site.riderPhoto, BRAND.rider)
   const { gear, note } = site.rider
   if (gear.length === 0) return null
   const noteText = localize(note, lang).trim()
@@ -26,12 +28,7 @@ export function Rider() {
           ))}
         </ul>
         <ClipReveal className="mt-8 w-full max-w-3xl">
-          <img
-            src={site.riderPhoto || BRAND.rider}
-            alt={gear.join(', ')}
-            loading="lazy"
-            className="w-full"
-          />
+          <img {...photo} alt={gear.join(', ')} loading="lazy" className="w-full" />
         </ClipReveal>
         {noteText && (
           <Reveal delay={0.1}>

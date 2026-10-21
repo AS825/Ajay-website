@@ -5,6 +5,7 @@ import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
 import { easeOutExpo } from '../../lib/motion'
 import { BRAND } from '../../lib/brand'
+import { useImageWithFallback } from '../../lib/hooks'
 
 /**
  * Press-kit cover: the logo in the middle with two short lines below it and the
@@ -15,8 +16,8 @@ export function Hero() {
   const { theme, site } = useSiteData()
   const reduced = !!useReducedMotion()
   const ref = useRef<HTMLElement>(null)
-  const logo = theme.logoUrl || BRAND.logo
-  const photo = theme.hero.imageUrl || BRAND.hero
+  const logo = useImageWithFallback(theme.logoUrl, BRAND.logo)
+  const photo = useImageWithFallback(theme.hero.imageUrl, BRAND.hero)
   const line1 = localize(theme.hero.subline, lang).trim()
   const line2 = localize(theme.hero.quote, lang).trim()
 
@@ -41,7 +42,7 @@ export function Hero() {
       className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden md:justify-center"
     >
       <m.img
-        src={photo}
+        {...photo}
         alt=""
         fetchPriority="high"
         className="hero-photo absolute top-0 right-0 -z-10 h-[62svh] w-auto max-w-none object-contain object-top md:top-auto md:right-[6vw] md:bottom-0 md:h-full"
@@ -69,7 +70,7 @@ export function Hero() {
           animate={{ opacity: 1, filter: 'blur(0px)' }}
           transition={{ duration: 1.6, ease: easeOutExpo, delay: 0.2 }}
         >
-          <img src={logo} alt={site.artistName} className="w-full" />
+          <img {...logo} alt={site.artistName} className="w-full" />
         </m.h1>
         {line1 && (
           <m.p className="mt-2 text-2xl uppercase md:text-3xl" {...fade(0.7)}>

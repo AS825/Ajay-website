@@ -1,1 +1,8 @@
-{ "projects": { "default": "demo-ajay" } }
+{
+  "projects": {
+    "default": "demo-ajay",
+    "prod": "ajay-40bd5"
+  },
+  "targets": {},
+  "etags": {}
+}

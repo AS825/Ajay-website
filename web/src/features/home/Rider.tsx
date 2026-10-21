@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { localize } from '@ajay/shared'
-import { Reveal } from '../../components/motion/Reveal'
-import { DjBooth } from '../../components/motion/DjBooth'
+import { ClipReveal, Reveal } from '../../components/motion/Reveal'
 import { Container, Section } from '../../components/ui/Section'
 import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
+import { BRAND } from '../../lib/brand'
 
-/** Technical rider (press kit): gear list, an animated booth and the note for promoters. */
+/** Technical rider (press kit): gear, photo of the setup and the note for promoters. */
 export function Rider() {
   const { t } = useTranslation()
   const { lang } = useLang()
@@ -16,23 +16,26 @@ export function Rider() {
   const noteText = localize(note, lang).trim()
 
   return (
-    <Section id="rider" title={t('rider.title')}>
-      <Container>
-        <ul className="mb-10 space-y-1 text-xl uppercase md:mb-14 md:text-3xl">
+    <Section id="rider" title={t('rider.title')} align="center">
+      <Container className="flex flex-col items-center text-center">
+        <ul className="space-y-1 text-xl uppercase md:text-2xl">
           {gear.map((g, i) => (
             <li key={`${g}-${i}`}>
               <Reveal delay={i * 0.08}>{g}</Reveal>
             </li>
           ))}
         </ul>
-        <Reveal>
-          <DjBooth className="mx-auto max-w-5xl" />
-        </Reveal>
+        <ClipReveal className="mt-8 w-full max-w-3xl">
+          <img
+            src={site.riderPhoto || BRAND.rider}
+            alt={gear.join(', ')}
+            loading="lazy"
+            className="w-full"
+          />
+        </ClipReveal>
         {noteText && (
           <Reveal delay={0.1}>
-            <p className="mx-auto mt-10 max-w-2xl text-center text-lg uppercase md:mt-14 md:text-xl">
-              {noteText}
-            </p>
+            <p className="mt-6 max-w-xl text-lg uppercase md:text-xl">{noteText}</p>
           </Reveal>
         )}
       </Container>

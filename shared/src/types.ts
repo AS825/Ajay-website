@@ -39,37 +39,13 @@ export interface LinkDoc {
   visible: boolean
 }
 
+/** Home page blocks, in the order of the press kit. */
 export type SectionId =
-  | 'marquee'
-  | 'events'
-  | 'tiles'
-  | 'music'
-  | 'sets'
-  | 'instagram'
-  | 'drops'
-  | 'about'
-  | 'info'
-  | 'stats'
-  | 'venues'
-  | 'rider'
-  | 'livesets'
-  | 'lection'
-  | 'contact'
-  | 'booking'
-  | 'support'
+  'about' | 'info' | 'stats' | 'venues' | 'rider' | 'livesets' | 'events' | 'contact'
 
 export interface SectionConfig {
   id: SectionId
   visible: boolean
-}
-
-export interface Tile {
-  id: string
-  title: string
-  subtitle: Localized
-  /** Internal path/anchor (e.g. "/#music", "/press") or external URL. */
-  href: string
-  imageUrl?: string
 }
 
 /** One row of the "Media statistics" block (press kit). */
@@ -98,6 +74,7 @@ export interface SiteSettings {
   stats: StatItem[]
   venues: { austria: string[]; international: string[] }
   venuesPhoto: string
+  riderPhoto: string
   /** Technical rider: one line per piece of gear, plus a note. */
   rider: { gear: string[]; note: Localized }
   /** YouTube playlist with live sets (shown with a QR code). */
@@ -106,7 +83,6 @@ export interface SiteSettings {
   pressKitPdfUrl: string
   pressPhotos: string[]
   sections: SectionConfig[]
-  tiles: Tile[]
   legal: {
     impressum: Localized
     datenschutz: Localized
@@ -114,30 +90,13 @@ export interface SiteSettings {
   }
 }
 
-export type BackgroundType = 'color' | 'gradient' | 'image' | 'video'
-
-/** "sand": light press-kit look (default). "dark": the original black club look. */
-export type SiteStyle = 'sand' | 'dark'
-
 export interface ThemeSettings {
-  style: SiteStyle
-  accentColor: string
+  /** Empty: the press-kit logo shipped with the site. */
   logoUrl: string
-  marqueeText: string
-  background: {
-    type: BackgroundType
-    color: string
-    gradient: { colors: string[]; angle: number }
-    mediaUrl: string
-    /** 0–1, darkening overlay enforced on top of image/video backgrounds. */
-    overlayOpacity: number
-  }
   hero: {
-    mediaType: 'none' | 'image' | 'video'
+    /** Portrait cut-out on the right; empty: the press-kit photo. */
     imageUrl: string
-    videoUrl: string
-    posterUrl: string
-    headline: string
+    /** Two short lines under the logo (press kit: "PRESS KIT" / "2027"). */
     subline: Localized
     quote: Localized
   }

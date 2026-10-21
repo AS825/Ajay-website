@@ -70,7 +70,7 @@ export function NextEventPill() {
               <span className="block truncate text-sm font-semibold">{next.title}</span>
             </span>
             <span
-              className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-bold tabular-nums"
+              className="shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-on-accent tabular-nums"
               aria-label={`${t('pill.startsIn')} ${label}`}
             >
               {label}

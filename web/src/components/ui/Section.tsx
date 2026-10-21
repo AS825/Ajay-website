@@ -9,6 +9,7 @@ export function Section({
   children,
   className = '',
   headingLevel = 'h2',
+  align = 'start',
 }: {
   id?: string
   eyebrow?: string
@@ -18,6 +19,7 @@ export function Section({
   className?: string
   /** Sub-pages use their section title as the page's h1. */
   headingLevel?: 'h1' | 'h2'
+  align?: 'start' | 'center'
 }) {
   const headingId = id ? `${id}-title` : undefined
   return (
@@ -27,11 +29,13 @@ export function Section({
       className={`py-16 md:py-28 ${className}`}
     >
       {title && (
-        <header className="px-safe mx-auto mb-8 flex max-w-6xl items-end justify-between gap-4 md:mb-12">
+        <header
+          className={`px-safe mx-auto mb-8 flex max-w-6xl items-end gap-4 md:mb-12 ${align === 'center' ? 'justify-center text-center' : 'justify-between'}`}
+        >
           <div>
             {eyebrow && (
               <Reveal>
-                <p className="eyebrow mb-3">{eyebrow}</p>
+                <p className="text-xl uppercase md:text-2xl">{eyebrow}</p>
               </Reveal>
             )}
             <RevealText

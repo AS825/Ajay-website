@@ -3,10 +3,7 @@
 @import '@fontsource-variable/figtree';
 @import '@fontsource-variable/archivo/wdth.css';
 
-/*
- * Design tokens (SPEC §3). The accent colour is set at runtime from
- * settings/theme via --accent on :root (see lib/theme.ts).
- */
+/* Design tokens. :root holds the dark admin UI; html[data-site] the public press-kit look. */
 :root {
   --accent: #ff2d2d;
   --bg: #000000;
@@ -31,8 +28,9 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Colours that the "sand" style swaps (not inlined, so they stay overridable). */
+/* Colours the public site swaps (not inlined, so they stay overridable). */
 @theme {
+  --color-on-accent: #fff;
   --color-white: #fff;
   --color-black: #000;
   --color-ink: #000000;
@@ -43,11 +41,13 @@
 }
 
 /*
- * Sand style (press-kit look): light sand page, black type. The public layout sets
- * data-style on <html>; the admin keeps the dark look. "white" means foreground and
- * "black" means page colour throughout the components, so swapping both keeps contrast.
+ * Press-kit look: sand page, black type. The public layout sets data-site on <html>;
+ * the admin keeps the dark look. "white" means foreground and "black" means page colour
+ * throughout the components, so swapping both keeps contrast.
  */
-html[data-style='sand'] {
+html[data-site] {
+  --accent: #141110;
+  --color-on-accent: #e8d4c0;
   --sand: #e8d4c0;
   --color-white: #141110;
   --color-black: #e8d4c0;
@@ -56,7 +56,6 @@ html[data-style='sand'] {
   --color-surface-2: #d5bca4;
   --color-hairline: rgb(20 17 16 / 0.16);
   --color-muted: rgb(20 17 16 / 0.62);
-  --on-accent: #fff;
   color-scheme: light;
 
   body {
@@ -66,7 +65,8 @@ html[data-style='sand'] {
   .display-lg {
     font-family: 'Inter Variable', var(--font-sans);
     font-weight: 400;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    letter-spacing: -0.02em;
     line-height: 0.95;
     text-transform: uppercase;
   }
@@ -77,11 +77,11 @@ html[data-style='sand'] {
   .btn-primary {
     background: #141110;
     color: var(--sand);
-    box-shadow: 0 10px 30px -12px rgb(20 17 16 / 0.6);
+    box-shadow: none;
   }
-  .grain {
-    opacity: 0.18;
-    mix-blend-mode: multiply;
+  ::selection {
+    background: #141110;
+    color: var(--sand);
   }
 }
 
@@ -156,313 +156,32 @@ html[data-style='sand'] {
   }
 }
 
-/* Film-grain overlay (static in Phase 1, animated in Phase 2). */
+/* Film-grain overlay (media placeholders). */
 @utility grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
   mix-blend-mode: overlay;
   opacity: 0.35;
 }
 
-@keyframes grain {
-  0% {
-    transform: translate(0, 0);
-  }
-  17% {
-    transform: translate(-5%, -8%);
-  }
-  33% {
-    transform: translate(-12%, 4%);
-  }
-  50% {
-    transform: translate(7%, -12%);
-  }
-  67% {
-    transform: translate(-3%, 10%);
-  }
-  83% {
-    transform: translate(10%, 3%);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-/*
- * DJ-style loops (components/motion/Dj.tsx). One beat = 60/124 s.
- * All are CSS-only and switched off by the reduced-motion block below.
- */
-:root {
-  --beat: 0.484s;
-}
-
-.eq-bar {
-  transform: scaleY(0.12);
-  animation: eq ease-in-out infinite alternate;
-}
-@keyframes eq {
-  0% {
-    transform: scaleY(0.08);
-  }
-  35% {
-    transform: scaleY(calc(var(--eq-peak, 0.8) * 0.55));
-  }
-  60% {
-    transform: scaleY(calc(var(--eq-peak, 0.8) * 0.3));
-  }
-  100% {
-    transform: scaleY(var(--eq-peak, 0.8));
-  }
-}
-
-.vinyl-disc {
-  background: repeating-radial-gradient(circle at center, #0b0b0c 0 1.5px, #19191c 1.5px 3px), #111;
-  box-shadow:
-    0 30px 80px -20px rgb(0 0 0 / 0.9),
-    0 0 0 1px rgb(255 255 255 / 0.06),
-    0 0 80px -10px color-mix(in srgb, var(--accent) 45%, transparent);
-  animation: spin calc(var(--beat) * 4) linear infinite;
-}
-.vinyl-sheen {
-  background: conic-gradient(
-    from 30deg,
-    transparent 0 10%,
-    rgb(255 255 255 / 0.14) 14%,
-    transparent 20% 55%,
-    rgb(255 255 255 / 0.1) 60%,
-    transparent 66%
-  );
-  mix-blend-mode: screen;
-}
-@keyframes spin {
-  to {
-    transform: rotate(1turn);
-  }
-}
-
-/* Beat pulse: scale + glow kick on every beat, quick attack, slow release. */
-@utility beat-pulse {
-  animation: beat-pulse var(--beat) cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
-}
-@keyframes beat-pulse {
-  0% {
-    transform: scale(1.06);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.75;
-  }
-}
-
-/* Logo bump on every beat (scale only, keeps the logo fully opaque). */
-@utility beat-bump {
-  animation: beat-bump var(--beat) cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
-}
-@keyframes beat-bump {
-  0% {
-    transform: scale(1.035);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 /* Cut-out portrait: fade the photo's own backdrop into the page at the left and top edges. */
 .hero-photo {
   mask-image:
     linear-gradient(to right, transparent, #000 30%),
-    linear-gradient(to bottom, transparent, #000 12%);
+    linear-gradient(to bottom, transparent, #000 12%, #000 90%, transparent);
   mask-composite: intersect;
 }
-
-/* Headline glow that thumps with the beat (text-shadow in the accent colour). */
-@utility beat-glow {
-  animation: beat-glow var(--beat) ease-out infinite;
+/* Other cut-outs (about, contact): soften all edges so their backdrop never shows as a box. */
+.photo-soft {
+  mask-image:
+    linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
+    linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+  mask-composite: intersect;
 }
-@keyframes beat-glow {
-  0% {
-    text-shadow: 0 0 34px color-mix(in srgb, var(--accent) 70%, transparent);
-  }
-  100% {
-    text-shadow: 0 0 0 transparent;
-  }
-}
-
-/* RGB-split glitch on hover (tile titles) – short, never strobing. */
-@keyframes glitch {
-  0% {
-    text-shadow:
-      2px 0 color-mix(in srgb, var(--accent) 90%, transparent),
-      -2px 0 #00e5ff;
-    transform: translateX(0);
-  }
-  33% {
-    text-shadow:
-      -3px 0 color-mix(in srgb, var(--accent) 90%, transparent),
-      3px 0 #00e5ff;
-    transform: translateX(1px);
-  }
-  66% {
-    text-shadow:
-      1px 0 color-mix(in srgb, var(--accent) 90%, transparent),
-      -1px 0 #00e5ff;
-    transform: translateX(-1px);
-  }
-  100% {
-    text-shadow: none;
-    transform: none;
-  }
-}
-
-/* Club spotlights sweeping across a section. */
-.light-beam {
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  width: 40%;
-  height: 140%;
-  transform-origin: 50% 0;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--accent) 38%, transparent),
-    transparent 75%
-  );
-  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
-  filter: blur(18px);
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  animation: sweep calc(var(--beat) * 16) ease-in-out infinite alternate;
-}
-.light-beam--b {
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.18), transparent 70%);
-  animation-duration: calc(var(--beat) * 12);
-  animation-direction: alternate-reverse;
-}
-@keyframes sweep {
-  from {
-    transform: translateX(-50%) rotate(-38deg);
-  }
-  to {
-    transform: translateX(-50%) rotate(38deg);
-  }
-}
-
-/* DJ booth (components/motion/DjBooth.tsx). */
-.booth-wave {
-  animation: booth-wave calc(var(--beat) * 16) linear infinite;
-}
-@keyframes booth-wave {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.booth-progress {
-  animation: booth-progress 90s linear infinite;
-}
-@keyframes booth-progress {
-  from {
-    width: 8%;
-  }
-  to {
-    width: 100%;
-  }
-}
-.booth-spin {
-  animation: spin calc(var(--beat) * 4) linear infinite;
-}
-.booth-cue,
-.booth-play {
-  animation: booth-btn var(--beat) ease-out infinite;
-}
-.booth-cue {
-  --btn: #ff9a1f;
-  animation-duration: calc(var(--beat) * 2);
-}
-.booth-play {
-  --btn: #2bd96b;
-}
-@keyframes booth-btn {
-  0% {
-    background: var(--btn);
-    box-shadow: 0 0 2cqw var(--btn);
-  }
-  60%,
-  100% {
-    background: color-mix(in srgb, var(--btn) 25%, #111);
-    box-shadow: none;
-  }
-}
-.booth-pitch {
-  top: 45%;
-  animation: booth-pitch 7s ease-in-out infinite alternate;
-}
-@keyframes booth-pitch {
-  to {
-    top: 30%;
-  }
-}
-.booth-knob {
-  animation: booth-knob 5s ease-in-out infinite alternate;
-}
-@keyframes booth-knob {
-  from {
-    transform: rotate(var(--knob-from));
-  }
-  to {
-    transform: rotate(var(--knob-to));
-  }
-}
-.booth-vu {
-  animation: booth-vu calc(var(--beat) / 2) ease-out infinite alternate;
-}
-@keyframes booth-vu {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: calc(1 - var(--vu-level) * 0.9);
-    filter: brightness(0.5);
-  }
-}
-.booth-pad {
-  animation: booth-pad calc(var(--beat) * 2) steps(1) infinite;
-}
-@keyframes booth-pad {
-  0% {
-    background: var(--pad);
-    box-shadow: 0 0 1.4cqw var(--pad);
-  }
-  25%,
-  100% {
-    background: color-mix(in srgb, var(--pad) 22%, #111);
-    box-shadow: none;
-  }
-}
-.booth-fader {
-  top: 20%;
-  animation: booth-fader 6s ease-in-out infinite alternate;
-}
-@keyframes booth-fader {
-  to {
-    top: 62%;
-  }
-}
-.booth-xfade {
-  left: 0;
-  animation: booth-xfade calc(var(--beat) * 8) ease-in-out infinite alternate;
-}
-@keyframes booth-xfade {
-  to {
-    left: calc(100% - 1.3cqw);
+@media (max-width: 767px) {
+  .hero-photo {
+    mask-image:
+      linear-gradient(to right, transparent, #000 30%),
+      linear-gradient(to top, transparent, #000 25%);
   }
 }
 

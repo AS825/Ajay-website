@@ -21,7 +21,7 @@ export function EventsPage() {
 
   return (
     <PageShell>
-      <Section headingLevel="h1" eyebrow={t('events.eyebrow')} title={t('events.title')}>
+      <Section headingLevel="h1" title={t('events.title')}>
         <Container>
           {!ready ? (
             <div

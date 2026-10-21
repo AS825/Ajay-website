@@ -1,199 +1,86 @@
 import { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 import { m, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import { ArrowDown } from 'lucide-react'
 import { localize } from '@ajay/shared'
 import { useSiteData } from '../../lib/data'
 import { useLang } from '../../i18n'
 import { easeOutExpo } from '../../lib/motion'
-import { ButtonLink } from '../../components/ui/Button'
-import { RevealText } from '../../components/motion/Reveal'
-import { Equalizer, LightSweep, Vinyl } from '../../components/motion/Dj'
-import { SandHero } from './SandHero'
+import { BRAND } from '../../lib/brand'
 
-/** Slowly drifting accent glow (SPEC §3 "langsam wandernder Farbverlauf"). */
-function AccentDrift({ animate }: { animate: boolean }) {
-  const blob = 'absolute rounded-full blur-3xl will-change-transform'
-  const loop = {
-    duration: 18,
-    repeat: Infinity,
-    repeatType: 'mirror' as const,
-    ease: 'easeInOut' as const,
-  }
-  return (
-    <div
-      className="beat-pulse absolute inset-0 overflow-hidden mix-blend-screen"
-      aria-hidden="true"
-    >
-      <m.div
-        className={`${blob} -top-[10%] right-[-25%] size-[90vmax] opacity-60`}
-        style={{
-          background:
-            'radial-gradient(closest-side, color-mix(in srgb, var(--accent) 80%, transparent), transparent)',
-        }}
-        animate={
-          animate
-            ? { x: ['0%', '-22%', '-8%'], y: ['0%', '14%', '28%'], scale: [1, 1.15, 0.95] }
-            : undefined
-        }
-        transition={loop}
-      />
-      <m.div
-        className={`${blob} bottom-[-30%] left-[-30%] size-[70vmax] opacity-40`}
-        style={{
-          background:
-            'radial-gradient(closest-side, color-mix(in srgb, var(--accent) 60%, #ff7a00), transparent)',
-        }}
-        animate={animate ? { x: ['0%', '30%', '10%'], y: ['0%', '-18%', '-6%'] } : undefined}
-        transition={{ ...loop, duration: 23 }}
-      />
-    </div>
-  )
-}
-
+/**
+ * Press-kit cover: the logo in the middle with two short lines below it and the
+ * portrait cut-out on the right edge. Quiet entrance, gentle parallax on scroll.
+ */
 export function Hero() {
-  const { theme } = useSiteData()
-  return theme.style === 'sand' ? <SandHero /> : <DarkHero />
-}
-
-/** Full-screen hero (SPEC §4.1): Ken Burns / video, drifting accent, animated grain, parallax. */
-function DarkHero() {
-  const { t } = useTranslation()
   const { lang } = useLang()
   const { theme, site } = useSiteData()
   const reduced = !!useReducedMotion()
   const ref = useRef<HTMLElement>(null)
-  const h = theme.hero
-  const subline = localize(h.subline, lang).trim()
-  const headline = h.headline.trim()
-  // Strip quotes typed by hand so they never appear twice.
-  const quote = localize(h.quote, lang)
-    .trim()
-    .replace(/^["„“”']+|["„“”']+$/g, '')
-    .trim()
+  const logo = theme.logoUrl || BRAND.logo
+  const photo = theme.hero.imageUrl || BRAND.hero
+  const line1 = localize(theme.hero.subline, lang).trim()
+  const line2 = localize(theme.hero.quote, lang).trim()
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const mediaY = useTransform(scrollYProgress, [0, 1], ['0%', '22%'])
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-18%'])
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0])
+  const photoY = useTransform(scrollYProgress, [0, 1], ['0%', '8%'])
+  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-12%'])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
-  const fadeUp = (delay: number) =>
+  const fade = (delay: number) =>
     reduced
       ? {}
       : {
-          initial: { opacity: 0, y: 24 },
+          initial: { opacity: 0, y: 12 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 1, ease: easeOutExpo, delay },
+          transition: { duration: 1.2, ease: easeOutExpo, delay },
         }
 
   return (
     <section
       ref={ref}
-      aria-label={headline || undefined}
-      className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden"
+      aria-label={site.artistName}
+      className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden md:justify-center"
     >
-      <m.div
-        className="absolute inset-0 -z-10"
-        style={reduced ? undefined : { y: mediaY }}
+      <m.img
+        src={photo}
+        alt=""
+        fetchPriority="high"
+        className="hero-photo absolute top-0 right-0 -z-10 h-[62svh] w-auto max-w-none object-contain object-top md:top-auto md:right-[6vw] md:bottom-0 md:h-full"
+        style={reduced ? undefined : { y: photoY }}
+        initial={reduced ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.6, ease: easeOutExpo }}
+      />
+      {/* Keeps the text readable where the portrait reaches behind it on phones. */}
+      <div
+        className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-black via-black/90 to-transparent md:hidden"
         aria-hidden="true"
-      >
-        {h.mediaType === 'video' && h.videoUrl ? (
-          <video
-            className="size-full object-cover"
-            src={h.videoUrl}
-            poster={h.posterUrl || undefined}
-            autoPlay={!reduced}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-        ) : h.mediaType === 'image' && h.imageUrl ? (
-          <m.img
-            className="size-full object-cover"
-            src={h.imageUrl}
-            alt=""
-            fetchPriority="high"
-            initial={{ scale: 1.15 }}
-            animate={reduced ? { scale: 1 } : { scale: [1.15, 1.02], x: ['0%', '-2%'] }}
-            transition={
-              reduced
-                ? { duration: 0 }
-                : { duration: 22, ease: 'linear', repeat: Infinity, repeatType: 'mirror' }
-            }
-          />
-        ) : (
-          // TODO(Ajay): hero photo/video. Until then the accent drift on black carries the hero.
-          <div className="size-full bg-black" />
-        )}
-        <AccentDrift animate={!reduced} />
-        <LightSweep />
-        <div className="absolute -inset-[50%] grain animate-[grain_1.2s_steps(6)_infinite] motion-reduce:animate-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black" />
-      </m.div>
-
-      {/* Turntable on large screens: the record spins on the beat behind the text. */}
-      <m.div
-        className="pointer-events-none absolute top-1/2 right-[-17vw] -z-10 hidden w-[42vw] max-w-[720px] -translate-y-1/2 opacity-80 lg:block"
-        aria-hidden="true"
-        initial={reduced ? false : { opacity: 0, x: 120, rotate: -40 }}
-        animate={{ opacity: 0.8, x: 0, rotate: 0 }}
-        transition={{ duration: 1.6, ease: easeOutExpo, delay: 0.3 }}
-      >
-        <Vinyl label={site.aka} />
-      </m.div>
-
-      {/* Spectrum along the bottom edge. */}
-      <Equalizer
-        bars={64}
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-24 opacity-35 md:h-36"
       />
 
       <m.div
-        className="px-safe mx-auto w-full max-w-6xl pb-10 md:pb-20"
+        className="px-safe mx-auto flex w-full max-w-6xl flex-col items-center pb-16 text-center md:pb-0"
         style={{
-          paddingTop: 'calc(var(--header-h) + var(--safe-top) + 2rem)',
+          paddingTop: 'calc(var(--header-h) + var(--safe-top))',
           ...(reduced ? {} : { y: contentY, opacity: contentOpacity }),
         }}
       >
-        {/* Each text line only renders when it has content (empty fields in Admin → Design hide it). */}
-        {subline && (
-          <m.p className="eyebrow mb-4 text-white/80" {...fadeUp(0.1)}>
-            {subline}
+        <m.h1
+          className="w-[min(78vw,400px)]"
+          initial={reduced ? false : { opacity: 0, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 1.6, ease: easeOutExpo, delay: 0.2 }}
+        >
+          <img src={logo} alt={site.artistName} className="w-full" />
+        </m.h1>
+        {line1 && (
+          <m.p className="mt-2 text-2xl uppercase md:text-3xl" {...fade(0.7)}>
+            {line1}
           </m.p>
         )}
-        {headline && (
-          <RevealText
-            as="h1"
-            text={headline}
-            className={`display-xl beat-glow block uppercase ${quote ? 'mb-6' : 'mb-10'}`}
-            onMount
-            delay={0.2}
-          />
+        {line2 && (
+          <m.p className="text-base uppercase md:text-lg" {...fade(0.85)}>
+            {line2}
+          </m.p>
         )}
-        {quote && (
-          <m.blockquote
-            className="mb-10 max-w-xl text-2xl leading-tight font-semibold tracking-tight text-white/90 md:text-4xl"
-            {...fadeUp(0.55)}
-          >
-            „{quote}“
-          </m.blockquote>
-        )}
-        <m.div className="flex flex-col gap-3 sm:flex-row" {...fadeUp(0.7)}>
-          <ButtonLink href="/#events" variant="primary">
-            {t('hero.ctaEvents')}
-          </ButtonLink>
-          <ButtonLink href="/booking" variant="glass">
-            {t('hero.ctaBooking')}
-          </ButtonLink>
-        </m.div>
-        <m.div
-          className="mt-10 hidden justify-center md:flex"
-          animate={reduced ? undefined : { y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <ArrowDown className="size-5 text-white/50" aria-label={t('hero.scroll')} />
-        </m.div>
       </m.div>
     </section>
   )

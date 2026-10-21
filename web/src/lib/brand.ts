@@ -9,4 +9,5 @@ export const BRAND = {
   info: '/brand/info.webp',
   venues: '/brand/venues.webp',
   contact: '/brand/contact.webp',
+  rider: '/brand/rider.webp',
 } as const

@@ -290,6 +290,7 @@ export const seedSite: SiteSettings = {
     ],
   },
   venuesPhoto: '',
+  riderPhoto: '',
   rider: {
     gear: ['2 × Pioneer CDJs (2000 or higher)', '1 × Pioneer DJM S9 / S7 / S11'],
     note: {
@@ -302,92 +303,43 @@ export const seedSite: SiteSettings = {
   pressKitPdfUrl: '',
   pressPhotos: [],
   sections: [
-    { id: 'marquee', visible: true },
-    { id: 'events', visible: true },
-    { id: 'lection', visible: true },
-    { id: 'tiles', visible: true },
-    { id: 'music', visible: true },
-    { id: 'sets', visible: true },
-    { id: 'instagram', visible: true },
-    { id: 'drops', visible: true },
     { id: 'about', visible: true },
     { id: 'info', visible: true },
     { id: 'stats', visible: true },
     { id: 'venues', visible: true },
     { id: 'rider', visible: true },
     { id: 'livesets', visible: true },
-    { id: 'booking', visible: true },
+    { id: 'events', visible: true },
     { id: 'contact', visible: true },
-    { id: 'support', visible: true },
-  ],
-  tiles: [
-    {
-      id: 'music',
-      title: 'MUSIC',
-      subtitle: { en: 'STREAM & LISTEN', de: 'STREAMEN & HÖREN' },
-      href: '/#music',
-    },
-    {
-      id: 'sets',
-      title: 'SETS',
-      subtitle: { en: 'DJ SETS & VIDEOS', de: 'DJ-SETS & VIDEOS' },
-      href: '/#sets',
-    },
-    { id: 'drops', title: 'DROPS', subtitle: { en: 'EDIT PACKS & TOOLS' }, href: '/#drops' },
-    {
-      id: 'lection',
-      title: 'LECTION',
-      subtitle: { en: 'HOSTED BY AJAY' },
-      href: 'https://linktr.ee/lection.vie',
-    },
-    {
-      id: 'press',
-      title: 'PRESS KIT',
-      subtitle: { en: 'BIO, PHOTOS & PDF', de: 'BIO, FOTOS & PDF' },
-      href: '/press',
-    },
-    {
-      id: 'booking',
-      title: 'BOOKING',
-      subtitle: { en: 'BOOK AJAY', de: 'AJAY BUCHEN' },
-      href: '/booking',
-    },
   ],
   legal: { impressum: TODO_LEGAL, datenschutz: TODO_LEGAL, agb: TODO_LEGAL },
 }
 
 export const seedTheme: ThemeSettings = {
-  style: 'sand',
-  // TODO(Ajay): final accent colour and logo.
-  accentColor: '#FF2D2D',
   logoUrl: '',
-  marqueeText: 'NO GENRE, JUST VIBES • AFRO • BAILE FUNK • LATIN • BOUYON • EDITS •',
-  background: {
-    type: 'color',
-    color: '#000000',
-    gradient: { colors: ['#000000', '#1a0505'], angle: 180 },
-    mediaUrl: '',
-    overlayOpacity: 0.6,
-  },
   hero: {
-    mediaType: 'none',
     imageUrl: '',
-    videoUrl: '',
-    posterUrl: '',
-    headline: 'AJAY ADAM',
-    subline: { en: 'DJ & PRODUCER — VIENNA' },
-    quote: { en: 'NO GENRE, JUST VIBES' },
+    subline: { en: 'DJ & PRODUCER', de: 'DJ & PRODUCER' },
+    quote: { en: 'VIENNA', de: 'WIEN' },
   },
 }
 
 /**
- * Brings a stored section list up to date with the sections the code knows:
- * unknown ids are dropped, new ones (e.g. "instagram") are inserted after their
- * predecessor in the default order, visible by default.
+ * Brings a stored section list up to date with the sections the code knows.
+ * Lists from the old site layout (they still contain ids like "marquee") start over
+ * in the press-kit order, keeping only the visibility of blocks that still exist.
+ * Otherwise new ids are inserted after their predecessor in the default order.
  */
 export function normalizeSections(stored: SectionConfig[] | undefined): SectionConfig[] {
   const known = seedSite.sections.map((s) => s.id)
-  const list = (stored ?? []).filter((s) => known.includes(s.id))
+  const legacy = (stored ?? []).some((s) => !known.includes(s.id))
+  if (legacy) {
+    return seedSite.sections.map((s) => ({
+      ...s,
+      visible: stored!.find((x) => x.id === s.id)?.visible ?? true,
+    }))
+  }
+  const list = [...(stored ?? [])]
   for (const [i, id] of known.entries()) {
     if (list.some((s) => s.id === id)) continue
     const prev = known

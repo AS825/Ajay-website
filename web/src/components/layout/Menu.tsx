@@ -10,19 +10,16 @@ import { SocialIcon } from '../ui/SocialIcon'
 import { LanguageSwitch } from './LanguageSwitch'
 
 const ITEMS = [
-  { key: 'events', href: '/events' },
-  { key: 'music', href: '/#music' },
-  { key: 'sets', href: '/#sets' },
-  { key: 'drops', href: '/#drops' },
   { key: 'about', href: '/#about' },
+  { key: 'venues', href: '/#venues' },
+  { key: 'rider', href: '/#rider' },
+  { key: 'livesets', href: '/#livesets' },
+  { key: 'events', href: '/events' },
   { key: 'press', href: '/press' },
   { key: 'booking', href: '/booking' },
 ] as const
 
-// The overlay grows out of the burger button (top right).
-const ORIGIN = 'calc(100% - max(1rem, var(--safe-right)) - 22px) calc(var(--safe-top) + 32px)'
-
-/** Full-screen overlay menu (Carl-Cox style) with a circular wipe and staggered links. */
+/** Full-screen overlay menu: fades in, links rise in one after another. */
 export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const { linksBy } = useSiteData()
@@ -36,13 +33,7 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
     return () => document.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
-  const wipe = reduced
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        initial: { clipPath: `circle(0% at ${ORIGIN})` },
-        animate: { clipPath: `circle(150% at ${ORIGIN})` },
-        exit: { clipPath: `circle(0% at ${ORIGIN})` },
-      }
+  const wipe = { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
 
   return (
     <AnimatePresence>
@@ -56,7 +47,7 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
           style={{ paddingTop: 'var(--safe-top)', paddingBottom: 'var(--safe-bottom)' }}
           data-lenis-prevent
           {...wipe}
-          transition={{ duration: 0.75, ease: easeOutExpo }}
+          transition={{ duration: 0.4, ease: easeOutExpo }}
         >
           <div className="px-safe flex h-16 items-center justify-end">
             <button
@@ -80,18 +71,14 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
               {ITEMS.map((item) => (
                 <li key={item.key} className="overflow-hidden">
                   <m.div
-                    variants={
-                      reduced
-                        ? {}
-                        : { hidden: { y: '105%', rotate: 4 }, shown: { y: '0%', rotate: 0 } }
-                    }
+                    variants={reduced ? {} : { hidden: { y: '105%' }, shown: { y: '0%' } }}
                     transition={{ duration: 0.8, ease: easeOutExpo }}
                     style={{ transformOrigin: 'left bottom' }}
                   >
                     <SmartLink
                       href={item.href}
                       onClick={onClose}
-                      className="pressable block py-1 text-[clamp(2.5rem,11vw,5rem)] leading-[1.02] font-extrabold tracking-[-0.045em] uppercase transition-colors hover:text-accent"
+                      className="pressable block py-1 text-[clamp(2.25rem,9vw,4rem)] leading-[1.05] tracking-[-0.03em] uppercase transition-opacity hover:opacity-50"
                     >
                       {t(`nav.${item.key}`)}
                     </SmartLink>

@@ -1,67 +1,90 @@
 import { useTranslation } from 'react-i18next'
-import { ClipReveal } from '../../components/motion/Reveal'
-import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
+import { Reveal } from '../../components/motion/Reveal'
+import { Container, Section } from '../../components/ui/Section'
 import { useSiteData } from '../../lib/data'
-import { isUpcoming } from '../../lib/events'
-import { Section } from '../../components/ui/Section'
-import { EventCard } from '../events/EventCard'
+import { eventBadge, isUpcoming } from '../../lib/events'
+import { formatEventDate } from '../../lib/format'
+import { useLang } from '../../i18n'
 
-/** Horizontal snap carousel of upcoming events (SPEC §4.3). */
+/** Press-kit "Events": upcoming dates as a quiet list, then the LECTION series. */
 export function UpcomingEvents() {
   const { t } = useTranslation()
-  const { events, ready } = useSiteData()
-  const upcoming = events.filter((e) => isUpcoming(e))
+  const { lang } = useLang()
+  const { events, ready, site } = useSiteData()
+  const upcoming = events.filter((e) => isUpcoming(e)).slice(0, 6)
+  const lection = site.lectionUrl.trim()
 
   return (
-    <Section
-      id="events"
-      eyebrow={t('events.eyebrow')}
-      title={t('events.title')}
-      action={
-        <Link
-          to="/events"
-          className="pressable flex min-h-12 shrink-0 items-center gap-1 text-sm font-semibold text-white/80 hover:text-white"
-        >
-          {t('events.all')} <ArrowRight className="size-4" aria-hidden="true" />
-        </Link>
-      }
-    >
-      {!ready ? (
-        <div
-          className="px-safe mx-auto flex max-w-6xl gap-4 overflow-hidden"
-          aria-busy="true"
-          aria-label={t('common.loading')}
-        >
-          {[0, 1].map((i) => (
-            <div
-              key={i}
-              className="aspect-[4/5] w-[78%] shrink-0 animate-pulse rounded-[var(--radius-card)] bg-surface-2 sm:w-[340px]"
-            />
-          ))}
-        </div>
-      ) : upcoming.length === 0 ? (
-        <p className="px-safe mx-auto max-w-6xl text-muted">{t('events.empty')}</p>
-      ) : (
-        <ul
-          className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-2"
-          style={{
-            paddingInline: 'max(1rem, var(--safe-left), calc((100vw - 72rem) / 2 + 1rem))',
-            scrollPaddingInline: 'max(1rem, var(--safe-left), calc((100vw - 72rem) / 2 + 1rem))',
-          }}
-        >
-          {upcoming.map((e, i) => (
-            <li key={e.id} className="w-[78%] shrink-0 snap-start sm:w-[340px]">
-              <ClipReveal
-                delay={Math.min(i, 3) * 0.1}
-                className="overflow-hidden rounded-[var(--radius-card)]"
-              >
-                <EventCard event={e} />
-              </ClipReveal>
-            </li>
-          ))}
-        </ul>
-      )}
+    <Section id="events" title={t('events.title')} align="center">
+      <Container>
+        {!ready ? (
+          <div className="mx-auto h-40 max-w-3xl animate-pulse bg-surface" aria-busy="true" />
+        ) : upcoming.length > 0 ? (
+          <ul className="mx-auto max-w-3xl border-t border-hairline">
+            {upcoming.map((e, i) => {
+              const d = formatEventDate(e.startsAt, lang)
+              const badge = eventBadge(e)
+              return (
+                <li key={e.id} className="border-b border-hairline">
+                  <Reveal delay={Math.min(i, 4) * 0.06}>
+                    <Link
+                      to={`/events/${e.slug}`}
+                      className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-5 md:grid-cols-[6rem_1fr_auto]"
+                    >
+                      <span className="leading-none uppercase">
+                        <span className="block text-3xl md:text-4xl">{d.day}</span>
+                        <span className="text-sm">
+                          {d.month} · {d.weekday}
+                        </span>
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-xl uppercase md:text-2xl">
+                          {e.title}
+                        </span>
+                        <span className="block truncate text-sm text-muted">
+                          {e.venue.name} · {d.time}
+                          {badge === 'guestlistOpen' && ` · ${t('events.badge.guestlistOpen')}`}
+                        </span>
+                      </span>
+                      <ArrowRight
+                        className="size-5 transition-transform duration-500 group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </Reveal>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          <p className="text-center text-muted">{t('events.empty')}</p>
+        )}
+        <p className="mt-6 text-center">
+          <Link to="/events" className="text-sm uppercase underline-offset-4 hover:underline">
+            {t('events.all')}
+          </Link>
+        </p>
+
+        {/^https?:\/\//.test(lection) && (
+          <Reveal className="mt-20 text-center md:mt-28">
+            <a
+              href={lection}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-block"
+            >
+              <span className="block text-lg uppercase md:text-2xl">{t('lection.more')}</span>
+              <span className="font-wide block text-[14vw] leading-[0.95] md:text-[9vw] xl:text-[8.5rem]">
+                LECTION
+              </span>
+              <span className="mx-auto mt-3 block h-px w-0 bg-current transition-[width] duration-700 ease-[var(--ease-out-expo)] group-hover:w-full" />
+            </a>
+            <p className="mt-3 text-sm uppercase">{t('lection.tagline')}</p>
+          </Reveal>
+        )}
+      </Container>
     </Section>
   )
 }

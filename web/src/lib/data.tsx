@@ -24,7 +24,6 @@ import {
   type ThemeSettings,
 } from '@ajay/shared'
 import { db } from './firebase'
-import { applyTheme } from './theme'
 import { PREVIEW_READY, PREVIEW_STATE, isPreview, type PreviewState } from './preview'
 import type { EventView } from './events'
 
@@ -223,7 +222,6 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
     () => (preview ? { ...site, sections: normalizeSections(preview.sections) } : site),
     [preview, site],
   )
-  useEffect(() => applyTheme(effectiveTheme), [effectiveTheme])
 
   const value = useMemo<SiteData>(
     () => ({

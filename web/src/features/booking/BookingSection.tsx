@@ -16,12 +16,7 @@ export function BookingSection({
   const { t } = useTranslation()
   const { site } = useSiteData()
   return (
-    <Section
-      id={id}
-      headingLevel={headingLevel}
-      eyebrow={t('booking.eyebrow')}
-      title={t('booking.title')}
-    >
+    <Section id={id} headingLevel={headingLevel} title={t('booking.title')}>
       <Container className="max-w-3xl">
         <p className="mb-2 text-lg text-white/80">{t('booking.intro')}</p>
         <p className="mb-10 text-sm text-muted">

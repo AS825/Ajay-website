@@ -10,7 +10,10 @@
     "booking": "Booking",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "venues": "Venues",
+    "rider": "DJ rider",
+    "livesets": "Live sets"
   },
   "lang": {
     "label": "Language",
@@ -24,7 +27,7 @@
   },
   "events": {
     "eyebrow": "Live",
-    "title": "Upcoming Events",
+    "title": "Events",
     "all": "All events",
     "empty": "No upcoming events right now. Follow on Instagram for the next date.",
     "past": "Past Events",
@@ -331,7 +334,7 @@
       "none": "None",
       "image": "Image",
       "video": "Video",
-      "heroImage": "Hero image",
+      "heroImage": "Portrait (cut-out)",
       "heroVideo": "Hero video",
       "videoHint": "(MP4, ideally under 3 MB)",
       "poster": "Poster image",
@@ -371,7 +374,11 @@
         "sand": "Sand (press kit)",
         "dark": "Dark (club)"
       },
-      "styleHint": "Sand uses the press-kit colours and ignores the background settings below."
+      "styleHint": "Sand uses the press-kit colours and ignores the background settings below.",
+      "defaultHint": "Leave empty to use the press-kit version.",
+      "heroImageHint": "(PNG with transparent or sand-coloured background)",
+      "line1": "Line 1 under the logo",
+      "line2": "Line 2 under the logo"
     },
     "links": {
       "add": "Add link",
@@ -441,7 +448,8 @@
       "riderGear": "Gear",
       "riderNote": "Note for promoters",
       "liveSets": "Live sets playlist (YouTube)",
-      "contactPhoto": "Contact photo"
+      "contactPhoto": "Contact photo",
+      "riderPhoto": "Photo of the setup"
     },
     "media": {
       "upload": "Upload",

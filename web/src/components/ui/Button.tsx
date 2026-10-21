@@ -15,7 +15,7 @@ const sizes: Record<Size, string> = {
   icon: 'size-12 shrink-0',
 }
 const variants: Record<Variant, string> = {
-  primary: 'btn-primary bg-accent text-white shadow-[0_8px_30px_-8px_var(--accent)]',
+  primary: 'btn-primary bg-accent text-on-accent shadow-[0_8px_30px_-8px_var(--accent)]',
   glass: 'glass text-white',
   outline: 'border border-white/25 text-white hover:border-white/60',
 }

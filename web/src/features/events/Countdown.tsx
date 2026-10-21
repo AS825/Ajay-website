@@ -12,7 +12,7 @@ export function Countdown({ startsAt, endsAt }: { startsAt: Date; endsAt: Date }
 
   if (c.done) {
     return (
-      <p className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-bold">
+      <p className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-bold text-on-accent">
         <span className="size-2 animate-pulse rounded-full bg-white" aria-hidden="true" />
         {t('events.detail.liveNow')}
       </p>

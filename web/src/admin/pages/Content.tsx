@@ -9,7 +9,6 @@ import {
   type Localized,
   type SiteSettings,
   type StatItem,
-  type Tile,
 } from '@ajay/shared'
 import { adminDb } from '../firebase'
 import { omitId, sameData, useDocData } from '../hooks'
@@ -18,12 +17,11 @@ import { MediaField } from '../ui/MediaField'
 import { ImageList } from '../ui/ImageList'
 import { LocalizedRichText } from '../ui/RichText'
 import { SaveBar } from '../ui/SaveBar'
-import { SortableList } from '../ui/SortableList'
 import { toast } from '../ui/Toast'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { buttonClass } from '../../components/ui/Button'
 
-type Tab = 'general' | 'about' | 'press' | 'tiles' | 'legal'
+type Tab = 'general' | 'about' | 'press' | 'legal'
 const STAT_ICONS: IconKey[] = [
   'spotify',
   'youtube',
@@ -50,7 +48,7 @@ function factsFromLines(en: string, de: string): Localized[] {
 
 const isUrl = (s: string) => s === '' || s === 'TODO' || /^https?:\/\/\S+$/.test(s)
 
-/** Texts & legal (SPEC §10.9) plus general site settings, tiles and press kit. Sections order lives in Design. */
+/** Texts & legal (SPEC §10.9) plus general site settings and the press-kit blocks. Sections order lives in Design. */
 export default function Content() {
   const { t } = useTranslation()
   const siteDoc = useDocData<SiteSettings>('settings/site')
@@ -78,8 +76,6 @@ export default function Content() {
   const set = (patch: Partial<SiteSettings>) => setSite((s) => (s ? { ...s, ...patch } : s))
   const setStat = (i: number, patch: Partial<StatItem>) =>
     set({ stats: site.stats.map((x, j) => (j === i ? { ...x, ...patch } : x)) })
-  const setTile = (id: string, patch: Partial<Tile>) =>
-    set({ tiles: site.tiles.map((x) => (x.id === id ? { ...x, ...patch } : x)) })
   // Sections are edited in Design; never overwrite them from here.
   const { sections: _sections, ...edited } = site
   const { sections: _initialSections, ...base } = initial
@@ -88,15 +84,7 @@ export default function Content() {
   const save = async () => {
     if (!/^\S+@\S+\.\S+$/.test(site.bookingEmail))
       return toast(t('admin.content.invalidEmail'), 'error')
-    if (
-      ![
-        site.spotifyArtistUrl,
-        site.lectionUrl,
-        site.supportUrl,
-        site.liveSetsUrl,
-        ...site.tiles.map((x) => (x.href.startsWith('/') ? '' : x.href)),
-      ].every(isUrl)
-    ) {
+    if (![site.spotifyArtistUrl, site.lectionUrl, site.supportUrl, site.liveSetsUrl].every(isUrl)) {
       return toast(t('admin.links.invalid'), 'error')
     }
     setSaving(true)
@@ -119,7 +107,7 @@ export default function Content() {
           label={t('admin.nav.content')}
           value={tab}
           onChange={setTab}
-          options={(['general', 'about', 'press', 'tiles', 'legal'] as const).map((v) => ({
+          options={(['general', 'about', 'press', 'legal'] as const).map((v) => ({
             value: v,
             label: t(`admin.content.tabs.${v}`),
           }))}
@@ -156,20 +144,6 @@ export default function Content() {
               label={t('admin.content.support')}
               value={site.supportUrl}
               onChange={(supportUrl) => set({ supportUrl })}
-            />
-            <TextField
-              className="sm:col-span-2"
-              label={t('admin.content.genres')}
-              hint={t('admin.content.genresHint')}
-              value={site.genres.join(', ')}
-              onChange={(v) =>
-                set({
-                  genres: v
-                    .split(',')
-                    .map((g) => g.trim())
-                    .filter(Boolean),
-                })
-              }
             />
           </div>
         </Card>
@@ -305,6 +279,14 @@ export default function Content() {
                 multiline
                 rows={3}
               />
+              <MediaField
+                label={t('admin.content.riderPhoto')}
+                value={site.riderPhoto}
+                onChange={(riderPhoto) => set({ riderPhoto })}
+                folder="press"
+                image={{ maxSize: 1800 }}
+                aspect="aspect-[2/1]"
+              />
             </div>
           </Card>
           <Card>
@@ -374,59 +356,6 @@ export default function Content() {
             />
           </Card>
         </div>
-      )}
-
-      {tab === 'tiles' && (
-        <Card>
-          <p className="mb-3 text-sm text-muted">{t('admin.content.tilesHint')}</p>
-          <SortableList
-            items={site.tiles}
-            onReorder={(tiles) => set({ tiles })}
-            render={(tile) => (
-              <details className="group">
-                <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3">
-                  {tile.imageUrl ? (
-                    <img
-                      src={tile.imageUrl}
-                      alt=""
-                      className="size-10 rounded-[10px] object-cover"
-                    />
-                  ) : (
-                    <span className="size-10 rounded-[10px] bg-white/[0.06]" />
-                  )}
-                  <span className="font-bold tracking-tight">{tile.title}</span>
-                  <span className="truncate text-xs text-muted">{tile.href}</span>
-                </summary>
-                <div className="mt-3 grid gap-3 pb-2">
-                  <TextField
-                    label={t('admin.links.title')}
-                    value={tile.title}
-                    onChange={(title) => setTile(tile.id, { title })}
-                  />
-                  <LocalizedField
-                    label={t('admin.links.subtitle')}
-                    value={tile.subtitle}
-                    onChange={(subtitle) => setTile(tile.id, { subtitle })}
-                  />
-                  <TextField
-                    label={t('admin.content.tileHref')}
-                    hint={t('admin.content.tileHrefHint')}
-                    value={tile.href}
-                    onChange={(href) => setTile(tile.id, { href })}
-                  />
-                  <MediaField
-                    label={t('admin.content.tileImage')}
-                    value={tile.imageUrl ?? ''}
-                    onChange={(imageUrl) => setTile(tile.id, { imageUrl })}
-                    folder="tiles"
-                    image={{ aspect: 16 / 11, maxSize: 1400 }}
-                    aspect="aspect-[16/11]"
-                  />
-                </div>
-              </details>
-            )}
-          />
-        </Card>
       )}
 
       {tab === 'legal' && (

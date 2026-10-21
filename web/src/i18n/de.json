@@ -10,7 +10,10 @@
     "booking": "Booking",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "skipToContent": "Zum Inhalt springen"
+    "skipToContent": "Zum Inhalt springen",
+    "venues": "Venues",
+    "rider": "DJ Rider",
+    "livesets": "Live-Sets"
   },
   "lang": {
     "label": "Sprache",
@@ -24,7 +27,7 @@
   },
   "events": {
     "eyebrow": "Live",
-    "title": "Upcoming Events",
+    "title": "Events",
     "all": "Alle Events",
     "empty": "Gerade keine Termine. Folge auf Instagram für das nächste Datum.",
     "past": "Vergangene Events",
@@ -331,7 +334,7 @@
       "none": "Keins",
       "image": "Bild",
       "video": "Video",
-      "heroImage": "Hero-Bild",
+      "heroImage": "Porträt (freigestellt)",
       "heroVideo": "Hero-Video",
       "videoHint": "(MP4, möglichst unter 3 MB)",
       "poster": "Vorschaubild",
@@ -371,7 +374,11 @@
         "sand": "Sand (Press Kit)",
         "dark": "Dunkel (Club)"
       },
-      "styleHint": "„Sand“ nutzt die Press-Kit-Farben; die Hintergrund-Einstellungen unten gelten dann nicht."
+      "styleHint": "„Sand“ nutzt die Press-Kit-Farben; die Hintergrund-Einstellungen unten gelten dann nicht.",
+      "defaultHint": "Leer lassen = Version aus dem Press Kit.",
+      "heroImageHint": "(PNG mit transparentem oder sandfarbenem Hintergrund)",
+      "line1": "Zeile 1 unter dem Logo",
+      "line2": "Zeile 2 unter dem Logo"
     },
     "links": {
       "add": "Link hinzufügen",
@@ -441,7 +448,8 @@
       "riderGear": "Equipment",
       "riderNote": "Hinweis für Veranstalter",
       "liveSets": "Live-Set-Playlist (YouTube)",
-      "contactPhoto": "Foto für Kontakt"
+      "contactPhoto": "Foto für Kontakt",
+      "riderPhoto": "Foto vom Setup"
     },
     "media": {
       "upload": "Hochladen",

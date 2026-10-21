@@ -12,17 +12,9 @@ function VenueList({ title, venues }: { title: string; venues: string[] }) {
       <ul className="space-y-0.5 text-lg uppercase md:text-xl">
         {[...venues, t('venues.more')].map((v, i) => (
           <li key={`${v}-${i}`}>
-            <Reveal
-              delay={Math.min(i, 12) * 0.03}
-              className="group flex cursor-default items-center gap-3 transition-colors hover:text-accent"
-            >
-              <span
-                className="size-1.5 shrink-0 rounded-full bg-current transition-transform duration-300 group-hover:scale-[2.2]"
-                aria-hidden="true"
-              />
-              <span className="transition-transform duration-300 group-hover:translate-x-1">
-                {v}
-              </span>
+            <Reveal delay={Math.min(i, 12) * 0.03} className="flex items-center gap-3">
+              <span className="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true" />
+              <span>{v}</span>
             </Reveal>
           </li>
         ))}

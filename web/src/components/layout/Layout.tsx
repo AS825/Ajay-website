@@ -3,7 +3,6 @@ import { useLocation, useOutlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, m, useReducedMotion } from 'motion/react'
 import { useSiteData } from '../../lib/data'
-import { backgroundCss } from '../../lib/theme'
 import { easeOutExpo } from '../../lib/motion'
 import { useScrollTo } from '../../lib/smoothScroll'
 import { NextEventPill } from '../../features/events/NextEventPill'
@@ -41,52 +40,15 @@ function useRouteScroll() {
   return () => requestAnimationFrame(() => requestAnimationFrame(() => scrollToTarget(true)))
 }
 
-/** Public pages only: the admin keeps its dark UI, so the style lives on <html> while mounted. */
-function useSiteStyle() {
-  const { theme } = useSiteData()
+/** Public pages use the press-kit colours; the admin keeps its dark UI. */
+function useSiteColours() {
   useEffect(() => {
     const root = document.documentElement
-    root.dataset.style = theme.style
+    root.dataset.site = ''
     return () => {
-      delete root.dataset.style
+      delete root.dataset.site
     }
-  }, [theme.style])
-}
-
-function SiteBackground() {
-  const { theme } = useSiteData()
-  // The sand look has a fixed page colour; background settings apply to the dark style.
-  if (theme.style === 'sand') return null
-  const bg = theme.background
-  const media = (bg.type === 'image' || bg.type === 'video') && bg.mediaUrl
-  return (
-    // A dark overlay is always enforced on media backgrounds for contrast (SPEC §15).
-    <div
-      className="fixed inset-0 -z-10"
-      style={{ background: backgroundCss(bg) }}
-      aria-hidden="true"
-    >
-      {media && bg.type === 'image' && (
-        <img src={bg.mediaUrl} alt="" className="size-full object-cover" />
-      )}
-      {media && bg.type === 'video' && (
-        <video
-          src={bg.mediaUrl}
-          className="size-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-      )}
-      {media && (
-        <div
-          className="absolute inset-0 bg-black"
-          style={{ opacity: Math.max(0.4, bg.overlayOpacity) }}
-        />
-      )}
-    </div>
-  )
+  }, [])
 }
 
 export function Layout() {
@@ -95,11 +57,10 @@ export function Layout() {
   const outlet = useOutlet()
   const reduced = useReducedMotion()
   const onPageChanged = useRouteScroll()
-  useSiteStyle()
+  useSiteColours()
 
   return (
     <>
-      <SiteBackground />
       <a
         href="#main"
         className="glass fixed top-2 left-2 z-[60] -translate-y-20 rounded-full px-4 py-3 text-sm focus:translate-y-[var(--safe-top)]"

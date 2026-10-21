@@ -8,7 +8,7 @@ export function Badge({
   children: ReactNode
 }) {
   const tones = {
-    accent: 'bg-accent text-white',
+    accent: 'bg-accent text-on-accent',
     neutral: 'glass text-white',
     muted: 'bg-white/10 text-white/60',
   }

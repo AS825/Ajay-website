@@ -52,7 +52,7 @@ export function FormError({ reason }: { reason: CallErrorReason | null }) {
 export function SuccessCheck({ tone = 'accent' }: { tone?: 'accent' | 'muted' }) {
   return (
     <m.div
-      className={`grid size-20 place-items-center rounded-full ${tone === 'accent' ? 'bg-accent shadow-[0_10px_40px_-8px_var(--accent)]' : 'bg-white/15'}`}
+      className={`grid size-20 place-items-center rounded-full ${tone === 'accent' ? 'bg-accent text-on-accent shadow-[0_10px_40px_-8px_var(--accent)]' : 'bg-white/15'}`}
       initial={{ scale: 0, rotate: -30 }}
       animate={{ scale: 1, rotate: 0 }}
       transition={springBouncy}

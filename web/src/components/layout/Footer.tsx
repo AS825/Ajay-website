@@ -10,10 +10,7 @@ export function Footer() {
   return (
     <footer className="border-t border-hairline pb-[calc(6rem+var(--safe-bottom))] pt-12">
       <div className="px-safe mx-auto max-w-6xl">
-        <p className="display-lg mb-8">
-          {site.artistName}
-          <span className="text-accent">.</span>
-        </p>
+        <p className="display-lg mb-8">{site.artistName}</p>
         <ul className="-ml-3 mb-8 flex flex-wrap gap-1">
           {linksBy('social').map((l) => (
             <li key={l.id}>

@@ -92,7 +92,6 @@ export interface SiteSettings {
   artistsPhoto: string
   /** "Produced by Ajay": remixes (left column) and productions (right column). */
   productions: { remixes: string[]; tracks: string[] }
-  producedPhoto: string
   /** Where "click here" in the contact block leads. */
   contactUrl: string
   /** Press kit download (menu and mobile navigation). */

@@ -307,16 +307,6 @@ export default function Content() {
                 value={site.productions.tracks.join('\n')}
                 onChange={(v) => set({ productions: { ...site.productions, tracks: lines(v) } })}
               />
-              <div className="sm:col-span-2">
-                <MediaField
-                  label={t('admin.content.producedPhoto')}
-                  value={site.producedPhoto}
-                  onChange={(producedPhoto) => set({ producedPhoto })}
-                  folder="press"
-                  image={{ maxSize: 1200 }}
-                  aspect="aspect-square"
-                />
-              </div>
             </div>
           </Card>
           <Card title={t('admin.content.riderTitle')}>

@@ -6,11 +6,10 @@ import venues from '../assets/brand/venues.webp'
 import contact from '../assets/brand/contact.webp'
 import rider from '../assets/brand/rider.webp'
 import artists from '../assets/brand/artists.webp'
-import produced from '../assets/brand/produced.webp'
 
 /**
  * Images from the 2027 press kit (PDF export). They stand in until Ajay uploads originals
  * in the admin (Design → logo/portrait, Content → bio and press kit photos).
  * Imported so they ship inside the build with hashed names (never a stale cache).
  */
-export const BRAND = { logo, hero, about, info, venues, contact, rider, artists, produced } as const
+export const BRAND = { logo, hero, about, info, venues, contact, rider, artists } as const

@@ -375,7 +375,6 @@ export const seedSite: SiteSettings = {
       'Remoe – Kontakte',
     ],
   },
-  producedPhoto: '',
   contactUrl: 'https://linktr.ee/ajayadam',
   pressKitUrl: 'https://e.pcloud.link/publink/show?code=kZ3sC77Zq5ls0hfjSBbkkJNYGU8g781jJow7',
   guestlistUrl:

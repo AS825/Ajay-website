@@ -360,7 +360,11 @@
         "instagram": "Instagram",
         "info": "Main info",
         "stats": "Media statistics",
-        "venues": "Venues played"
+        "venues": "Venues played",
+        "rider": "DJ rider",
+        "livesets": "Live DJ sets",
+        "lection": "LECTION",
+        "contact": "Contact"
       },
       "style": "Look",
       "styles": {
@@ -432,7 +436,12 @@
       "statValue": "Number",
       "statAdd": "Add row",
       "venuesTitle": "Venues played",
-      "venuesPhoto": "Venues photo"
+      "venuesPhoto": "Venues photo",
+      "riderTitle": "DJ rider",
+      "riderGear": "Gear",
+      "riderNote": "Note for promoters",
+      "liveSets": "Live sets playlist (YouTube)",
+      "contactPhoto": "Contact photo"
     },
     "media": {
       "upload": "Upload",
@@ -593,5 +602,23 @@
     "austria": "Austria",
     "international": "International",
     "more": "Many more …"
+  },
+  "rider": {
+    "title": "DJ rider"
+  },
+  "livesets": {
+    "title": "Live DJ sets",
+    "qr": "QR code for the live sets playlist on YouTube",
+    "intro": "Full live sets from the clubs – all in one playlist.",
+    "scan": "Scan with your phone or open the playlist directly.",
+    "watch": "Watch on YouTube"
+  },
+  "lection": {
+    "more": "Click for more",
+    "tagline": "No genre, just vibes – hosted by Ajay"
+  },
+  "contact": {
+    "title": "Contact",
+    "cta": "Click here"
   }
 }

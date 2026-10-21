@@ -290,11 +290,21 @@ export const seedSite: SiteSettings = {
     ],
   },
   venuesPhoto: '',
+  rider: {
+    gear: ['2 × Pioneer CDJs (2000 or higher)', '1 × Pioneer DJM S9 / S7 / S11'],
+    note: {
+      en: 'Please note that I also need a laptop stand and enough space to work with.',
+      de: 'Bitte beachten: Ich brauche außerdem einen Laptop-Ständer und genug Platz zum Arbeiten.',
+    },
+  },
+  liveSetsUrl: 'https://www.youtube.com/playlist?list=PLJD69D0gv_ZwxS6aPekwRjRlgYcP4Ra1s',
+  contactPhoto: '',
   pressKitPdfUrl: '',
   pressPhotos: [],
   sections: [
     { id: 'marquee', visible: true },
     { id: 'events', visible: true },
+    { id: 'lection', visible: true },
     { id: 'tiles', visible: true },
     { id: 'music', visible: true },
     { id: 'sets', visible: true },
@@ -304,7 +314,10 @@ export const seedSite: SiteSettings = {
     { id: 'info', visible: true },
     { id: 'stats', visible: true },
     { id: 'venues', visible: true },
+    { id: 'rider', visible: true },
+    { id: 'livesets', visible: true },
     { id: 'booking', visible: true },
+    { id: 'contact', visible: true },
     { id: 'support', visible: true },
   ],
   tiles: [

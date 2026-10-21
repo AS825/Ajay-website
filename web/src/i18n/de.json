@@ -360,7 +360,11 @@
         "instagram": "Instagram",
         "info": "Infos",
         "stats": "Reichweite",
-        "venues": "Venues"
+        "venues": "Venues",
+        "rider": "DJ Rider",
+        "livesets": "Live DJ Sets",
+        "lection": "LECTION",
+        "contact": "Kontakt"
       },
       "style": "Look",
       "styles": {
@@ -432,7 +436,12 @@
       "statValue": "Zahl",
       "statAdd": "Zeile hinzufügen",
       "venuesTitle": "Gespielt in (Venues)",
-      "venuesPhoto": "Foto für Venues"
+      "venuesPhoto": "Foto für Venues",
+      "riderTitle": "DJ Rider",
+      "riderGear": "Equipment",
+      "riderNote": "Hinweis für Veranstalter",
+      "liveSets": "Live-Set-Playlist (YouTube)",
+      "contactPhoto": "Foto für Kontakt"
     },
     "media": {
       "upload": "Hochladen",
@@ -593,5 +602,23 @@
     "austria": "Österreich",
     "international": "International",
     "more": "Und viele mehr …"
+  },
+  "rider": {
+    "title": "DJ Rider"
+  },
+  "livesets": {
+    "title": "Live DJ Sets",
+    "qr": "QR-Code zur Live-Set-Playlist auf YouTube",
+    "intro": "Komplette Live-Sets aus den Clubs – alle in einer Playlist.",
+    "scan": "Mit dem Handy scannen oder die Playlist direkt öffnen.",
+    "watch": "Auf YouTube ansehen"
+  },
+  "lection": {
+    "more": "Mehr erfahren",
+    "tagline": "No genre, just vibes – hosted by Ajay"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "cta": "Hier klicken"
   }
 }

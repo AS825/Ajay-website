@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/figtree';
+@import '@fontsource-variable/archivo/wdth.css';
 
 /*
  * Design tokens (SPEC §3). The accent colour is set at runtime from
@@ -353,6 +354,123 @@ html[data-style='sand'] {
   to {
     transform: translateX(-50%) rotate(38deg);
   }
+}
+
+/* DJ booth (components/motion/DjBooth.tsx). */
+.booth-wave {
+  animation: booth-wave calc(var(--beat) * 16) linear infinite;
+}
+@keyframes booth-wave {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.booth-progress {
+  animation: booth-progress 90s linear infinite;
+}
+@keyframes booth-progress {
+  from {
+    width: 8%;
+  }
+  to {
+    width: 100%;
+  }
+}
+.booth-spin {
+  animation: spin calc(var(--beat) * 4) linear infinite;
+}
+.booth-cue,
+.booth-play {
+  animation: booth-btn var(--beat) ease-out infinite;
+}
+.booth-cue {
+  --btn: #ff9a1f;
+  animation-duration: calc(var(--beat) * 2);
+}
+.booth-play {
+  --btn: #2bd96b;
+}
+@keyframes booth-btn {
+  0% {
+    background: var(--btn);
+    box-shadow: 0 0 2cqw var(--btn);
+  }
+  60%,
+  100% {
+    background: color-mix(in srgb, var(--btn) 25%, #111);
+    box-shadow: none;
+  }
+}
+.booth-pitch {
+  top: 45%;
+  animation: booth-pitch 7s ease-in-out infinite alternate;
+}
+@keyframes booth-pitch {
+  to {
+    top: 30%;
+  }
+}
+.booth-knob {
+  animation: booth-knob 5s ease-in-out infinite alternate;
+}
+@keyframes booth-knob {
+  from {
+    transform: rotate(var(--knob-from));
+  }
+  to {
+    transform: rotate(var(--knob-to));
+  }
+}
+.booth-vu {
+  animation: booth-vu calc(var(--beat) / 2) ease-out infinite alternate;
+}
+@keyframes booth-vu {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: calc(1 - var(--vu-level) * 0.9);
+    filter: brightness(0.5);
+  }
+}
+.booth-pad {
+  animation: booth-pad calc(var(--beat) * 2) steps(1) infinite;
+}
+@keyframes booth-pad {
+  0% {
+    background: var(--pad);
+    box-shadow: 0 0 1.4cqw var(--pad);
+  }
+  25%,
+  100% {
+    background: color-mix(in srgb, var(--pad) 22%, #111);
+    box-shadow: none;
+  }
+}
+.booth-fader {
+  top: 20%;
+  animation: booth-fader 6s ease-in-out infinite alternate;
+}
+@keyframes booth-fader {
+  to {
+    top: 62%;
+  }
+}
+.booth-xfade {
+  left: 0;
+  animation: booth-xfade calc(var(--beat) * 8) ease-in-out infinite alternate;
+}
+@keyframes booth-xfade {
+  to {
+    left: calc(100% - 1.3cqw);
+  }
+}
+
+/* Wide, heavy display type (LECTION). */
+@utility font-wide {
+  font-family: 'Archivo Variable', var(--font-sans);
+  font-stretch: 125%;
+  font-weight: 900;
 }
 
 @media (prefers-reduced-motion: reduce) {

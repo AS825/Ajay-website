@@ -13,6 +13,10 @@ import { About } from '../features/home/About'
 import { MainInfo } from '../features/home/MainInfo'
 import { Stats } from '../features/home/Stats'
 import { Venues } from '../features/home/Venues'
+import { Rider } from '../features/home/Rider'
+import { LiveSets } from '../features/home/LiveSets'
+import { Lection } from '../features/home/Lection'
+import { Contact } from '../features/home/Contact'
 import { Support } from '../features/home/Support'
 import { BookingSection } from '../features/booking/BookingSection'
 
@@ -28,6 +32,10 @@ const SECTIONS: Record<SectionId, ComponentType> = {
   info: MainInfo,
   stats: Stats,
   venues: Venues,
+  rider: Rider,
+  livesets: LiveSets,
+  lection: Lection,
+  contact: Contact,
   booking: BookingSection,
   support: Support,
 }

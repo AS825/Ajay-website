@@ -8,4 +8,5 @@ export const BRAND = {
   about: '/brand/about.webp',
   info: '/brand/info.webp',
   venues: '/brand/venues.webp',
+  contact: '/brand/contact.webp',
 } as const

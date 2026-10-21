@@ -51,6 +51,10 @@ export type SectionId =
   | 'info'
   | 'stats'
   | 'venues'
+  | 'rider'
+  | 'livesets'
+  | 'lection'
+  | 'contact'
   | 'booking'
   | 'support'
 
@@ -94,6 +98,11 @@ export interface SiteSettings {
   stats: StatItem[]
   venues: { austria: string[]; international: string[] }
   venuesPhoto: string
+  /** Technical rider: one line per piece of gear, plus a note. */
+  rider: { gear: string[]; note: Localized }
+  /** YouTube playlist with live sets (shown with a QR code). */
+  liveSetsUrl: string
+  contactPhoto: string
   pressKitPdfUrl: string
   pressPhotos: string[]
   sections: SectionConfig[]

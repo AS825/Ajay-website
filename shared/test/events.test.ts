@@ -66,6 +66,7 @@ test('normalizeSections inserts new sections after their predecessor', async () 
     out.map((s) => s.id),
     [
       'events',
+      'lection',
       'tiles',
       'music',
       'sets',
@@ -75,11 +76,14 @@ test('normalizeSections inserts new sections after their predecessor', async () 
       'info',
       'stats',
       'venues',
+      'rider',
+      'livesets',
       'booking',
+      'contact',
       'support',
       'marquee',
     ],
   )
   assert.equal(out.find((s) => s.id === 'sets')?.visible, false)
-  assert.equal(out.length, 13)
+  assert.equal(out.length, 17)
 })

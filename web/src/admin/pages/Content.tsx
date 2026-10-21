@@ -93,6 +93,7 @@ export default function Content() {
         site.spotifyArtistUrl,
         site.lectionUrl,
         site.supportUrl,
+        site.liveSetsUrl,
         ...site.tiles.map((x) => (x.href.startsWith('/') ? '' : x.href)),
       ].every(isUrl)
     ) {
@@ -286,6 +287,42 @@ export default function Content() {
             >
               <Plus className="size-4" aria-hidden="true" /> {t('admin.content.statAdd')}
             </button>
+          </Card>
+          <Card title={t('admin.content.riderTitle')}>
+            <div className="space-y-4">
+              <TextField
+                label={t('admin.content.riderGear')}
+                hint={t('admin.content.onePerLine')}
+                multiline
+                rows={4}
+                value={site.rider.gear.join('\n')}
+                onChange={(v) => set({ rider: { ...site.rider, gear: lines(v) } })}
+              />
+              <LocalizedField
+                label={t('admin.content.riderNote')}
+                value={site.rider.note}
+                onChange={(note) => set({ rider: { ...site.rider, note } })}
+                multiline
+                rows={3}
+              />
+            </div>
+          </Card>
+          <Card>
+            <div className="space-y-4">
+              <TextField
+                label={t('admin.content.liveSets')}
+                value={site.liveSetsUrl}
+                onChange={(liveSetsUrl) => set({ liveSetsUrl })}
+              />
+              <MediaField
+                label={t('admin.content.contactPhoto')}
+                value={site.contactPhoto}
+                onChange={(contactPhoto) => set({ contactPhoto })}
+                folder="press"
+                image={{ maxSize: 1400 }}
+                aspect="aspect-[4/5]"
+              />
+            </div>
           </Card>
           <Card title={t('admin.content.venuesTitle')}>
             <div className="grid gap-4 sm:grid-cols-2">
